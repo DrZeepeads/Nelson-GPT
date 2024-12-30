@@ -91,6 +91,7 @@ const DrugCalculator = () => {
           <DrugInformation
             selectedDrug={selectedDrug}
             weight={weight}
+            age={age}
             drugs={getDrugsByCategory(category)}
           />
         </div>

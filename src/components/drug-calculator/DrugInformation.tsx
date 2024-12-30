@@ -125,7 +125,7 @@ export const DrugInformation = ({ selectedDrug, weight, age, drugs }: DrugInform
             </Alert>
           </div>
 
-          {calculationResult.warnings.length > 0 && (
+          {calculationResult.warnings && calculationResult.warnings.length > 0 && (
             <div>
               <h4 className="font-semibold text-amber-600">Important Warnings</h4>
               <ul className="list-disc pl-5 space-y-1">
@@ -138,7 +138,7 @@ export const DrugInformation = ({ selectedDrug, weight, age, drugs }: DrugInform
             </div>
           )}
 
-          {calculationResult.clinicalNotes.length > 0 && (
+          {calculationResult.clinicalNotes && calculationResult.clinicalNotes.length > 0 && (
             <div>
               <h4 className="font-semibold text-blue-600">Clinical Notes</h4>
               <ul className="list-disc pl-5 space-y-1">
