@@ -1,0 +1,74 @@
+import { useState } from "react";
+import { ChatMessage } from "./ChatMessage";
+import { ChatInput } from "./ChatInput";
+import { ExampleQuestions } from "./ExampleQuestions";
+
+export const ChatArea = () => {
+  const [messages, setMessages] = useState<Array<{
+    id: string;
+    message: string;
+    isBot: boolean;
+    timestamp: string;
+  }>>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSendMessage = async (message: string) => {
+    const newMessage = {
+      id: Date.now().toString(),
+      message,
+      isBot: false,
+      timestamp: new Date().toLocaleTimeString(),
+    };
+
+    setMessages((prev) => [...prev, newMessage]);
+    setIsLoading(true);
+
+    // Simulate bot response
+    setTimeout(() => {
+      const botResponse = {
+        id: (Date.now() + 1).toString(),
+        message: "This is a simulated response. In the future, this will be connected to the Nelson Textbook of Pediatrics knowledge base.",
+        isBot: true,
+        timestamp: new Date().toLocaleTimeString(),
+      };
+      setMessages((prev) => [...prev, botResponse]);
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  return (
+    <div className="flex flex-col h-[calc(100vh-8rem)]">
+      <div className="flex-1 overflow-y-auto">
+        {messages.length === 0 ? (
+          <div className="p-4">
+            <h2 className="text-xl font-semibold mb-4">Example Questions</h2>
+            <ExampleQuestions onQuestionClick={handleSendMessage} />
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {messages.map((msg) => (
+              <ChatMessage
+                key={msg.id}
+                message={msg.message}
+                isBot={msg.isBot}
+                timestamp={msg.timestamp}
+              />
+            ))}
+            {isLoading && (
+              <div className="p-4">
+                <div className="flex gap-2 items-center text-gray-500">
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.2s]" />
+                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="mt-auto">
+        <ChatInput onSendMessage={handleSendMessage} />
+      </div>
+    </div>
+  );
+};
