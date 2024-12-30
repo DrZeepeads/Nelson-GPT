@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 
 interface MeasurementFormProps {
-  onAddMeasurement: (age: string, height: string, weight: string, head: string) => void;
+  onAddMeasurement: (age: string, height: string, weight: string, head: string, gender: 'boys' | 'girls') => void;
 }
 
 export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
@@ -14,6 +15,7 @@ export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [head, setHead] = useState('');
+  const [gender, setGender] = useState<'boys' | 'girls'>('boys');
 
   const handleSubmit = () => {
     if (!age || !height || !weight || !head) {
@@ -25,7 +27,7 @@ export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
       return;
     }
 
-    onAddMeasurement(age, height, weight, head);
+    onAddMeasurement(age, height, weight, head, gender);
     setAge('');
     setHeight('');
     setWeight('');
@@ -40,6 +42,23 @@ export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 space-y-4">
       <div className="space-y-3">
+        <div>
+          <Label className="text-sm font-medium text-gray-700">Gender</Label>
+          <RadioGroup
+            value={gender}
+            onValueChange={(value) => setGender(value as 'boys' | 'girls')}
+            className="flex space-x-4 mt-1"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="boys" id="boys" />
+              <Label htmlFor="boys">Boy</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="girls" id="girls" />
+              <Label htmlFor="girls">Girl</Label>
+            </div>
+          </RadioGroup>
+        </div>
         <div>
           <Label htmlFor="age" className="text-sm font-medium text-gray-700">Age (months)</Label>
           <Input
