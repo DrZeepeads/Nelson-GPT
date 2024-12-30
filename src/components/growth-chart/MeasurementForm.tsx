@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
 interface MeasurementFormProps {
-  onAddMeasurement: (age: string, height: string, weight: string) => void;
+  onAddMeasurement: (age: string, height: string, weight: string, head: string) => void;
 }
 
 export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
@@ -13,9 +13,10 @@ export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
   const [age, setAge] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
+  const [head, setHead] = useState('');
 
   const handleSubmit = () => {
-    if (!age || !height || !weight) {
+    if (!age || !height || !weight || !head) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields.",
@@ -24,10 +25,11 @@ export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
       return;
     }
 
-    onAddMeasurement(age, height, weight);
+    onAddMeasurement(age, height, weight, head);
     setAge('');
     setHeight('');
     setWeight('');
+    setHead('');
 
     toast({
       title: "Measurement Added",
@@ -68,6 +70,17 @@ export const MeasurementForm = ({ onAddMeasurement }: MeasurementFormProps) => {
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
             placeholder="Enter weight in kg"
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label htmlFor="head" className="text-sm font-medium text-gray-700">Head Circumference (cm)</Label>
+          <Input
+            id="head"
+            type="number"
+            value={head}
+            onChange={(e) => setHead(e.target.value)}
+            placeholder="Enter head circumference in cm"
             className="mt-1"
           />
         </div>

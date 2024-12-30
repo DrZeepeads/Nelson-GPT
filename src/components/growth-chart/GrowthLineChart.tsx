@@ -13,14 +13,41 @@ interface GrowthData {
   age: number;
   height: number;
   weight: number;
+  head?: number;
 }
 
 interface GrowthLineChartProps {
   data: GrowthData[];
-  activeChart: 'height' | 'weight';
+  activeChart: 'height' | 'weight' | 'head';
 }
 
 export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => {
+  const getYAxisLabel = () => {
+    switch (activeChart) {
+      case 'height':
+        return 'Height (cm)';
+      case 'weight':
+        return 'Weight (kg)';
+      case 'head':
+        return 'Head Circumference (cm)';
+      default:
+        return '';
+    }
+  };
+
+  const getLineColor = () => {
+    switch (activeChart) {
+      case 'height':
+        return '#0EA5E9';
+      case 'weight':
+        return '#16A34A';
+      case 'head':
+        return '#9333EA';
+      default:
+        return '#000000';
+    }
+  };
+
   return (
     <div className="bg-white p-4 rounded-xl shadow-sm">
       <div className="h-[400px]">
@@ -38,7 +65,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
             />
             <YAxis 
               label={{ 
-                value: activeChart === 'height' ? 'Height (cm)' : 'Weight (kg)', 
+                value: getYAxisLabel(), 
                 angle: -90, 
                 position: 'left',
                 style: { fontSize: '12px' }
@@ -59,7 +86,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
                 paddingTop: '10px'
               }}
             />
-            {activeChart === 'height' ? (
+            {activeChart === 'height' && (
               <Line 
                 type="monotone" 
                 dataKey="height" 
@@ -68,7 +95,8 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
                 dot={{ fill: '#0EA5E9', strokeWidth: 2 }}
                 name="Height (cm)" 
               />
-            ) : (
+            )}
+            {activeChart === 'weight' && (
               <Line 
                 type="monotone" 
                 dataKey="weight" 
@@ -76,6 +104,16 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
                 strokeWidth={2}
                 dot={{ fill: '#16A34A', strokeWidth: 2 }}
                 name="Weight (kg)" 
+              />
+            )}
+            {activeChart === 'head' && (
+              <Line 
+                type="monotone" 
+                dataKey="head" 
+                stroke="#9333EA" 
+                strokeWidth={2}
+                dot={{ fill: '#9333EA', strokeWidth: 2 }}
+                name="Head Circ. (cm)" 
               />
             )}
           </LineChart>
