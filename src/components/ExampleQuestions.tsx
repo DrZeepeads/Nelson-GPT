@@ -5,11 +5,15 @@ interface ExampleQuestionsProps {
 const questions = [
   "What are the red flags for pediatric fever?",
   "Describe developmental milestones 0-12 months",
+  "What are common causes of abdominal pain in children?",
+  "How to evaluate a child with acute respiratory distress?",
+  "What are the signs of dehydration in infants?",
+  "Explain the vaccination schedule for the first year"
 ];
 
 export const ExampleQuestions = ({ onQuestionClick }: ExampleQuestionsProps) => {
   return (
-    <div className="space-y-2">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
       {questions.map((question) => (
         <button
           key={question}
