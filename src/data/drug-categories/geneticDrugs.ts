@@ -1,0 +1,17 @@
+export const geneticDrugs = [
+  { name: "Enzyme replacement therapy (ERT)", dose: "Dosed based on specific genetic condition" },
+  { name: "Hydroxyurea", dose: "15-25 mg/kg/day orally" },
+  { name: "L-arginine", dose: "100-200 mg/kg/day orally" },
+  { name: "Sapropterin", dose: "10-20 mg/kg/day orally" },
+  { name: "Cysteamine", dose: "60-90 mg/kg/day orally in divided doses" },
+  { name: "Alglucosidase alfa", dose: "20 mg/kg IV every 2 weeks" },
+  { name: "Deferasirox", dose: "20-40 mg/kg/day orally" },
+  { name: "Pegloticase", dose: "8 mg IV every 2 weeks" },
+  { name: "Nitisinone", dose: "1 mg/kg/day orally" },
+  { name: "Vitamin B6 (Pyridoxine)", dose: "5-10 mg/kg/day orally" },
+  { name: "Betaine", dose: "6-9 g/day orally in divided doses" },
+  { name: "Carnitine", dose: "50-100 mg/kg/day orally" },
+  { name: "Biotin", dose: "5-20 mg/day orally" },
+  { name: "Ursodeoxycholic acid", dose: "10-15 mg/kg/day orally" },
+  { name: "Thiamine", dose: "10-50 mg/day orally" },
+];

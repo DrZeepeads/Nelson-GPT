@@ -1,0 +1,17 @@
+export const emergencyDrugs = [
+  { name: "Adrenaline (Epinephrine)", dose: "0.01 mg/kg IM/IV every 3-5 min" },
+  { name: "Amiodarone", dose: "5 mg/kg IV over 20-60 min" },
+  { name: "Atropine", dose: "0.02 mg/kg IV/IM" },
+  { name: "Diazepam", dose: "0.2-0.5 mg/kg IV" },
+  { name: "Midazolam", dose: "0.1-0.3 mg/kg IV or 0.2 mg/kg intranasally" },
+  { name: "Dextrose (10%)", dose: "2-5 mL/kg IV bolus" },
+  { name: "Naloxone", dose: "0.1 mg/kg IV/IM" },
+  { name: "Sodium bicarbonate", dose: "1-2 mEq/kg IV" },
+  { name: "Calcium gluconate", dose: "50-100 mg/kg IV" },
+  { name: "Magnesium sulfate", dose: "25-50 mg/kg IV" },
+  { name: "Hydrocortisone", dose: "2-4 mg/kg IV/IM" },
+  { name: "Defibrillation (electric)", dose: "2 J/kg initial shock, then 4 J/kg" },
+  { name: "Dopamine", dose: "5-20 mcg/kg/min IV infusion" },
+  { name: "Lidocaine", dose: "1 mg/kg IV" },
+  { name: "Furosemide", dose: "1-2 mg/kg IV/IM" },
+];

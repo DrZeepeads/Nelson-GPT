@@ -15,6 +15,9 @@ import {
   geneticDrugs,
   skinDrugs,
   boneDrugs,
+  infectiousDrugs,
+  emergencyDrugs,
+  bloodDrugs,
   type Drug,
 } from "@/data/drugData";
 
@@ -44,6 +47,12 @@ const DrugCalculator = () => {
         return skinDrugs;
       case "bones":
         return boneDrugs;
+      case "infectious":
+        return infectiousDrugs;
+      case "emergency":
+        return emergencyDrugs;
+      case "blood":
+        return bloodDrugs;
       default:
         return nutritionDrugs;
     }

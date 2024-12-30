@@ -7,7 +7,18 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
-export type DrugCategory = "nutrition" | "endocrine" | "rheumatic" | "metabolic" | "fluid-electrolyte" | "genetic" | "skin" | "bones";
+export type DrugCategory = 
+  | "nutrition"
+  | "endocrine"
+  | "rheumatic"
+  | "metabolic"
+  | "fluid-electrolyte"
+  | "genetic"
+  | "skin"
+  | "bones"
+  | "infectious"
+  | "emergency"
+  | "blood";
 
 interface CategorySelectorProps {
   category: DrugCategory;
@@ -31,6 +42,9 @@ export const CategorySelector = ({ category, onCategoryChange }: CategorySelecto
           <SelectItem value="genetic">Genetics</SelectItem>
           <SelectItem value="skin">Skin</SelectItem>
           <SelectItem value="bones">Bones</SelectItem>
+          <SelectItem value="infectious">Infectious Diseases</SelectItem>
+          <SelectItem value="emergency">Emergency Drugs</SelectItem>
+          <SelectItem value="blood">Blood</SelectItem>
         </SelectContent>
       </Select>
     </div>

@@ -1,0 +1,16 @@
+export const metabolicDrugs = [
+  { name: "Insulin (regular)", dose: "0.1 units/kg/hour IV infusion" },
+  { name: "Sodium bicarbonate", dose: "1-2 mEq/kg IV" },
+  { name: "Carnitine", dose: "50-100 mg/kg/day" },
+  { name: "Vitamin B1 (Thiamine)", dose: "10-50 mg/day" },
+  { name: "Coenzyme Q10", dose: "5-10 mg/kg/day" },
+  { name: "Sodium benzoate", dose: "250-500 mg/kg/day" },
+  { name: "Arginine", dose: "200-400 mg/kg/day" },
+  { name: "Dextrose (10%)", dose: "2-5 mL/kg IV bolus" },
+  { name: "Biotin", dose: "5-20 mg/day" },
+  { name: "Vitamin D", dose: "400-1000 IU/day" },
+  { name: "Levocarnitine", dose: "100 mg/kg/day" },
+  { name: "Ketogenic diet (therapy)", dose: "Managed by dietitian" },
+  { name: "Ursodeoxycholic acid", dose: "10-15 mg/kg/day" },
+  { name: "Pancreatic enzymes", dose: "500-2500 lipase units/kg/meal" },
+];

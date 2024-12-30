@@ -1,0 +1,17 @@
+export const bloodDrugs = [
+  { name: "Ferrous sulfate", dose: "3-6 mg/kg/day in 3 doses" },
+  { name: "Folic acid", dose: "1-5 mg/day orally" },
+  { name: "Vitamin B12", dose: "1-2 mcg/day orally or IM" },
+  { name: "Erythropoietin", dose: "50-100 units/kg/dose subcutaneously 1-3 times weekly" },
+  { name: "Hydroxyurea", dose: "15-25 mg/kg/day orally" },
+  { name: "Deferoxamine", dose: "20-40 mg/kg/day IV/IM" },
+  { name: "Warfarin", dose: "0.1-0.2 mg/kg/day" },
+  { name: "Heparin", dose: "50-100 units/kg/dose IV" },
+  { name: "Aspirin", dose: "3-5 mg/kg/day" },
+  { name: "Tranexamic acid", dose: "10 mg/kg/dose IV/PO every 6-8 hours" },
+  { name: "Clopidogrel", dose: "0.2-1 mg/kg/day orally" },
+  { name: "Iron sucrose", dose: "1-3 mg/kg/dose IV" },
+  { name: "Prednisolone", dose: "1-2 mg/kg/day orally" },
+  { name: "IVIG", dose: "0.4 g/kg/day for 5 days" },
+  { name: "Eltrombopag", dose: "25-50 mg/day orally" },
+];

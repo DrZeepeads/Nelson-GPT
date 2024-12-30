@@ -1,0 +1,17 @@
+export const endocrineDrugs = [
+  { name: "Levothyroxine", dose: "1.5-2 mcg/kg/day" },
+  { name: "Methimazole", dose: "0.2-0.5 mg/kg/day" },
+  { name: "Propylthiouracil (PTU)", dose: "10-15 mg/kg/day" },
+  { name: "Insulin (Regular)", dose: "0.1-0.2 units/kg/day" },
+  { name: "Insulin (Long-acting)", dose: "0.2-0.4 units/kg/day" },
+  { name: "Insulin (Rapid-acting)", dose: "0.05-0.1 units/kg/dose" },
+  { name: "Glucagon", dose: "0.5-1 mg IV/IM" },
+  { name: "Fludrocortisone", dose: "0.05-0.2 mg/day" },
+  { name: "Hydrocortisone", dose: "5-10 mg/m²/day" },
+  { name: "Desmopressin", dose: "0.1-0.4 mg/day" },
+  { name: "Bromocriptine", dose: "2.5-15 mg/day" },
+  { name: "Dexamethasone", dose: "0.02-0.1 mg/kg/day" },
+  { name: "Somatropin", dose: "0.16-0.33 mg/kg/week" },
+  { name: "Vitamin D (Calcitriol)", dose: "0.25-0.5 mcg/day" },
+  { name: "Leuprolide", dose: "0.01-0.03 mg/kg/day" },
+];

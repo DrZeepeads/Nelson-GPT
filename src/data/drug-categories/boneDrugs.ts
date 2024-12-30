@@ -1,0 +1,17 @@
+export const boneDrugs = [
+  { name: "Calcium carbonate", dose: "500-1500 mg/day orally" },
+  { name: "Vitamin D (Cholecalciferol)", dose: "400-1000 IU/day orally" },
+  { name: "Alendronate", dose: "5-10 mg/day orally" },
+  { name: "Zoledronic acid", dose: "0.05 mg/kg IV once yearly" },
+  { name: "Teriparatide", dose: "20 mcg subcutaneously daily" },
+  { name: "Pamidronate", dose: "1 mg/kg IV over 4 hours every 3-4 months" },
+  { name: "Ibuprofen", dose: "5-10 mg/kg/dose every 6-8 hours" },
+  { name: "Prednisolone", dose: "1-2 mg/kg/day orally" },
+  { name: "Methotrexate", dose: "10-25 mg/m² once weekly" },
+  { name: "Etanercept", dose: "0.4 mg/kg subcutaneously twice weekly" },
+  { name: "Denosumab", dose: "1 mg/kg subcutaneously every 6 months" },
+  { name: "Raloxifene", dose: "60 mg/day orally" },
+  { name: "Hydroxychloroquine", dose: "3-6 mg/kg/day orally" },
+  { name: "Calcitonin", dose: "50-100 units subcutaneously daily" },
+  { name: "Bisphosphonates (general)", dose: "10-50 mg orally weekly" },
+];

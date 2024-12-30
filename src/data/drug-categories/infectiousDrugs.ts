@@ -1,0 +1,17 @@
+export const infectiousDrugs = [
+  { name: "Amoxicillin", dose: "45-90 mg/kg/day in 2-3 divided doses" },
+  { name: "Ceftriaxone", dose: "50-100 mg/kg/day IV/IM in 1-2 doses" },
+  { name: "Vancomycin", dose: "15-20 mg/kg/dose IV every 8-12 hours" },
+  { name: "Metronidazole", dose: "15-30 mg/kg/day in divided doses" },
+  { name: "Azithromycin", dose: "10 mg/kg on day 1, then 5 mg/kg/day for 4 days" },
+  { name: "Gentamicin", dose: "5-7.5 mg/kg/day IV/IM in 1-2 doses" },
+  { name: "Clindamycin", dose: "10-40 mg/kg/day in divided doses" },
+  { name: "Piperacillin-Tazobactam", dose: "80-100 mg/kg/dose every 6-8 hours IV" },
+  { name: "Oseltamivir", dose: "3 mg/kg/dose twice daily for 5 days" },
+  { name: "Isoniazid", dose: "5-10 mg/kg/day orally" },
+  { name: "Rifampin", dose: "10-20 mg/kg/day orally in 1-2 doses" },
+  { name: "Acyclovir", dose: "10-20 mg/kg/dose IV every 8 hours" },
+  { name: "Amphotericin B", dose: "0.25-1 mg/kg/day IV" },
+  { name: "Cefuroxime", dose: "30-50 mg/kg/day in divided doses" },
+  { name: "Trimethoprim-Sulfamethoxazole", dose: "6-12 mg TMP/kg/day in 2 doses" },
+];
