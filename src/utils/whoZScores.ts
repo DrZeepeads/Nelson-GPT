@@ -2,7 +2,6 @@
 export const whoZScores = {
   boys: {
     height: {
-      // Age in months as keys, values are [SD3neg, SD2neg, SD1neg, SD0, SD1, SD2, SD3]
       0: [44.2, 46.1, 48.0, 49.9, 51.8, 53.7, 55.6],
       2: [52.4, 54.4, 56.4, 58.4, 60.4, 62.4, 64.4],
       4: [58.0, 60.0, 62.0, 64.0, 66.0, 68.0, 70.0],
@@ -66,7 +65,12 @@ export const getZScore = (
   age: number,
   type: 'height' | 'weight' | 'head',
   gender: 'boys' | 'girls'
-) => {
+): number => {
+  if (!whoZScores[gender]?.[type]) {
+    console.error(`Invalid gender or measurement type: ${gender}, ${type}`);
+    return 0;
+  }
+
   // Find the closest age in the reference data
   const ages = Object.keys(whoZScores[gender][type]).map(Number);
   const closestAge = ages.reduce((prev, curr) => {

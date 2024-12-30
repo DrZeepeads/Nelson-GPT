@@ -6,24 +6,25 @@ import { GrowthLineChart } from "@/components/growth-chart/GrowthLineChart";
 import { GrowthInterpretation } from "@/components/growth-chart/GrowthInterpretation";
 
 const initialData = [
-  { age: 0, height: 50, weight: 3.5, head: 35 },
-  { age: 2, height: 58, weight: 5.0, head: 38 },
-  { age: 4, height: 65, weight: 6.5, head: 40 },
-  { age: 6, height: 70, weight: 7.5, head: 42 },
-  { age: 8, height: 75, weight: 9.0, head: 44 },
-  { age: 10, height: 80, weight: 10.0, head: 45 },
+  { age: 0, height: 50, weight: 3.5, head: 35, gender: 'boys' as const },
+  { age: 2, height: 58, weight: 5.0, head: 38, gender: 'boys' as const },
+  { age: 4, height: 65, weight: 6.5, head: 40, gender: 'boys' as const },
+  { age: 6, height: 70, weight: 7.5, head: 42, gender: 'boys' as const },
+  { age: 8, height: 75, weight: 9.0, head: 44, gender: 'boys' as const },
+  { age: 10, height: 80, weight: 10.0, head: 45, gender: 'boys' as const },
 ];
 
 const GrowthChart = () => {
   const [data, setData] = useState(initialData);
   const [activeChart, setActiveChart] = useState<'height' | 'weight' | 'head'>('height');
 
-  const handleAddMeasurement = (age: string, height: string, weight: string, head: string) => {
+  const handleAddMeasurement = (age: string, height: string, weight: string, head: string, gender: 'boys' | 'girls') => {
     const newMeasurement = {
       age: parseInt(age),
       height: parseFloat(height),
       weight: parseFloat(weight),
       head: parseFloat(head),
+      gender,
     };
     setData([...data, newMeasurement]);
   };
