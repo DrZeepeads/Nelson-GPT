@@ -1,21 +1,8 @@
-import { ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
-} from "recharts";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import { GrowthChartHeader } from "@/components/growth-chart/Header";
+import { MeasurementForm } from "@/components/growth-chart/MeasurementForm";
+import { ChartToggle } from "@/components/growth-chart/ChartToggle";
+import { GrowthLineChart } from "@/components/growth-chart/GrowthLineChart";
 
 const initialData = [
   { age: 0, height: 50, weight: 3.5 },
@@ -27,187 +14,25 @@ const initialData = [
 ];
 
 const GrowthChart = () => {
-  const navigate = useNavigate();
-  const { toast } = useToast();
   const [data, setData] = useState(initialData);
   const [activeChart, setActiveChart] = useState<'height' | 'weight'>('height');
-  const [age, setAge] = useState('');
-  const [height, setHeight] = useState('');
-  const [weight, setWeight] = useState('');
 
-  const handleAddMeasurement = () => {
-    if (!age || !height || !weight) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleAddMeasurement = (age: string, height: string, weight: string) => {
     const newMeasurement = {
       age: parseInt(age),
       height: parseFloat(height),
       weight: parseFloat(weight),
     };
-
     setData([...data, newMeasurement]);
-    setAge('');
-    setHeight('');
-    setWeight('');
-
-    toast({
-      title: "Measurement Added",
-      description: "Your measurement has been recorded successfully.",
-    });
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="fixed top-0 left-0 right-0 z-10 bg-white shadow-sm">
-        <div className="flex items-center h-14 px-4">
-          <button 
-            onClick={() => navigate('/tools')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <h1 className="text-lg font-semibold ml-2">Growth Chart</h1>
-        </div>
-      </div>
-
+      <GrowthChartHeader />
       <div className="pt-16 pb-20 px-4 space-y-6 max-w-md mx-auto">
-        <div className="bg-white rounded-xl shadow-sm p-4 space-y-4">
-          <div className="space-y-3">
-            <div>
-              <Label htmlFor="age" className="text-sm font-medium text-gray-700">Age (months)</Label>
-              <Input
-                id="age"
-                type="number"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                placeholder="Enter age in months"
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="height" className="text-sm font-medium text-gray-700">Height (cm)</Label>
-              <Input
-                id="height"
-                type="number"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-                placeholder="Enter height in cm"
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="weight" className="text-sm font-medium text-gray-700">Weight (kg)</Label>
-              <Input
-                id="weight"
-                type="number"
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-                placeholder="Enter weight in kg"
-                className="mt-1"
-              />
-            </div>
-          </div>
-          <Button 
-            onClick={handleAddMeasurement}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            Add Measurement
-          </Button>
-        </div>
-
-        <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
-          <Button
-            variant={activeChart === 'height' ? 'default' : 'ghost'}
-            onClick={() => setActiveChart('height')}
-            className={cn(
-              'flex-1',
-              activeChart === 'height' 
-                ? 'bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90' 
-                : 'hover:bg-gray-200'
-            )}
-          >
-            Height Chart
-          </Button>
-          <Button
-            variant={activeChart === 'weight' ? 'default' : 'ghost'}
-            onClick={() => setActiveChart('weight')}
-            className={cn(
-              'flex-1',
-              activeChart === 'weight' 
-                ? 'bg-[#16A34A] text-white hover:bg-[#16A34A]/90' 
-                : 'hover:bg-gray-200'
-            )}
-          >
-            Weight Chart
-          </Button>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl shadow-sm">
-          <div className="h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="age" 
-                  label={{ 
-                    value: 'Age (months)', 
-                    position: 'bottom',
-                    style: { fontSize: '12px' }
-                  }}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis 
-                  label={{ 
-                    value: activeChart === 'height' ? 'Height (cm)' : 'Weight (kg)', 
-                    angle: -90, 
-                    position: 'left',
-                    style: { fontSize: '12px' }
-                  }}
-                  tick={{ fontSize: 12 }}
-                />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white',
-                    border: '1px solid #f0f0f0',
-                    borderRadius: '8px',
-                    fontSize: '12px'
-                  }}
-                />
-                <Legend 
-                  wrapperStyle={{
-                    fontSize: '12px',
-                    paddingTop: '10px'
-                  }}
-                />
-                {activeChart === 'height' ? (
-                  <Line 
-                    type="monotone" 
-                    dataKey="height" 
-                    stroke="#0EA5E9" 
-                    strokeWidth={2}
-                    dot={{ fill: '#0EA5E9', strokeWidth: 2 }}
-                    name="Height (cm)" 
-                  />
-                ) : (
-                  <Line 
-                    type="monotone" 
-                    dataKey="weight" 
-                    stroke="#16A34A" 
-                    strokeWidth={2}
-                    dot={{ fill: '#16A34A', strokeWidth: 2 }}
-                    name="Weight (kg)" 
-                  />
-                )}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        <MeasurementForm onAddMeasurement={handleAddMeasurement} />
+        <ChartToggle activeChart={activeChart} onToggle={setActiveChart} />
+        <GrowthLineChart data={data} activeChart={activeChart} />
       </div>
     </div>
   );
