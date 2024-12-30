@@ -11,12 +11,12 @@ const questions = [
 
 export const ExampleQuestions = ({ onQuestionClick }: ExampleQuestionsProps) => {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {questions.map((question) => (
         <button
           key={question}
           onClick={() => onQuestionClick(question)}
-          className="w-full text-left p-4 bg-blue-50 hover:bg-blue-100 rounded-lg text-nelson-accent transition-colors"
+          className="w-full text-left p-3 text-sm bg-blue-50 hover:bg-blue-100 rounded-lg text-nelson-accent transition-colors"
         >
           {question}
         </button>

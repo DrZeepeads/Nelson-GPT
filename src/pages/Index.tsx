@@ -6,10 +6,8 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <main className="pt-16 pb-20">
-        <div className="max-w-2xl mx-auto">
-          <ChatArea />
-        </div>
+      <main className="pt-14 pb-16">
+        <ChatArea />
       </main>
       <Navigation />
     </div>
