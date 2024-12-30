@@ -15,11 +15,17 @@ interface GrowthData {
 
 const initialData: GrowthData[] = [
   { age: 0, height: 50, weight: 3.5, head: 35, gender: 'boys' },
+  { age: 1, height: 54, weight: 4.3, head: 37, gender: 'boys' },
   { age: 2, height: 58, weight: 5.0, head: 38, gender: 'boys' },
+  { age: 3, height: 62, weight: 5.8, head: 39, gender: 'boys' },
   { age: 4, height: 65, weight: 6.5, head: 40, gender: 'boys' },
   { age: 6, height: 70, weight: 7.5, head: 42, gender: 'boys' },
   { age: 8, height: 75, weight: 9.0, head: 44, gender: 'boys' },
   { age: 10, height: 80, weight: 10.0, head: 45, gender: 'boys' },
+  { age: 12, height: 82, weight: 10.8, head: 46, gender: 'boys' },
+  { age: 15, height: 85, weight: 11.5, head: 47, gender: 'boys' },
+  { age: 18, height: 87, weight: 12.0, head: 47.5, gender: 'boys' },
+  { age: 24, height: 90, weight: 13.0, head: 48, gender: 'boys' },
 ];
 
 const GrowthChart = () => {
