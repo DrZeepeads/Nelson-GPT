@@ -33,12 +33,31 @@ const nutritionDrugs: Drug[] = [
   { name: "L-carnitine", dose: "50-100 mg/kg/day" },
 ];
 
+const endocrineDrugs: Drug[] = [
+  { name: "Levothyroxine", dose: "1.5-2 mcg/kg/day" },
+  { name: "Methimazole", dose: "0.2-0.5 mg/kg/day" },
+  { name: "Propylthiouracil (PTU)", dose: "10-15 mg/kg/day" },
+  { name: "Insulin (Regular)", dose: "0.1-0.2 units/kg/day" },
+  { name: "Insulin (Long-acting)", dose: "0.2-0.4 units/kg/day" },
+  { name: "Insulin (Rapid-acting)", dose: "0.05-0.1 units/kg/dose" },
+  { name: "Glucagon", dose: "0.5-1 mg IV/IM" },
+  { name: "Fludrocortisone", dose: "0.05-0.2 mg/day" },
+  { name: "Hydrocortisone", dose: "5-10 mg/m²/day" },
+  { name: "Desmopressin", dose: "0.1-0.4 mg/day" },
+  { name: "Bromocriptine", dose: "2.5-15 mg/day" },
+  { name: "Dexamethasone", dose: "0.02-0.1 mg/kg/day" },
+  { name: "Somatropin", dose: "0.16-0.33 mg/kg/week" },
+  { name: "Vitamin D (Calcitriol)", dose: "0.25-0.5 mcg/day" },
+  { name: "Leuprolide", dose: "0.01-0.03 mg/kg/day" },
+];
+
 const DrugCalculator = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [selectedDrug, setSelectedDrug] = useState("");
+  const [category, setCategory] = useState<"nutrition" | "endocrine">("nutrition");
 
   const calculateDose = () => {
     if (!weight || !selectedDrug) {
@@ -50,7 +69,9 @@ const DrugCalculator = () => {
       return;
     }
 
-    const drug = nutritionDrugs.find((d) => d.name === selectedDrug);
+    const drug = [...nutritionDrugs, ...endocrineDrugs].find(
+      (d) => d.name === selectedDrug
+    );
     if (!drug) return;
 
     let doseInfo = `${drug.name}\n`;
@@ -90,11 +111,29 @@ const DrugCalculator = () => {
         >
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-lg font-semibold ml-2">Nutrition Drug Calculator</h1>
+        <h1 className="text-lg font-semibold ml-2">Pediatric Drug Calculator</h1>
       </div>
 
       <div className="pt-16 p-4 max-w-md mx-auto space-y-6">
         <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <Select
+              value={category}
+              onValueChange={(value: "nutrition" | "endocrine") =>
+                setCategory(value)
+              }
+            >
+              <SelectTrigger className="text-base md:text-sm">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="nutrition">Nutrition</SelectItem>
+                <SelectItem value="endocrine">Endocrine</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="weight">Weight (kg)</Label>
             <Input
@@ -126,15 +165,17 @@ const DrugCalculator = () => {
                 <SelectValue placeholder="Select a medication" />
               </SelectTrigger>
               <SelectContent>
-                {nutritionDrugs.map((drug) => (
-                  <SelectItem 
-                    key={drug.name} 
-                    value={drug.name}
-                    className="text-base md:text-sm"
-                  >
-                    {drug.name}
-                  </SelectItem>
-                ))}
+                {(category === "nutrition" ? nutritionDrugs : endocrineDrugs).map(
+                  (drug) => (
+                    <SelectItem
+                      key={drug.name}
+                      value={drug.name}
+                      className="text-base md:text-sm"
+                    >
+                      {drug.name}
+                    </SelectItem>
+                  )
+                )}
               </SelectContent>
             </Select>
           </div>
