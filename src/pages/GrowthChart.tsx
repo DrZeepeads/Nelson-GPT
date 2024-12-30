@@ -5,21 +5,29 @@ import { ChartToggle } from "@/components/growth-chart/ChartToggle";
 import { GrowthLineChart } from "@/components/growth-chart/GrowthLineChart";
 import { GrowthInterpretation } from "@/components/growth-chart/GrowthInterpretation";
 
-const initialData = [
-  { age: 0, height: 50, weight: 3.5, head: 35, gender: 'boys' as const },
-  { age: 2, height: 58, weight: 5.0, head: 38, gender: 'boys' as const },
-  { age: 4, height: 65, weight: 6.5, head: 40, gender: 'boys' as const },
-  { age: 6, height: 70, weight: 7.5, head: 42, gender: 'boys' as const },
-  { age: 8, height: 75, weight: 9.0, head: 44, gender: 'boys' as const },
-  { age: 10, height: 80, weight: 10.0, head: 45, gender: 'boys' as const },
+interface GrowthData {
+  age: number;
+  height: number;
+  weight: number;
+  head: number;
+  gender: 'boys' | 'girls';
+}
+
+const initialData: GrowthData[] = [
+  { age: 0, height: 50, weight: 3.5, head: 35, gender: 'boys' },
+  { age: 2, height: 58, weight: 5.0, head: 38, gender: 'boys' },
+  { age: 4, height: 65, weight: 6.5, head: 40, gender: 'boys' },
+  { age: 6, height: 70, weight: 7.5, head: 42, gender: 'boys' },
+  { age: 8, height: 75, weight: 9.0, head: 44, gender: 'boys' },
+  { age: 10, height: 80, weight: 10.0, head: 45, gender: 'boys' },
 ];
 
 const GrowthChart = () => {
-  const [data, setData] = useState(initialData);
+  const [data, setData] = useState<GrowthData[]>(initialData);
   const [activeChart, setActiveChart] = useState<'height' | 'weight' | 'head'>('height');
 
   const handleAddMeasurement = (age: string, height: string, weight: string, head: string, gender: 'boys' | 'girls') => {
-    const newMeasurement = {
+    const newMeasurement: GrowthData = {
       age: parseInt(age),
       height: parseFloat(height),
       weight: parseFloat(weight),
