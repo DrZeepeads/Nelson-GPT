@@ -13,6 +13,26 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
+interface Drug {
+  name: string;
+  dose: string;
+}
+
+const nutritionDrugs: Drug[] = [
+  { name: "Oral rehydration salts (ORS)", dose: "50-100 mL/kg over 4-6 hours" },
+  { name: "Folic acid", dose: "1 mg/day" },
+  { name: "Iron sulfate", dose: "3-6 mg/kg/day" },
+  { name: "Vitamin D (Cholecalciferol)", dose: "400-1000 IU/day" },
+  { name: "Vitamin B12 (Cyanocobalamin)", dose: "1000 mcg IM weekly" },
+  { name: "Calcium carbonate", dose: "500-1500 mg/day" },
+  { name: "Magnesium sulfate", dose: "1-2 g IV over 1-2 hours" },
+  { name: "Zinc sulfate", dose: "10-20 mg/day" },
+  { name: "MCT oil", dose: "1-2 g/kg/day" },
+  { name: "Glucose solution (Dextrose)", dose: "2-5 mL/kg" },
+  { name: "Sodium chloride", dose: "1-2 mL/kg" },
+  { name: "L-carnitine", dose: "50-100 mg/kg/day" },
+];
+
 const DrugCalculator = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -20,43 +40,44 @@ const DrugCalculator = () => {
   const [age, setAge] = useState("");
   const [selectedDrug, setSelectedDrug] = useState("");
 
-  // Initial basic drug list - we'll expand this based on your system-wise list
-  const drugs = [
-    {
-      name: "Paracetamol",
-      dosage: "15mg/kg",
-      maxDose: "1000mg",
-      frequency: "Every 4-6 hours",
-    },
-    {
-      name: "Ibuprofen",
-      dosage: "10mg/kg",
-      maxDose: "400mg",
-      frequency: "Every 6-8 hours",
-    },
-  ];
-
   const calculateDose = () => {
     if (!weight || !selectedDrug) {
       toast({
         title: "Missing Information",
-        description: "Please enter weight and select a drug",
+        description: "Please enter weight and select a medication",
         variant: "destructive",
       });
       return;
     }
 
-    const drug = drugs.find((d) => d.name === selectedDrug);
+    const drug = nutritionDrugs.find((d) => d.name === selectedDrug);
     if (!drug) return;
 
-    const dosage = parseFloat(drug.dosage) * parseFloat(weight);
-    const maxDose = parseFloat(drug.maxDose);
-
-    const finalDose = Math.min(dosage, maxDose);
+    let doseInfo = `${drug.name}\n`;
+    doseInfo += `Patient weight: ${weight} kg\n`;
+    
+    // Extract numeric values and units from dose string
+    if (drug.dose.includes("/kg")) {
+      const baseValue = drug.dose.match(/(\d+(-\d+)?)/)?.[0] || "";
+      const unit = drug.dose.match(/[a-zA-Z]+\/kg/)?.[0].replace("/kg", "") || "";
+      
+      if (baseValue.includes("-")) {
+        const [min, max] = baseValue.split("-");
+        doseInfo += `Calculated dose range:\n`;
+        doseInfo += `${(parseFloat(min) * parseFloat(weight)).toFixed(1)} ${unit} - `;
+        doseInfo += `${(parseFloat(max) * parseFloat(weight)).toFixed(1)} ${unit}\n`;
+      } else {
+        const value = parseFloat(baseValue);
+        doseInfo += `Calculated dose: ${(value * parseFloat(weight)).toFixed(1)} ${unit}\n`;
+      }
+    }
+    
+    doseInfo += `\nStandard dosing: ${drug.dose}`;
 
     toast({
       title: "Calculated Dose",
-      description: `${drug.name}: ${finalDose}mg ${drug.frequency}`,
+      description: doseInfo,
+      duration: 5000,
     });
   };
 
@@ -69,7 +90,7 @@ const DrugCalculator = () => {
         >
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <h1 className="text-lg font-semibold ml-2">Pediatric Drug Calculator</h1>
+        <h1 className="text-lg font-semibold ml-2">Nutrition Drug Calculator</h1>
       </div>
 
       <div className="pt-16 p-4 max-w-md mx-auto space-y-6">
@@ -82,6 +103,7 @@ const DrugCalculator = () => {
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               placeholder="Enter weight in kg"
+              className="text-base md:text-sm"
             />
           </div>
 
@@ -93,18 +115,23 @@ const DrugCalculator = () => {
               value={age}
               onChange={(e) => setAge(e.target.value)}
               placeholder="Enter age in months"
+              className="text-base md:text-sm"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="drug">Select Drug</Label>
+            <Label htmlFor="drug">Select Medication</Label>
             <Select onValueChange={setSelectedDrug} value={selectedDrug}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a drug" />
+              <SelectTrigger className="text-base md:text-sm">
+                <SelectValue placeholder="Select a medication" />
               </SelectTrigger>
               <SelectContent>
-                {drugs.map((drug) => (
-                  <SelectItem key={drug.name} value={drug.name}>
+                {nutritionDrugs.map((drug) => (
+                  <SelectItem 
+                    key={drug.name} 
+                    value={drug.name}
+                    className="text-base md:text-sm"
+                  >
                     {drug.name}
                   </SelectItem>
                 ))}
