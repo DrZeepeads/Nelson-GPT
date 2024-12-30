@@ -1,4 +1,4 @@
-import { MessageSquare, Settings, Tool } from "lucide-react";
+import { MessageSquare, Settings, Stethoscope } from "lucide-react";
 
 export const Navigation = () => {
   return (
@@ -9,7 +9,7 @@ export const Navigation = () => {
           <span className="text-sm mt-1">Chat</span>
         </button>
         <button className="flex flex-col items-center text-gray-500">
-          <Tool className="w-6 h-6" />
+          <Stethoscope className="w-6 h-6" />
           <span className="text-sm mt-1">Tools</span>
         </button>
         <button className="flex flex-col items-center text-gray-500">
