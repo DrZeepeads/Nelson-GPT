@@ -5,8 +5,6 @@ interface ExampleQuestionsProps {
 const questions = [
   "What are the red flags for pediatric fever?",
   "Describe developmental milestones 0-12 months",
-  "Common causes of acute abdominal pain in children",
-  "Current vaccination schedule recommendations",
 ];
 
 export const ExampleQuestions = ({ onQuestionClick }: ExampleQuestionsProps) => {
