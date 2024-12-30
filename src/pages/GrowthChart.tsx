@@ -3,6 +3,7 @@ import { GrowthChartHeader } from "@/components/growth-chart/Header";
 import { MeasurementForm } from "@/components/growth-chart/MeasurementForm";
 import { ChartToggle } from "@/components/growth-chart/ChartToggle";
 import { GrowthLineChart } from "@/components/growth-chart/GrowthLineChart";
+import { GrowthInterpretation } from "@/components/growth-chart/GrowthInterpretation";
 
 const initialData = [
   { age: 0, height: 50, weight: 3.5, head: 35 },
@@ -34,6 +35,7 @@ const GrowthChart = () => {
         <MeasurementForm onAddMeasurement={handleAddMeasurement} />
         <ChartToggle activeChart={activeChart} onToggle={setActiveChart} />
         <GrowthLineChart data={data} activeChart={activeChart} />
+        <GrowthInterpretation data={data} activeChart={activeChart} />
       </div>
     </div>
   );
