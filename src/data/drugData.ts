@@ -9,6 +9,11 @@ import { boneDrugs } from "./drug-categories/boneDrugs";
 import { infectiousDrugs } from "./drug-categories/infectiousDrugs";
 import { emergencyDrugs } from "./drug-categories/emergencyDrugs";
 import { bloodDrugs } from "./drug-categories/bloodDrugs";
+import { urologyDrugs } from "./drug-categories/urologyDrugs";
+import { nephrologyDrugs } from "./drug-categories/nephrologyDrugs";
+import { gitDrugs } from "./drug-categories/gitDrugs";
+import { respiratoryDrugs } from "./drug-categories/respiratoryDrugs";
+import { cardiovascularDrugs } from "./drug-categories/cardiovascularDrugs";
 
 export interface Drug {
   name: string;
@@ -27,4 +32,9 @@ export {
   infectiousDrugs,
   emergencyDrugs,
   bloodDrugs,
+  urologyDrugs,
+  nephrologyDrugs,
+  gitDrugs,
+  respiratoryDrugs,
+  cardiovascularDrugs,
 };

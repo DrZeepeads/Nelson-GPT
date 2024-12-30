@@ -18,7 +18,12 @@ export type DrugCategory =
   | "bones"
   | "infectious"
   | "emergency"
-  | "blood";
+  | "blood"
+  | "urology"
+  | "nephrology"
+  | "git"
+  | "respiratory"
+  | "cardiovascular";
 
 interface CategorySelectorProps {
   category: DrugCategory;
@@ -45,6 +50,11 @@ export const CategorySelector = ({ category, onCategoryChange }: CategorySelecto
           <SelectItem value="infectious">Infectious Diseases</SelectItem>
           <SelectItem value="emergency">Emergency Drugs</SelectItem>
           <SelectItem value="blood">Blood</SelectItem>
+          <SelectItem value="urology">Urology</SelectItem>
+          <SelectItem value="nephrology">Nephrology</SelectItem>
+          <SelectItem value="git">Gastrointestinal</SelectItem>
+          <SelectItem value="respiratory">Respiratory</SelectItem>
+          <SelectItem value="cardiovascular">Cardiovascular</SelectItem>
         </SelectContent>
       </Select>
     </div>

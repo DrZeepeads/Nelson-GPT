@@ -18,6 +18,11 @@ import {
   infectiousDrugs,
   emergencyDrugs,
   bloodDrugs,
+  urologyDrugs,
+  nephrologyDrugs,
+  gitDrugs,
+  respiratoryDrugs,
+  cardiovascularDrugs,
   type Drug,
 } from "@/data/drugData";
 
@@ -53,6 +58,16 @@ const DrugCalculator = () => {
         return emergencyDrugs;
       case "blood":
         return bloodDrugs;
+      case "urology":
+        return urologyDrugs;
+      case "nephrology":
+        return nephrologyDrugs;
+      case "git":
+        return gitDrugs;
+      case "respiratory":
+        return respiratoryDrugs;
+      case "cardiovascular":
+        return cardiovascularDrugs;
       default:
         return nutritionDrugs;
     }
