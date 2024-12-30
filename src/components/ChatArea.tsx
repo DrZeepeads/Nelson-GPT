@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ExampleQuestions } from "./ExampleQuestions";
+import { ScrollArea } from "./ui/scroll-area";
+import { Button } from "./ui/button";
+import { Eraser, Download } from "lucide-react";
 
 export const ChatArea = () => {
   const [messages, setMessages] = useState<Array<{
@@ -11,6 +14,13 @@ export const ChatArea = () => {
     timestamp: string;
   }>>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleSendMessage = async (message: string) => {
     const newMessage = {
@@ -36,9 +46,50 @@ export const ChatArea = () => {
     }, 1000);
   };
 
+  const clearChat = () => {
+    setMessages([]);
+  };
+
+  const downloadChat = () => {
+    const chatContent = messages
+      .map((msg) => `[${msg.timestamp}] ${msg.isBot ? "Bot" : "You"}: ${msg.message}`)
+      .join("\n");
+    
+    const blob = new Blob([chatContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `chat-history-${new Date().toISOString().split("T")[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)]">
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex justify-end gap-2 mb-4">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={clearChat}
+          className="text-gray-500"
+        >
+          <Eraser className="w-4 h-4 mr-2" />
+          Clear Chat
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={downloadChat}
+          className="text-gray-500"
+        >
+          <Download className="w-4 h-4 mr-2" />
+          Download Chat
+        </Button>
+      </div>
+      
+      <ScrollArea className="flex-1 pr-4">
         {messages.length === 0 ? (
           <div className="p-4">
             <h2 className="text-xl font-semibold mb-4">Example Questions</h2>
@@ -63,9 +114,11 @@ export const ChatArea = () => {
                 </div>
               </div>
             )}
+            <div ref={scrollRef} />
           </div>
         )}
-      </div>
+      </ScrollArea>
+      
       <div className="mt-auto">
         <ChatInput onSendMessage={handleSendMessage} />
       </div>
