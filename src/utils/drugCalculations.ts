@@ -6,6 +6,7 @@ export const calculateDrugDose = (weight: string, drugDose: string) => {
   if (drugDose.includes("/kg")) {
     const baseValue = drugDose.match(/(\d+(-\d+)?)/)?.[0] || "";
     const unit = drugDose.match(/[a-zA-Z]+\/kg/)?.[0].replace("/kg", "") || "";
+    const frequency = drugDose.match(/every\s+\d+(-\d+)?\s*[a-zA-Z]+/)?.[0] || "";
     
     if (baseValue.includes("-")) {
       const [min, max] = baseValue.split("-");
@@ -14,6 +15,10 @@ export const calculateDrugDose = (weight: string, drugDose: string) => {
       
       doseInfo += `Calculated dose range:\n`;
       doseInfo += `${minCalc} ${unit} - ${maxCalc} ${unit}\n`;
+      
+      if (frequency) {
+        doseInfo += `\nFrequency: ${frequency}\n`;
+      }
       
       // Add per-dose breakdown if multiple daily doses
       if (drugDose.toLowerCase().includes("divided")) {
@@ -27,6 +32,10 @@ export const calculateDrugDose = (weight: string, drugDose: string) => {
       const value = parseFloat(baseValue);
       const totalDose = (value * parseFloat(weight)).toFixed(2);
       doseInfo += `Total daily dose: ${totalDose} ${unit}\n`;
+      
+      if (frequency) {
+        doseInfo += `\nFrequency: ${frequency}\n`;
+      }
       
       // Add per-dose breakdown if multiple daily doses
       if (drugDose.toLowerCase().includes("divided")) {

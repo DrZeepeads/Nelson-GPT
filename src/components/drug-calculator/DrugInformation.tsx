@@ -3,8 +3,9 @@ import { Card } from "@/components/ui/card";
 import { calculateDrugDose } from "@/utils/drugCalculations";
 import { Drug } from "@/data/drugData";
 import { useState } from "react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
+import { ToxicityAlert } from "./ToxicityAlert";
+import { WarningsDisplay } from "./WarningsDisplay";
+import { ClinicalNotes } from "./ClinicalNotes";
 
 interface DrugInformationProps {
   selectedDrug: string;
@@ -33,7 +34,6 @@ export const DrugInformation = ({ selectedDrug, weight, age, drugs }: DrugInform
 
     const calculatedDose = calculateDrugDose(weight, drug.dose);
     
-    // Generate warnings based on weight, age, and drug
     const warnings: string[] = [];
     const clinicalNotes: string[] = [];
     let toxicityRisk: "low" | "medium" | "high" = "low";
@@ -108,48 +108,11 @@ export const DrugInformation = ({ selectedDrug, weight, age, drugs }: DrugInform
             <p>{calculationResult.standardDose}</p>
           </div>
 
-          <div>
-            <h4 className="font-semibold flex items-center gap-2">
-              Toxicity Risk
-              <InfoIcon className="w-4 h-4" />
-            </h4>
-            <Alert variant={
-              calculationResult.toxicityRisk === "high" ? "destructive" :
-              calculationResult.toxicityRisk === "medium" ? "warning" : "default"
-            }>
-              <AlertDescription>
-                {calculationResult.toxicityRisk === "high" ? "High risk - careful monitoring required" :
-                 calculationResult.toxicityRisk === "medium" ? "Medium risk - regular monitoring advised" :
-                 "Low risk - standard monitoring"}
-              </AlertDescription>
-            </Alert>
-          </div>
-
-          {calculationResult.warnings && calculationResult.warnings.length > 0 && (
-            <div>
-              <h4 className="font-semibold text-amber-600">Important Warnings</h4>
-              <ul className="list-disc pl-5 space-y-1">
-                {calculationResult.warnings.map((warning, index) => (
-                  <li key={index} className="text-amber-600">
-                    {warning}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {calculationResult.clinicalNotes && calculationResult.clinicalNotes.length > 0 && (
-            <div>
-              <h4 className="font-semibold text-blue-600">Clinical Notes</h4>
-              <ul className="list-disc pl-5 space-y-1">
-                {calculationResult.clinicalNotes.map((note, index) => (
-                  <li key={index} className="text-blue-600">
-                    {note}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <ToxicityAlert risk={calculationResult.toxicityRisk} />
+          
+          <WarningsDisplay warnings={calculationResult.warnings} />
+          
+          <ClinicalNotes notes={calculationResult.clinicalNotes} />
         </Card>
       )}
     </div>
