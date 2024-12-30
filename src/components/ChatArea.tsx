@@ -48,9 +48,18 @@ export const ChatArea = () => {
     <div className="flex flex-col h-[calc(100vh-8rem)]">
       <ScrollArea className="flex-1 pr-4">
         {messages.length === 0 ? (
-          <div className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Example Questions</h2>
-            <ExampleQuestions onQuestionClick={handleSendMessage} />
+          <div className="space-y-8 p-4">
+            <div className="text-center space-y-2">
+              <h1 className="text-2xl font-bold text-nelson-primary">Welcome to NelsonGPT</h1>
+              <p className="text-gray-600">
+                Your trusted pediatric knowledge assistant powered by Nelson Textbook of Pediatrics.
+                Ask any question about pediatric conditions, treatments, or guidelines.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-nelson-primary">Suggested Questions</h2>
+              <ExampleQuestions onQuestionClick={handleSendMessage} />
+            </div>
           </div>
         ) : (
           <div className="space-y-2">
