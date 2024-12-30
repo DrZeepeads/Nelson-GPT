@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 const initialData = [
   { age: 0, height: 50, weight: 3.5 },
@@ -63,7 +64,6 @@ const GrowthChart = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-10 bg-white shadow-sm">
         <div className="flex items-center h-14 px-4">
           <button 
@@ -76,9 +76,7 @@ const GrowthChart = () => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="pt-16 pb-6 px-4 space-y-6 max-w-md mx-auto">
-        {/* Input Form */}
+      <div className="pt-16 pb-20 px-4 space-y-6 max-w-md mx-auto">
         <div className="bg-white rounded-xl shadow-sm p-4 space-y-4">
           <div className="space-y-3">
             <div>
@@ -123,25 +121,33 @@ const GrowthChart = () => {
           </Button>
         </div>
 
-        {/* Chart Toggle */}
         <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
           <Button
             variant={activeChart === 'height' ? 'default' : 'ghost'}
             onClick={() => setActiveChart('height')}
-            className={`flex-1 ${activeChart === 'height' ? 'bg-white shadow-sm' : ''}`}
+            className={cn(
+              'flex-1',
+              activeChart === 'height' 
+                ? 'bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]/90' 
+                : 'hover:bg-gray-200'
+            )}
           >
             Height Chart
           </Button>
           <Button
             variant={activeChart === 'weight' ? 'default' : 'ghost'}
             onClick={() => setActiveChart('weight')}
-            className={`flex-1 ${activeChart === 'weight' ? 'bg-white shadow-sm' : ''}`}
+            className={cn(
+              'flex-1',
+              activeChart === 'weight' 
+                ? 'bg-[#16A34A] text-white hover:bg-[#16A34A]/90' 
+                : 'hover:bg-gray-200'
+            )}
           >
             Weight Chart
           </Button>
         </div>
 
-        {/* Chart */}
         <div className="bg-white p-4 rounded-xl shadow-sm">
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -183,18 +189,18 @@ const GrowthChart = () => {
                   <Line 
                     type="monotone" 
                     dataKey="height" 
-                    stroke="#2563eb" 
+                    stroke="#0EA5E9" 
                     strokeWidth={2}
-                    dot={{ fill: '#2563eb', strokeWidth: 2 }}
+                    dot={{ fill: '#0EA5E9', strokeWidth: 2 }}
                     name="Height (cm)" 
                   />
                 ) : (
                   <Line 
                     type="monotone" 
                     dataKey="weight" 
-                    stroke="#16a34a" 
+                    stroke="#16A34A" 
                     strokeWidth={2}
-                    dot={{ fill: '#16a34a', strokeWidth: 2 }}
+                    dot={{ fill: '#16A34A', strokeWidth: 2 }}
                     name="Weight (kg)" 
                   />
                 )}
