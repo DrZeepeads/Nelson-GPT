@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const initialData = [
   { age: 0, height: 50, weight: 3.5 },
@@ -62,94 +62,130 @@ const GrowthChart = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-14 pb-16">
-      <div className="px-4 py-2 bg-white shadow-sm flex items-center">
-        <button 
-          onClick={() => navigate('/tools')}
-          className="p-2 hover:bg-gray-100 rounded-full"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-lg font-semibold ml-2">Growth Chart</h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 z-10 bg-white shadow-sm">
+        <div className="flex items-center h-14 px-4">
+          <button 
+            onClick={() => navigate('/tools')}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-lg font-semibold ml-2">Growth Chart</h1>
+        </div>
       </div>
 
-      <div className="p-4 space-y-6">
-        <div className="bg-white p-4 rounded-lg shadow space-y-4">
-          <div className="grid gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="age">Age (months)</Label>
+      {/* Main Content */}
+      <div className="pt-16 pb-6 px-4 space-y-6 max-w-md mx-auto">
+        {/* Input Form */}
+        <div className="bg-white rounded-xl shadow-sm p-4 space-y-4">
+          <div className="space-y-3">
+            <div>
+              <Label htmlFor="age" className="text-sm font-medium text-gray-700">Age (months)</Label>
               <Input
                 id="age"
                 type="number"
                 value={age}
                 onChange={(e) => setAge(e.target.value)}
                 placeholder="Enter age in months"
+                className="mt-1"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="height">Height (cm)</Label>
+            <div>
+              <Label htmlFor="height" className="text-sm font-medium text-gray-700">Height (cm)</Label>
               <Input
                 id="height"
                 type="number"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
                 placeholder="Enter height in cm"
+                className="mt-1"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg)</Label>
+            <div>
+              <Label htmlFor="weight" className="text-sm font-medium text-gray-700">Weight (kg)</Label>
               <Input
                 id="weight"
                 type="number"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
                 placeholder="Enter weight in kg"
+                className="mt-1"
               />
             </div>
-            <Button onClick={handleAddMeasurement}>Add Measurement</Button>
           </div>
+          <Button 
+            onClick={handleAddMeasurement}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            Add Measurement
+          </Button>
         </div>
 
-        <div className="flex gap-2">
+        {/* Chart Toggle */}
+        <div className="flex gap-2 p-1 bg-gray-100 rounded-lg">
           <Button
-            variant={activeChart === 'height' ? 'default' : 'outline'}
+            variant={activeChart === 'height' ? 'default' : 'ghost'}
             onClick={() => setActiveChart('height')}
-            className="flex-1"
+            className={`flex-1 ${activeChart === 'height' ? 'bg-white shadow-sm' : ''}`}
           >
             Height Chart
           </Button>
           <Button
-            variant={activeChart === 'weight' ? 'default' : 'outline'}
+            variant={activeChart === 'weight' ? 'default' : 'ghost'}
             onClick={() => setActiveChart('weight')}
-            className="flex-1"
+            className={`flex-1 ${activeChart === 'weight' ? 'bg-white shadow-sm' : ''}`}
           >
             Weight Chart
           </Button>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow">
+        {/* Chart */}
+        <div className="bg-white p-4 rounded-xl shadow-sm">
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis 
                   dataKey="age" 
-                  label={{ value: 'Age (months)', position: 'bottom' }} 
+                  label={{ 
+                    value: 'Age (months)', 
+                    position: 'bottom',
+                    style: { fontSize: '12px' }
+                  }}
+                  tick={{ fontSize: 12 }}
                 />
                 <YAxis 
                   label={{ 
                     value: activeChart === 'height' ? 'Height (cm)' : 'Weight (kg)', 
                     angle: -90, 
-                    position: 'left' 
-                  }} 
+                    position: 'left',
+                    style: { fontSize: '12px' }
+                  }}
+                  tick={{ fontSize: 12 }}
                 />
-                <Tooltip />
-                <Legend />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'white',
+                    border: '1px solid #f0f0f0',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }}
+                />
+                <Legend 
+                  wrapperStyle={{
+                    fontSize: '12px',
+                    paddingTop: '10px'
+                  }}
+                />
                 {activeChart === 'height' ? (
                   <Line 
                     type="monotone" 
                     dataKey="height" 
                     stroke="#2563eb" 
+                    strokeWidth={2}
+                    dot={{ fill: '#2563eb', strokeWidth: 2 }}
                     name="Height (cm)" 
                   />
                 ) : (
@@ -157,6 +193,8 @@ const GrowthChart = () => {
                     type="monotone" 
                     dataKey="weight" 
                     stroke="#16a34a" 
+                    strokeWidth={2}
+                    dot={{ fill: '#16a34a', strokeWidth: 2 }}
                     name="Weight (kg)" 
                   />
                 )}
