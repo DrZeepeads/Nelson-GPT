@@ -69,7 +69,6 @@ export const metabolicDrugs: Drug[] = [
   { name: "Ketogenic diet (therapy)", dose: "Managed by dietitian" },
   { name: "Ursodeoxycholic acid", dose: "10-15 mg/kg/day" },
   { name: "Pancreatic enzymes", dose: "500-2500 lipase units/kg/meal" },
-  { name: "MCT oil", dose: "1-2 g/kg/day" },
 ];
 
 export const fluidElectrolyteDrugs: Drug[] = [
@@ -88,4 +87,58 @@ export const fluidElectrolyteDrugs: Drug[] = [
   { name: "Phosphate", dose: "0.5-1 mmol/kg IV over 6-12 hours" },
   { name: "Insulin with dextrose", dose: "0.1 units/kg IV with dextrose" },
   { name: "Mannitol", dose: "0.25-0.5 g/kg IV over 20-30 min" },
+];
+
+export const geneticDrugs: Drug[] = [
+  { name: "Enzyme replacement therapy (ERT)", dose: "Dosed based on specific genetic condition (e.g., Gaucher disease: 30-60 units/kg IV every 2 weeks)" },
+  { name: "Hydroxyurea", dose: "15-25 mg/kg/day orally (for sickle cell disease)" },
+  { name: "L-arginine", dose: "100-200 mg/kg/day orally (for urea cycle disorders)" },
+  { name: "Sapropterin", dose: "10-20 mg/kg/day orally (for phenylketonuria)" },
+  { name: "Cysteamine", dose: "60-90 mg/kg/day orally in divided doses (for nephropathic cystinosis)" },
+  { name: "Alglucosidase alfa", dose: "20 mg/kg IV every 2 weeks (for Pompe disease)" },
+  { name: "Deferasirox", dose: "20-40 mg/kg/day orally (for iron overload in thalassemia)" },
+  { name: "Pegloticase", dose: "8 mg IV every 2 weeks (for severe gout in metabolic disorders)" },
+  { name: "Nitisinone", dose: "1 mg/kg/day orally (for hereditary tyrosinemia type 1)" },
+  { name: "Vitamin B6 (Pyridoxine)", dose: "5-10 mg/kg/day orally (for pyridoxine-dependent epilepsy)" },
+  { name: "Betaine", dose: "6-9 g/day orally in divided doses (for homocystinuria)" },
+  { name: "Carnitine", dose: "50-100 mg/kg/day orally (for primary carnitine deficiency)" },
+  { name: "Biotin", dose: "5-20 mg/day orally (for biotinidase deficiency)" },
+  { name: "Ursodeoxycholic acid", dose: "10-15 mg/kg/day orally (for cholestatic liver disease in genetic syndromes)" },
+  { name: "Thiamine", dose: "10-50 mg/day orally (for thiamine-responsive metabolic diseases)" }
+];
+
+export const skinDrugs: Drug[] = [
+  { name: "Hydrocortisone cream", dose: "Apply 1-2 times daily (for eczema)" },
+  { name: "Betamethasone", dose: "Apply 1-2 times daily (for psoriasis)" },
+  { name: "Mupirocin", dose: "Apply 2-3 times daily (for bacterial skin infections)" },
+  { name: "Clotrimazole", dose: "Apply 2-3 times daily (for fungal infections)" },
+  { name: "Aciclovir cream", dose: "Apply 5 times daily (for herpes simplex)" },
+  { name: "Tacrolimus", dose: "Apply 0.03-0.1% ointment twice daily (for atopic dermatitis)" },
+  { name: "Permethrin", dose: "Apply overnight and wash off (for scabies)" },
+  { name: "Loratadine", dose: "5-10 mg orally once daily (for urticaria)" },
+  { name: "Cetirizine", dose: "5-10 mg orally once daily (for allergies)" },
+  { name: "Doxycycline", dose: "2.2 mg/kg/dose daily (for acne)" },
+  { name: "Isotretinoin", dose: "0.5-1 mg/kg/day in 2 doses (for severe acne)" },
+  { name: "Calamine lotion", dose: "Apply as needed (for itching)" },
+  { name: "Silver sulfadiazine", dose: "Apply 1-2 times daily (for burns)" },
+  { name: "Fluconazole", dose: "3-6 mg/kg/day orally (for fungal skin infections)" },
+  { name: "Topical antibiotics (general)", dose: "Apply 2-3 times daily (for bacterial skin infections)" }
+];
+
+export const boneDrugs: Drug[] = [
+  { name: "Calcium carbonate", dose: "500-1500 mg/day orally (for hypocalcemia)" },
+  { name: "Vitamin D (Cholecalciferol)", dose: "400-1000 IU/day orally (for rickets)" },
+  { name: "Alendronate", dose: "5-10 mg/day orally (for osteoporosis)" },
+  { name: "Zoledronic acid", dose: "0.05 mg/kg IV once yearly (for osteogenesis imperfecta)" },
+  { name: "Teriparatide", dose: "20 mcg subcutaneously daily (for severe osteoporosis)" },
+  { name: "Pamidronate", dose: "1 mg/kg IV over 4 hours every 3-4 months (for bone disorders)" },
+  { name: "Ibuprofen", dose: "5-10 mg/kg/dose every 6-8 hours (for bone pain)" },
+  { name: "Prednisolone", dose: "1-2 mg/kg/day orally (for inflammatory bone diseases)" },
+  { name: "Methotrexate", dose: "10-25 mg/m² once weekly (for juvenile idiopathic arthritis)" },
+  { name: "Etanercept", dose: "0.4 mg/kg subcutaneously twice weekly (for juvenile arthritis)" },
+  { name: "Denosumab", dose: "1 mg/kg subcutaneously every 6 months (for bone metastasis)" },
+  { name: "Raloxifene", dose: "60 mg/day orally (for osteoporosis)" },
+  { name: "Hydroxychloroquine", dose: "3-6 mg/kg/day orally (for lupus with bone involvement)" },
+  { name: "Calcitonin", dose: "50-100 units subcutaneously daily (for hypercalcemia)" },
+  { name: "Bisphosphonates (general)", dose: "10-50 mg orally weekly (for osteoporosis)" }
 ];

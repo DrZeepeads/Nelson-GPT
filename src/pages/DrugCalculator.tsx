@@ -12,6 +12,9 @@ import {
   rheumaticDrugs,
   metabolicDrugs,
   fluidElectrolyteDrugs,
+  geneticDrugs,
+  skinDrugs,
+  boneDrugs,
   type Drug,
 } from "@/data/drugData";
 
@@ -35,6 +38,12 @@ const DrugCalculator = () => {
         return metabolicDrugs;
       case "fluid-electrolyte":
         return fluidElectrolyteDrugs;
+      case "genetic":
+        return geneticDrugs;
+      case "skin":
+        return skinDrugs;
+      case "bones":
+        return boneDrugs;
       default:
         return nutritionDrugs;
     }
