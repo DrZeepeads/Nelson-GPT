@@ -16,6 +16,8 @@ export const calculateDrugDose = (weight: string, drugDose: string) => {
       const value = parseFloat(baseValue);
       doseInfo += `Calculated dose: ${(value * parseFloat(weight)).toFixed(1)} ${unit}\n`;
     }
+  } else {
+    doseInfo += "Fixed dose medication (not weight-based)\n";
   }
   
   return doseInfo;
