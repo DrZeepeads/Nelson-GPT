@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { CategorySelector, type DrugCategory } from "@/components/drug-calculator/CategorySelector";
 import { PatientInfoForm } from "@/components/drug-calculator/PatientInfoForm";
 import { DrugSelector } from "@/components/drug-calculator/DrugSelector";
+import { DrugInformation } from "@/components/drug-calculator/DrugInformation";
 import {
   nutritionDrugs,
   endocrineDrugs,
@@ -23,96 +22,35 @@ import {
   gitDrugs,
   respiratoryDrugs,
   cardiovascularDrugs,
-  type Drug,
 } from "@/data/drugData";
 
 const DrugCalculator = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [selectedDrug, setSelectedDrug] = useState("");
   const [category, setCategory] = useState<DrugCategory>("nutrition");
 
-  const getDrugsByCategory = (category: DrugCategory): Drug[] => {
+  const getDrugsByCategory = (category: DrugCategory) => {
     switch (category) {
-      case "nutrition":
-        return nutritionDrugs;
-      case "endocrine":
-        return endocrineDrugs;
-      case "rheumatic":
-        return rheumaticDrugs;
-      case "metabolic":
-        return metabolicDrugs;
-      case "fluid-electrolyte":
-        return fluidElectrolyteDrugs;
-      case "genetic":
-        return geneticDrugs;
-      case "skin":
-        return skinDrugs;
-      case "bones":
-        return boneDrugs;
-      case "infectious":
-        return infectiousDrugs;
-      case "emergency":
-        return emergencyDrugs;
-      case "blood":
-        return bloodDrugs;
-      case "urology":
-        return urologyDrugs;
-      case "nephrology":
-        return nephrologyDrugs;
-      case "git":
-        return gitDrugs;
-      case "respiratory":
-        return respiratoryDrugs;
-      case "cardiovascular":
-        return cardiovascularDrugs;
-      default:
-        return nutritionDrugs;
+      case "nutrition": return nutritionDrugs;
+      case "endocrine": return endocrineDrugs;
+      case "rheumatic": return rheumaticDrugs;
+      case "metabolic": return metabolicDrugs;
+      case "fluid-electrolyte": return fluidElectrolyteDrugs;
+      case "genetic": return geneticDrugs;
+      case "skin": return skinDrugs;
+      case "bones": return boneDrugs;
+      case "infectious": return infectiousDrugs;
+      case "emergency": return emergencyDrugs;
+      case "blood": return bloodDrugs;
+      case "urology": return urologyDrugs;
+      case "nephrology": return nephrologyDrugs;
+      case "git": return gitDrugs;
+      case "respiratory": return respiratoryDrugs;
+      case "cardiovascular": return cardiovascularDrugs;
+      default: return nutritionDrugs;
     }
-  };
-
-  const calculateDose = () => {
-    if (!weight || !selectedDrug) {
-      toast({
-        title: "Missing Information",
-        description: "Please enter weight and select a medication",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const drug = getDrugsByCategory(category).find(
-      (d) => d.name === selectedDrug
-    );
-    if (!drug) return;
-
-    let doseInfo = `${drug.name}\n`;
-    doseInfo += `Patient weight: ${weight} kg\n`;
-    
-    if (drug.dose.includes("/kg")) {
-      const baseValue = drug.dose.match(/(\d+(-\d+)?)/)?.[0] || "";
-      const unit = drug.dose.match(/[a-zA-Z]+\/kg/)?.[0].replace("/kg", "") || "";
-      
-      if (baseValue.includes("-")) {
-        const [min, max] = baseValue.split("-");
-        doseInfo += `Calculated dose range:\n`;
-        doseInfo += `${(parseFloat(min) * parseFloat(weight)).toFixed(1)} ${unit} - `;
-        doseInfo += `${(parseFloat(max) * parseFloat(weight)).toFixed(1)} ${unit}\n`;
-      } else {
-        const value = parseFloat(baseValue);
-        doseInfo += `Calculated dose: ${(value * parseFloat(weight)).toFixed(1)} ${unit}\n`;
-      }
-    }
-    
-    doseInfo += `\nStandard dosing: ${drug.dose}`;
-
-    toast({
-      title: "Calculated Dose",
-      description: doseInfo,
-      duration: 5000,
-    });
   };
 
   return (
@@ -150,12 +88,11 @@ const DrugCalculator = () => {
             drugs={getDrugsByCategory(category)}
           />
 
-          <Button
-            onClick={calculateDose}
-            className="w-full bg-blue-600 hover:bg-blue-700"
-          >
-            Calculate Dose
-          </Button>
+          <DrugInformation
+            selectedDrug={selectedDrug}
+            weight={weight}
+            drugs={getDrugsByCategory(category)}
+          />
         </div>
       </div>
     </div>
