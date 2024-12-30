@@ -3,8 +3,6 @@ import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ExampleQuestions } from "./ExampleQuestions";
 import { ScrollArea } from "./ui/scroll-area";
-import { Button } from "./ui/button";
-import { Eraser, Download } from "lucide-react";
 
 export const ChatArea = () => {
   const [messages, setMessages] = useState<Array<{
@@ -46,49 +44,8 @@ export const ChatArea = () => {
     }, 1000);
   };
 
-  const clearChat = () => {
-    setMessages([]);
-  };
-
-  const downloadChat = () => {
-    const chatContent = messages
-      .map((msg) => `[${msg.timestamp}] ${msg.isBot ? "Bot" : "You"}: ${msg.message}`)
-      .join("\n");
-    
-    const blob = new Blob([chatContent], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `chat-history-${new Date().toISOString().split("T")[0]}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)]">
-      <div className="flex justify-end gap-2 mb-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={clearChat}
-          className="text-gray-500"
-        >
-          <Eraser className="w-4 h-4 mr-2" />
-          Clear Chat
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={downloadChat}
-          className="text-gray-500"
-        >
-          <Download className="w-4 h-4 mr-2" />
-          Download Chat
-        </Button>
-      </div>
-      
       <ScrollArea className="flex-1 pr-4">
         {messages.length === 0 ? (
           <div className="p-4">
