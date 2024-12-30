@@ -1,4 +1,4 @@
-import { LineChart, ArrowLeft } from "lucide-react";
+import { LineChart, Calculator, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Tools = () => {
@@ -16,15 +16,26 @@ const Tools = () => {
         <h1 className="text-lg font-semibold ml-2">Tools</h1>
       </div>
 
-      <div className="p-4">
+      <div className="p-4 space-y-4">
         <button 
           onClick={() => navigate('/growth-chart')}
           className="w-full flex items-center p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
         >
-          <LineChart className="w-6 h-6 text-nelson-accent" />
+          <LineChart className="w-6 h-6 text-blue-500" />
           <div className="ml-3 text-left">
             <h3 className="font-medium">Growth Chart</h3>
             <p className="text-sm text-gray-500">Track pediatric growth percentiles</p>
+          </div>
+        </button>
+
+        <button 
+          onClick={() => navigate('/drug-calculator')}
+          className="w-full flex items-center p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+        >
+          <Calculator className="w-6 h-6 text-green-500" />
+          <div className="ml-3 text-left">
+            <h3 className="font-medium">Drug Calculator</h3>
+            <p className="text-sm text-gray-500">Calculate pediatric medication doses</p>
           </div>
         </button>
       </div>
