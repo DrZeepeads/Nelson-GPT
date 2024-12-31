@@ -19,22 +19,16 @@ serve(async (req) => {
     // Check if this is a webhook update from Telegram
     if (req.method === 'POST' && req.headers.get('content-type') === 'application/json') {
       const update = await req.json();
+      console.log('Received Telegram update:', JSON.stringify(update));
       
       // Handle /start command
       if (update.message?.text === '/start') {
         const chatId = update.message.chat.id;
-        const welcomeMessage = `Welcome to NelsonGPT! 👋
+        console.log('Handling /start command for chat ID:', chatId);
+        
+        const welcomeMessage = `Welcome to NelsonGPT! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account. This will allow you to receive your chat history and updates directly here in Telegram.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/status - Check connection status`;
 
-Your Chat ID is: ${chatId}
-
-Please copy this Chat ID and paste it in the web application to connect your Telegram account. This will allow you to receive your chat history and updates directly here in Telegram.
-
-Available commands:
-/start - Show this welcome message
-/help - Show available commands
-/status - Check connection status`;
-
-        await fetch(`${telegramApi}/sendMessage`, {
+        const response = await fetch(`${telegramApi}/sendMessage`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -46,6 +40,13 @@ Available commands:
           }),
         });
         
+        const result = await response.json();
+        console.log('Telegram API response for /start:', JSON.stringify(result));
+        
+        if (!result.ok) {
+          throw new Error(`Failed to send welcome message: ${result.description}`);
+        }
+        
         return new Response(JSON.stringify({ ok: true }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -54,16 +55,9 @@ Available commands:
       // Handle /help command
       if (update.message?.text === '/help') {
         const chatId = update.message.chat.id;
-        const helpMessage = `Available commands:
-/start - Show welcome message and your Chat ID
-/help - Show this help message
-/status - Check connection status
-
-To use this bot:
-1. Copy your Chat ID from the /start command
-2. Paste it in the web application
-3. Test the connection
-4. You'll receive your chat history here automatically`;
+        console.log('Handling /help command for chat ID:', chatId);
+        
+        const helpMessage = `Available commands:\n/start - Show welcome message and your Chat ID\n/help - Show this help message\n/status - Check connection status\n\nTo use this bot:\n1. Copy your Chat ID from the /start command\n2. Paste it in the web application\n3. Test the connection\n4. You'll receive your chat history here automatically`;
 
         await fetch(`${telegramApi}/sendMessage`, {
           method: 'POST',
@@ -85,10 +79,9 @@ To use this bot:
       // Handle /status command
       if (update.message?.text === '/status') {
         const chatId = update.message.chat.id;
-        const statusMessage = `Bot Status: 🟢 Online
-Chat ID: ${chatId}
-
-Your messages from NelsonGPT will be forwarded to this chat automatically.`;
+        console.log('Handling /status command for chat ID:', chatId);
+        
+        const statusMessage = `Bot Status: 🟢 Online\nChat ID: ${chatId}\n\nYour messages from NelsonGPT will be forwarded to this chat automatically.`;
 
         await fetch(`${telegramApi}/sendMessage`, {
           method: 'POST',
@@ -110,7 +103,7 @@ Your messages from NelsonGPT will be forwarded to this chat automatically.`;
 
     // Handle regular message sending from the web application
     const { message, chatId } = await req.json();
-    console.log('Received request:', { message, chatId });
+    console.log('Sending message to Telegram:', { message, chatId });
 
     // Send message to Telegram
     const response = await fetch(`${telegramApi}/sendMessage`, {
