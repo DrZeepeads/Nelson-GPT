@@ -3,6 +3,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from './ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { ExternalLink } from 'lucide-react';
 
 export const TelegramConnect = () => {
   const [chatId, setChatId] = useState('');
@@ -81,29 +82,39 @@ export const TelegramConnect = () => {
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-sm border">
+    <div className="p-4 bg-white rounded-lg shadow-sm border space-y-6">
       <h3 className="text-lg font-semibold mb-4">Connect to Telegram</h3>
+      
       <div className="space-y-4">
-        <div>
-          <p className="text-sm text-gray-600 mb-2">
-            1. Start a chat with your bot on Telegram
+        <div className="space-y-2">
+          <p className="text-sm text-gray-600">
+            Follow these steps to connect your Telegram:
           </p>
-          <p className="text-sm text-gray-600 mb-2">
-            2. Send /start to the bot
-          </p>
-          <p className="text-sm text-gray-600 mb-2">
-            3. Visit{' '}
-            <a
-              href="https://api.telegram.org/bot[YOUR_BOT_TOKEN]/getUpdates"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              this link
-            </a>{' '}
-            to get your Chat ID
-          </p>
+          <ol className="list-decimal list-inside space-y-3 text-sm text-gray-600">
+            <li className="flex items-start gap-2">
+              <span>Open Telegram and start a chat with</span>
+              <a
+                href="https://t.me/Peadiatric_Bot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline inline-flex items-center gap-1"
+              >
+                @Peadiatric_Bot
+                <ExternalLink className="h-4 w-4" />
+              </a>
+            </li>
+            <li>
+              Send the command <code className="bg-gray-100 px-1 rounded">/start</code> to the bot
+            </li>
+            <li>
+              The bot will reply with your Chat ID - copy this number
+            </li>
+            <li>
+              Paste your Chat ID below and click "Test Connection"
+            </li>
+          </ol>
         </div>
+
         <div className="flex gap-2">
           <Input
             type="text"
@@ -112,7 +123,11 @@ export const TelegramConnect = () => {
             onChange={(e) => setChatId(e.target.value)}
             className="flex-1"
           />
-          <Button onClick={sendTestMessage} disabled={!chatId}>
+          <Button 
+            onClick={sendTestMessage} 
+            disabled={!chatId}
+            className="whitespace-nowrap"
+          >
             Test Connection
           </Button>
         </div>
