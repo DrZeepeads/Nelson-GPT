@@ -1,24 +1,43 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const telegramToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
-const telegramApi = `https://api.telegram.org/bot${telegramToken}`;
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    console.log('Setting up bot commands...');
-    console.log('Telegram API URL:', telegramApi.replace(telegramToken!, '****')); // Log API URL without exposing token
-    
     if (!telegramToken) {
-      throw new Error('TELEGRAM_BOT_TOKEN is not configured');
+      console.error('TELEGRAM_BOT_TOKEN is not configured');
+      return new Response(
+        JSON.stringify({
+          error: 'TELEGRAM_BOT_TOKEN is not configured in environment variables',
+          ok: false
+        }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    const telegramApi = `https://api.telegram.org/bot${telegramToken}`;
+    console.log('Setting up bot commands...');
+    
+    // First verify the bot token is valid
+    const verifyResponse = await fetch(`${telegramApi}/getMe`);
+    const verifyResult = await verifyResponse.json();
+    
+    console.log('Bot verification response:', verifyResult);
+    
+    if (!verifyResult.ok) {
+      throw new Error(`Invalid bot token: ${verifyResult.description}`);
     }
 
     const commands = [
@@ -36,17 +55,6 @@ serve(async (req) => {
       },
     ];
 
-    // First, verify the bot token is valid by calling getMe
-    const verifyResponse = await fetch(`${telegramApi}/getMe`);
-    const verifyResult = await verifyResponse.json();
-    
-    console.log('Bot verification response:', verifyResult);
-    
-    if (!verifyResult.ok) {
-      throw new Error(`Invalid bot token: ${verifyResult.description}`);
-    }
-
-    // If verification successful, proceed with setting commands
     const response = await fetch(`${telegramApi}/setMyCommands`, {
       method: 'POST',
       headers: {
@@ -66,13 +74,14 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error setting up commands:', error);
+    console.error('Error in setup-telegram-commands:', error);
     return new Response(
       JSON.stringify({ 
         error: error.message,
         ok: false,
         description: error.message 
-      }), {
+      }),
+      {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
