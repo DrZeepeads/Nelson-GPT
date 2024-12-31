@@ -22,7 +22,6 @@ export const ReferenceLines = ({ referenceData }: ReferenceLinesProps) => {
         strokeDasharray="3 3"
         dot={false}
         name="+3 SD"
-        connectNulls
       />
       <Line 
         data={referenceData}
@@ -32,7 +31,6 @@ export const ReferenceLines = ({ referenceData }: ReferenceLinesProps) => {
         strokeDasharray="3 3"
         dot={false}
         name="+2 SD"
-        connectNulls
       />
       <Line 
         data={referenceData}
@@ -42,7 +40,6 @@ export const ReferenceLines = ({ referenceData }: ReferenceLinesProps) => {
         strokeDasharray="3 3"
         dot={false}
         name="Median"
-        connectNulls
       />
       <Line 
         data={referenceData}
@@ -52,7 +49,6 @@ export const ReferenceLines = ({ referenceData }: ReferenceLinesProps) => {
         strokeDasharray="3 3"
         dot={false}
         name="-2 SD"
-        connectNulls
       />
       <Line 
         data={referenceData}
@@ -62,7 +58,6 @@ export const ReferenceLines = ({ referenceData }: ReferenceLinesProps) => {
         strokeDasharray="3 3"
         dot={false}
         name="-3 SD"
-        connectNulls
       />
     </>
   );
