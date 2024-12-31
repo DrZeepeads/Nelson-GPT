@@ -19,7 +19,13 @@ const formatTimestamp = () => {
 };
 
 const sendTelegramMessage = async (chatId: number | string, text: string) => {
+  if (!telegramToken) {
+    console.error('TELEGRAM_BOT_TOKEN is not set');
+    throw new Error('TELEGRAM_BOT_TOKEN is not set');
+  }
+
   console.log('Attempting to send message to Telegram:', { chatId, text });
+  
   try {
     const response = await fetch(`${telegramApi}/sendMessage`, {
       method: 'POST',
