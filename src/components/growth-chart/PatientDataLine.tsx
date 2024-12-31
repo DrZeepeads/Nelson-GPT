@@ -23,7 +23,7 @@ export const PatientDataLine = ({ data, activeChart, lineColor }: PatientDataLin
   return (
     <Line 
       data={data}
-      type="basis" 
+      type="monotone" 
       dataKey={key} 
       stroke={lineColor} 
       strokeWidth={3}
