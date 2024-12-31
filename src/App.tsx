@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Tools from "./pages/Tools";
 import ApgarCalculator from "./pages/ApgarCalculator";
 import BmiCalculator from "./pages/BmiCalculator";
+import DrugCalculator from "./pages/DrugCalculator";
+import GrowthChart from "./pages/GrowthChart";
 
 function App() {
   const queryClient = new QueryClient({
@@ -31,6 +33,8 @@ function App() {
               <Route path="/tools" element={<Tools />} />
               <Route path="/apgar-calculator" element={<ApgarCalculator />} />
               <Route path="/bmi-calculator" element={<BmiCalculator />} />
+              <Route path="/drug-calculator" element={<DrugCalculator />} />
+              <Route path="/growth-chart" element={<GrowthChart />} />
             </Routes>
           </Router>
         </TooltipProvider>
