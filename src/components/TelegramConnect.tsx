@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { useToast } from './ui/use-toast';
@@ -7,6 +7,20 @@ import { supabase } from '@/integrations/supabase/client';
 export const TelegramConnect = () => {
   const [chatId, setChatId] = useState('');
   const { toast } = useToast();
+
+  useEffect(() => {
+    setupBotCommands();
+  }, []);
+
+  const setupBotCommands = async () => {
+    try {
+      const { error } = await supabase.functions.invoke('setup-telegram-commands');
+      if (error) throw error;
+      console.log('Bot commands set up successfully');
+    } catch (error) {
+      console.error('Error setting up bot commands:', error);
+    }
+  };
 
   const sendTestMessage = async () => {
     try {
