@@ -62,8 +62,8 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
   }));
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-sm">
-      <div className="h-[400px]">
+    <div className="bg-white p-6 rounded-xl shadow-md">
+      <div className="h-[450px]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -72,9 +72,10 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               label={{ 
                 value: 'Age (months)', 
                 position: 'bottom',
-                style: { fontSize: '12px' }
+                style: { fontSize: '12px', fill: '#64748b' }
               }}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: '#64748b' }}
+              stroke="#cbd5e1"
               allowDuplicatedCategory={false}
             />
             <YAxis 
@@ -82,22 +83,24 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
                 value: getYAxisLabel(), 
                 angle: -90, 
                 position: 'left',
-                style: { fontSize: '12px' }
+                style: { fontSize: '12px', fill: '#64748b' }
               }}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: '#64748b' }}
+              stroke="#cbd5e1"
             />
             <Tooltip 
               contentStyle={{ 
                 backgroundColor: 'white',
-                border: '1px solid #f0f0f0',
+                border: '1px solid #e2e8f0',
                 borderRadius: '8px',
-                fontSize: '12px'
+                fontSize: '12px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}
             />
             <Legend 
               wrapperStyle={{
                 fontSize: '12px',
-                paddingTop: '10px'
+                paddingTop: '15px'
               }}
             />
             
@@ -106,7 +109,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               data={referenceData}
               type="monotone" 
               dataKey="SD3" 
-              stroke="#ddd"
+              stroke="#e2e8f0"
               strokeDasharray="3 3"
               dot={false}
               name="+3 SD"
@@ -115,7 +118,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               data={referenceData}
               type="monotone" 
               dataKey="SD2" 
-              stroke="#ddd"
+              stroke="#e2e8f0"
               strokeDasharray="3 3"
               dot={false}
               name="+2 SD"
@@ -124,7 +127,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               data={referenceData}
               type="monotone" 
               dataKey="SD0" 
-              stroke="#666"
+              stroke="#94a3b8"
               strokeDasharray="3 3"
               dot={false}
               name="Median"
@@ -133,7 +136,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               data={referenceData}
               type="monotone" 
               dataKey="SD2neg" 
-              stroke="#ddd"
+              stroke="#e2e8f0"
               strokeDasharray="3 3"
               dot={false}
               name="-2 SD"
@@ -142,7 +145,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               data={referenceData}
               type="monotone" 
               dataKey="SD3neg" 
-              stroke="#ddd"
+              stroke="#e2e8f0"
               strokeDasharray="3 3"
               dot={false}
               name="-3 SD"
@@ -155,8 +158,9 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
                 type="monotone" 
                 dataKey="height" 
                 stroke={getLineColor()} 
-                strokeWidth={2}
-                dot={{ fill: getLineColor(), strokeWidth: 2 }}
+                strokeWidth={3}
+                dot={{ fill: getLineColor(), strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, strokeWidth: 2 }}
                 name="Height (cm)" 
               />
             )}
@@ -166,8 +170,9 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
                 type="monotone" 
                 dataKey="weight" 
                 stroke={getLineColor()} 
-                strokeWidth={2}
-                dot={{ fill: getLineColor(), strokeWidth: 2 }}
+                strokeWidth={3}
+                dot={{ fill: getLineColor(), strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, strokeWidth: 2 }}
                 name="Weight (kg)" 
               />
             )}
@@ -177,8 +182,9 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
                 type="monotone" 
                 dataKey="head" 
                 stroke={getLineColor()} 
-                strokeWidth={2}
-                dot={{ fill: getLineColor(), strokeWidth: 2 }}
+                strokeWidth={3}
+                dot={{ fill: getLineColor(), strokeWidth: 2, r: 4 }}
+                activeDot={{ r: 6, strokeWidth: 2 }}
                 name="Head Circ. (cm)" 
               />
             )}

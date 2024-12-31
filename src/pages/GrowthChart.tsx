@@ -46,11 +46,17 @@ const GrowthChart = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <GrowthChartHeader />
-      <div className="pt-16 pb-20 px-4 space-y-6 max-w-md mx-auto">
-        <MeasurementForm onAddMeasurement={handleAddMeasurement} />
-        <ChartToggle activeChart={activeChart} onToggle={setActiveChart} />
-        <GrowthLineChart data={data} activeChart={activeChart} />
-        <GrowthInterpretation data={data} activeChart={activeChart} />
+      <div className="pt-16 pb-20 px-4 space-y-6 max-w-4xl mx-auto">
+        <div className="grid md:grid-cols-[350px,1fr] gap-6">
+          <div className="space-y-6">
+            <MeasurementForm onAddMeasurement={handleAddMeasurement} />
+            <ChartToggle activeChart={activeChart} onToggle={setActiveChart} />
+          </div>
+          <div className="space-y-6">
+            <GrowthLineChart data={data} activeChart={activeChart} />
+            <GrowthInterpretation data={data} activeChart={activeChart} />
+          </div>
+        </div>
       </div>
     </div>
   );
