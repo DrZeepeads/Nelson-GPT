@@ -6,8 +6,9 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "::",
+    host: true, // Listen on all available network interfaces
     port: 8080,
+    strictPort: true, // Fail if port is already in use
   },
   plugins: [
     react(),
