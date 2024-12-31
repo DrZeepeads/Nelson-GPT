@@ -23,12 +23,15 @@ serve(async (req) => {
       throw new Error('URL is required')
     }
 
-    // Ensure the URL is properly formatted
-    const webhookUrl = new URL('/functions/v1/telegram-bot', url).toString()
+    // Remove any trailing slashes and construct the webhook URL
+    const baseUrl = url.replace(/\/+$/, '')
+    const webhookUrl = `${baseUrl}/functions/v1/telegram-bot`
     console.log('Setting webhook URL:', webhookUrl)
 
     // Set the webhook
     const setWebhookUrl = `https://api.telegram.org/bot${telegramToken}/setWebhook`
+    console.log('Making request to:', setWebhookUrl)
+    
     const setWebhookResponse = await fetch(setWebhookUrl, {
       method: 'POST',
       headers: {
@@ -40,31 +43,46 @@ serve(async (req) => {
       }),
     })
 
+    const webhookResponseText = await setWebhookResponse.text()
+    console.log('Webhook response:', webhookResponseText)
+
     if (!setWebhookResponse.ok) {
-      const errorText = await setWebhookResponse.text()
-      console.error('Error setting webhook:', errorText)
-      throw new Error(`Failed to set webhook: ${errorText}`)
+      console.error('Error setting webhook:', webhookResponseText)
+      throw new Error(`Failed to set webhook: ${webhookResponseText}`)
     }
 
-    const data = await setWebhookResponse.json()
-    console.log('Webhook setup response:', data)
+    let webhookData
+    try {
+      webhookData = JSON.parse(webhookResponseText)
+    } catch (e) {
+      console.error('Error parsing webhook response:', e)
+      throw new Error('Invalid response from Telegram API')
+    }
 
     // Get webhook info for verification
     const getWebhookInfoUrl = `https://api.telegram.org/bot${telegramToken}/getWebhookInfo`
+    console.log('Getting webhook info from:', getWebhookInfoUrl)
+    
     const webhookInfoResponse = await fetch(getWebhookInfoUrl)
+    const webhookInfoText = await webhookInfoResponse.text()
+    console.log('Webhook info response:', webhookInfoText)
     
     if (!webhookInfoResponse.ok) {
-      const errorText = await webhookInfoResponse.text()
-      console.error('Error getting webhook info:', errorText)
-      throw new Error(`Failed to get webhook info: ${errorText}`)
+      console.error('Error getting webhook info:', webhookInfoText)
+      throw new Error(`Failed to get webhook info: ${webhookInfoText}`)
     }
 
-    const webhookInfo = await webhookInfoResponse.json()
-    console.log('Webhook info:', webhookInfo)
+    let webhookInfo
+    try {
+      webhookInfo = JSON.parse(webhookInfoText)
+    } catch (e) {
+      console.error('Error parsing webhook info:', e)
+      throw new Error('Invalid response from Telegram API')
+    }
 
     return new Response(
       JSON.stringify({ 
-        setWebhook: data,
+        setWebhook: webhookData,
         webhookInfo: webhookInfo
       }),
       { 
@@ -74,7 +92,10 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in setup-telegram-webhook:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack
+      }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

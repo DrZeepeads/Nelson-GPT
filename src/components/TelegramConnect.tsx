@@ -10,18 +10,40 @@ export const TelegramConnect = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    setupBotCommands();
+    setupWebhookAndCommands();
   }, []);
 
-  const setupBotCommands = async () => {
+  const setupWebhookAndCommands = async () => {
     try {
+      console.log('Setting up webhook...');
+      const origin = window.location.origin;
+      console.log('Using origin:', origin);
+
+      // First set up the webhook
+      const webhookResponse = await supabase.functions.invoke('setup-telegram-webhook', {
+        body: { url: origin }
+      });
+
+      if (webhookResponse.error) {
+        console.error('Webhook setup error:', webhookResponse.error);
+        toast({
+          title: 'Error',
+          description: 'Failed to set up webhook. Please try again.',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      console.log('Webhook setup response:', webhookResponse.data);
+
+      // Then set up bot commands
       console.log('Setting up bot commands...');
-      const { data, error } = await supabase.functions.invoke('setup-telegram-commands', {
-        body: { url: window.location.origin }
+      const commandsResponse = await supabase.functions.invoke('setup-telegram-commands', {
+        body: { url: origin }
       });
       
-      if (error) {
-        console.error('Error setting up bot commands:', error);
+      if (commandsResponse.error) {
+        console.error('Commands setup error:', commandsResponse.error);
         toast({
           title: 'Error',
           description: 'Failed to set up bot commands. Please try again.',
@@ -29,27 +51,27 @@ export const TelegramConnect = () => {
         });
         return;
       }
-      
-      if (!data?.ok) {
-        console.error('Failed to set up bot commands:', data);
+
+      if (!commandsResponse.data?.ok) {
+        console.error('Failed to set up bot commands:', commandsResponse.data);
         toast({
           title: 'Error',
-          description: `Failed to set up bot commands: ${data?.description || 'Unknown error'}`,
+          description: `Failed to set up bot commands: ${commandsResponse.data?.description || 'Unknown error'}`,
           variant: 'destructive',
         });
         return;
       }
 
-      console.log('Bot commands set up successfully');
+      console.log('Bot setup completed successfully');
       toast({
         title: 'Success',
-        description: 'Bot commands have been set up successfully.',
+        description: 'Bot has been set up successfully.',
       });
     } catch (error) {
-      console.error('Error setting up bot commands:', error);
+      console.error('Error during bot setup:', error);
       toast({
         title: 'Error',
-        description: 'Failed to set up bot commands. Please try again.',
+        description: 'Failed to set up the bot. Please try again.',
         variant: 'destructive',
       });
     }
