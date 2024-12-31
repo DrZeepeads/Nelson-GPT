@@ -73,20 +73,15 @@ serve(async (req) => {
         const [command] = text.split(' ');
         console.log('Processing command:', command);
 
-        try {
-          switch (command) {
-            case '/start':
-              await handleStart(chatId);
-              break;
-            case '/help':
-              await sendTelegramMessage(chatId, "Available commands:\n/start - Initialize bot and get Chat ID\n/help - Show this help message");
-              break;
-            default:
-              await sendTelegramMessage(chatId, "Command not recognized. Use /help to see available commands.");
-          }
-        } catch (error) {
-          console.error('Error handling command:', error);
-          await sendTelegramMessage(chatId, "Sorry, there was an error processing your command. Please try again later.");
+        switch (command) {
+          case '/start':
+            await handleStart(chatId);
+            break;
+          case '/help':
+            await sendTelegramMessage(chatId, "Available commands:\n/start - Initialize bot and get Chat ID\n/help - Show this help message");
+            break;
+          default:
+            await sendTelegramMessage(chatId, "Command not recognized. Use /help to see available commands.");
         }
       }
       
@@ -97,9 +92,12 @@ serve(async (req) => {
 
     // Handle message sending from the web application
     const { message, chatId } = body;
-    console.log('Sending message to Telegram:', { message, chatId });
+    
+    // Prevent duplicate messages by adding a timestamp
+    const timestampedMessage = `${message}\n\nSent at: ${new Date().toLocaleTimeString()}`;
+    console.log('Sending message to Telegram:', { message: timestampedMessage, chatId });
 
-    const response = await sendTelegramMessage(chatId, message);
+    const response = await sendTelegramMessage(chatId, timestampedMessage);
     console.log('Telegram API response:', response);
 
     return new Response(JSON.stringify(response), {
