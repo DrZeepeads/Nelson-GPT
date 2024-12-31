@@ -1,26 +1,15 @@
-import MistralClient from '@mistralai/mistralai';
-
-const mistral = new MistralClient(import.meta.env.VITE_MISTRAL_API_KEY || '');
+import { supabase } from "@/integrations/supabase/client";
 
 export const getChatResponse = async (message: string): Promise<string> => {
   try {
-    const chatResponse = await mistral.chat({
-      model: 'mistral-tiny',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a pediatric knowledge assistant powered by Nelson Textbook of Pediatrics. Provide evidence-based answers about pediatric conditions, treatments, and guidelines.'
-        },
-        {
-          role: 'user',
-          content: message
-        }
-      ]
+    const { data, error } = await supabase.functions.invoke('chat', {
+      body: { message },
     });
 
-    return chatResponse.choices[0].message.content;
+    if (error) throw error;
+    return data.response;
   } catch (error) {
-    console.error('Error calling Mistral API:', error);
-    throw new Error('Failed to get response from Mistral API');
+    console.error('Error calling chat function:', error);
+    throw new Error('Failed to get response from chat function');
   }
 };
