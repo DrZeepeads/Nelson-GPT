@@ -41,7 +41,7 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 
 const handleStart = async (chatId: number) => {
   console.log('Handling /start command for chat ID:', chatId);
-  const welcomeMessage = `Welcome to @Peadiatric_Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/ask - Ask a medical question\n/upload - Upload documents\n/calculate - Access calculators\n/history - View chat history\n/resources - Access resources\n/feedback - Submit feedback`;
+  const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/ask - Ask a medical question\n/upload - Upload documents\n/calculate - Access calculators\n/history - View chat history\n/resources - Access resources\n/feedback - Submit feedback`;
   
   return sendTelegramMessage(chatId, welcomeMessage);
 };
@@ -69,28 +69,6 @@ const handleHelp = async (chatId: number) => {
   return sendTelegramMessage(chatId, helpMessage);
 };
 
-const handleDrugDose = async (chatId: number, args: string[]) => {
-  console.log('Handling /drug_dose command for chat ID:', chatId, 'with args:', args);
-  if (args.length < 2) {
-    return sendTelegramMessage(chatId, "Please provide drug name and weight. Format: /drug_dose <drug> <weight>");
-  }
-  const [drug, weight] = args;
-  return sendTelegramMessage(chatId, `Calculating dose for ${drug} based on weight ${weight}kg...`);
-};
-
-const handleCalculateBMI = async (chatId: number, args: string[]) => {
-  console.log('Handling /calculate_bmi command for chat ID:', chatId, 'with args:', args);
-  if (args.length < 2) {
-    return sendTelegramMessage(chatId, "Please provide weight and height. Format: /calculate_bmi <weight> <height>");
-  }
-  const [weight, height] = args.map(Number);
-  if (isNaN(weight) || isNaN(height)) {
-    return sendTelegramMessage(chatId, "Please provide valid numbers for weight and height");
-  }
-  const bmi = weight / ((height/100) * (height/100));
-  return sendTelegramMessage(chatId, `BMI: ${bmi.toFixed(2)}`);
-};
-
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -102,16 +80,17 @@ serve(async (req) => {
       throw new Error('TELEGRAM_BOT_TOKEN is not set');
     }
 
-    // Check if this is a webhook update from Telegram
-    if (req.method === 'POST' && req.headers.get('content-type') === 'application/json') {
-      const update = await req.json();
-      console.log('Received Telegram update:', JSON.stringify(update));
-      
-      if (update.message?.text) {
-        const chatId = update.message.chat.id;
-        const text = update.message.text;
-        const [command, ...args] = text.split(' ');
+    const body = await req.json();
+    console.log('Received request:', body);
 
+    // Check if this is a webhook update from Telegram
+    if (body.message?.text) {
+      const chatId = body.message.chat.id;
+      const text = body.message.text;
+      console.log('Processing message:', { chatId, text });
+
+      if (text.startsWith('/')) {
+        const [command, ...args] = text.split(' ');
         console.log('Processing command:', command, 'with args:', args);
 
         try {
@@ -122,43 +101,8 @@ serve(async (req) => {
             case '/help':
               await handleHelp(chatId);
               break;
-            case '/drug_dose':
-              await handleDrugDose(chatId, args);
-              break;
-            case '/calculate_bmi':
-              await handleCalculateBMI(chatId, args);
-              break;
-            case '/growth_chart':
-              await sendTelegramMessage(chatId, "Access growth charts in the web application");
-              break;
-            case '/emergency_protocols':
-              await sendTelegramMessage(chatId, "Emergency protocols feature coming soon");
-              break;
-            case '/immunization':
-              await sendTelegramMessage(chatId, "Immunization schedules feature coming soon");
-              break;
-            case '/neonate_criteria':
-              await sendTelegramMessage(chatId, "Neonatal criteria feature coming soon");
-              break;
-            case '/resources':
-              await sendTelegramMessage(chatId, "Medical resources feature coming soon");
-              break;
-            case '/feedback':
-              await sendTelegramMessage(chatId, "Feedback feature coming soon");
-              break;
-            case '/history':
-              await sendTelegramMessage(chatId, "Chat history feature coming soon");
-              break;
-            case '/calculate':
-              await sendTelegramMessage(chatId, "Medical calculators feature coming soon");
-              break;
-            case '/upload':
-              await sendTelegramMessage(chatId, "Document upload feature coming soon");
-              break;
             default:
-              if (text.startsWith('/')) {
-                await sendTelegramMessage(chatId, "Unknown command. Use /help to see available commands.");
-              }
+              await sendTelegramMessage(chatId, "Command not implemented yet. Use /help to see available commands.");
           }
         } catch (error) {
           console.error('Error handling command:', error);
@@ -172,7 +116,7 @@ serve(async (req) => {
     }
 
     // Handle regular message sending from the web application
-    const { message, chatId } = await req.json();
+    const { message, chatId } = body;
     console.log('Sending message to Telegram:', { message, chatId });
 
     const response = await sendTelegramMessage(chatId, message);
