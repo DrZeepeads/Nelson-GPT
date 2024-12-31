@@ -26,7 +26,7 @@ serve(async (req) => {
         const chatId = update.message.chat.id;
         console.log('Handling /start command for chat ID:', chatId);
         
-        const welcomeMessage = `Welcome to NelsonBot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account. This will allow you to receive your chat history and updates directly here in Telegram.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/status - Check connection status`;
+        const welcomeMessage = `Welcome to @Peads_Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account. This will allow you to receive your chat history and updates directly here in Telegram.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/status - Check connection status`;
 
         const response = await fetch(`${telegramApi}/sendMessage`, {
           method: 'POST',
@@ -57,7 +57,7 @@ serve(async (req) => {
         const chatId = update.message.chat.id;
         console.log('Handling /help command for chat ID:', chatId);
         
-        const helpMessage = `Available commands:\n/start - Show welcome message and your Chat ID\n/help - Show this help message\n/status - Check connection status\n\nTo use NelsonBot:\n1. Copy your Chat ID from the /start command\n2. Paste it in the web application\n3. Test the connection\n4. You'll receive your chat history here automatically`;
+        const helpMessage = `Available commands:\n/start - Show welcome message and your Chat ID\n/help - Show this help message\n/status - Check connection status\n\nTo use @Peads_Bot:\n1. Copy your Chat ID from the /start command\n2. Paste it in the web application\n3. Test the connection\n4. You'll receive your chat history here automatically`;
 
         await fetch(`${telegramApi}/sendMessage`, {
           method: 'POST',
@@ -81,7 +81,7 @@ serve(async (req) => {
         const chatId = update.message.chat.id;
         console.log('Handling /status command for chat ID:', chatId);
         
-        const statusMessage = `NelsonBot Status: 🟢 Online\nChat ID: ${chatId}\n\nYour messages from NelsonBot will be forwarded to this chat automatically.`;
+        const statusMessage = `@Peads_Bot Status: 🟢 Online\nChat ID: ${chatId}\n\nYour messages from @Peads_Bot will be forwarded to this chat automatically.`;
 
         await fetch(`${telegramApi}/sendMessage`, {
           method: 'POST',
