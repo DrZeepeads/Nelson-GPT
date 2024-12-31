@@ -14,13 +14,15 @@ export const ChatArea = () => {
     timestamp: string;
   }>>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  };
+
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollToBottom();
   }, [messages]);
 
   const handleSendMessage = async (message: string) => {
@@ -55,13 +57,13 @@ export const ChatArea = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw]">
-      <ScrollArea className="flex-1 px-2">
+    <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden">
+      <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
           <div className="space-y-6 p-4">
             <div className="text-center space-y-2">
               <h1 className="text-xl font-bold text-nelson-primary">Welcome to NelsonGPT</h1>
-              <p className="text-sm text-gray-600 px-2">
+              <p className="text-sm text-gray-600">
                 Your trusted pediatric knowledge assistant powered by Nelson Textbook of Pediatrics.
                 Ask any question about pediatric conditions, treatments, or guidelines.
               </p>
@@ -72,7 +74,7 @@ export const ChatArea = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-4 pb-4">
             {messages.map((msg) => (
               <ChatMessage
                 key={msg.id}
@@ -90,7 +92,7 @@ export const ChatArea = () => {
                 </div>
               </div>
             )}
-            <div ref={scrollRef} />
+            <div ref={messagesEndRef} />
           </div>
         )}
       </ScrollArea>
