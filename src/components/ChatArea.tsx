@@ -1,19 +1,21 @@
 import { useState, useRef, useEffect } from "react";
-import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
-import { ExampleQuestions } from "./ExampleQuestions";
+import { WelcomeScreen } from "./chat/WelcomeScreen";
+import { ChatMessageList } from "./chat/ChatMessageList";
 import { ScrollArea } from "./ui/scroll-area";
 import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+interface Message {
+  id: string;
+  message: string;
+  isBot: boolean;
+  timestamp: string;
+}
+
 export const ChatArea = () => {
-  const [messages, setMessages] = useState<Array<{
-    id: string;
-    message: string;
-    isBot: boolean;
-    timestamp: string;
-  }>>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -88,40 +90,12 @@ export const ChatArea = () => {
     <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden">
       <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
-          <div className="space-y-6 p-4">
-            <div className="text-center space-y-2">
-              <h1 className="text-xl font-bold text-nelson-primary">Welcome to NelsonGPT</h1>
-              <p className="text-sm text-gray-600">
-                Your trusted pediatric knowledge assistant powered by Nelson Textbook of Pediatrics.
-                Ask any question about pediatric conditions, treatments, or guidelines.
-              </p>
-            </div>
-            <div className="space-y-3">
-              <h2 className="text-lg font-semibold text-nelson-primary">Suggested Questions</h2>
-              <ExampleQuestions onQuestionClick={handleSendMessage} />
-            </div>
-          </div>
+          <WelcomeScreen onQuestionClick={handleSendMessage} />
         ) : (
-          <div className="space-y-4 pb-4">
-            {messages.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                message={msg.message}
-                isBot={msg.isBot}
-                timestamp={msg.timestamp}
-              />
-            ))}
-            {isLoading && (
-              <div className="p-4">
-                <div className="flex gap-2 items-center text-gray-500">
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-                  <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.4s]" />
-                </div>
-              </div>
-            )}
+          <>
+            <ChatMessageList messages={messages} isLoading={isLoading} />
             <div ref={messagesEndRef} />
-          </div>
+          </>
         )}
       </ScrollArea>
       
