@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 
 interface ChatMessageProps {
   message: string;
@@ -8,6 +8,21 @@ interface ChatMessageProps {
 }
 
 export const ChatMessage = ({ message, isBot, timestamp }: ChatMessageProps) => {
+  const formatTimestamp = (timestamp?: string) => {
+    if (!timestamp) return '';
+    
+    try {
+      const date = new Date(timestamp);
+      if (isValid(date)) {
+        return format(date, 'h:mm a');
+      }
+      return '';
+    } catch (error) {
+      console.error('Error formatting timestamp:', error);
+      return '';
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -27,7 +42,7 @@ export const ChatMessage = ({ message, isBot, timestamp }: ChatMessageProps) => 
         </div>
         {timestamp && (
           <span className="text-xs text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            {format(new Date(timestamp), "h:mm a")}
+            {formatTimestamp(timestamp)}
           </span>
         )}
       </div>
