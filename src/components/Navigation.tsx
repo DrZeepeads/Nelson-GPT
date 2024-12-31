@@ -1,8 +1,7 @@
 import { MessageSquare, Stethoscope, Settings } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
-export const Navigation = () => {
+const Navigation = () => {
   const navigate = useNavigate();
 
   return (
