@@ -79,7 +79,6 @@ const ApgarCalculator = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-14 pb-20">
-      {/* Header */}
       <div className="px-4 py-2 bg-white shadow-sm flex items-center fixed top-0 w-full z-10">
         <button 
           onClick={() => navigate('/tools')}
