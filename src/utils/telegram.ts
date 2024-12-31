@@ -2,8 +2,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const setupTelegramWebhook = async (origin: string) => {
   try {
+    // Remove any trailing slashes and ensure no empty port
+    const cleanOrigin = origin.replace(/\/$/, '').replace(/:$/, '');
+    
     const response = await supabase.functions.invoke('setup-telegram-webhook', {
-      body: { url: origin }
+      body: { url: cleanOrigin }
     });
 
     if (response.error) {
