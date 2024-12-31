@@ -1,5 +1,6 @@
 import { LineChart, Calculator, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { LearningResources } from "@/components/learning/LearningResources";
 
 const Tools = () => {
   const navigate = useNavigate();
@@ -38,6 +39,11 @@ const Tools = () => {
             <p className="text-sm text-gray-500">Calculate pediatric medication doses</p>
           </div>
         </button>
+
+        <div className="pt-4">
+          <h2 className="text-lg font-semibold px-1 mb-2">Learning Resources</h2>
+          <LearningResources />
+        </div>
       </div>
     </div>
   );
