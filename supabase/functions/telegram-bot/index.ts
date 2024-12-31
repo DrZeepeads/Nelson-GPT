@@ -16,6 +16,99 @@ serve(async (req) => {
   }
 
   try {
+    // Check if this is a webhook update from Telegram
+    if (req.method === 'POST' && req.headers.get('content-type') === 'application/json') {
+      const update = await req.json();
+      
+      // Handle /start command
+      if (update.message?.text === '/start') {
+        const chatId = update.message.chat.id;
+        const welcomeMessage = `Welcome to NelsonGPT! 👋
+
+Your Chat ID is: ${chatId}
+
+Please copy this Chat ID and paste it in the web application to connect your Telegram account. This will allow you to receive your chat history and updates directly here in Telegram.
+
+Available commands:
+/start - Show this welcome message
+/help - Show available commands
+/status - Check connection status`;
+
+        await fetch(`${telegramApi}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: welcomeMessage,
+            parse_mode: 'HTML',
+          }),
+        });
+        
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Handle /help command
+      if (update.message?.text === '/help') {
+        const chatId = update.message.chat.id;
+        const helpMessage = `Available commands:
+/start - Show welcome message and your Chat ID
+/help - Show this help message
+/status - Check connection status
+
+To use this bot:
+1. Copy your Chat ID from the /start command
+2. Paste it in the web application
+3. Test the connection
+4. You'll receive your chat history here automatically`;
+
+        await fetch(`${telegramApi}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: helpMessage,
+            parse_mode: 'HTML',
+          }),
+        });
+        
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Handle /status command
+      if (update.message?.text === '/status') {
+        const chatId = update.message.chat.id;
+        const statusMessage = `Bot Status: 🟢 Online
+Chat ID: ${chatId}
+
+Your messages from NelsonGPT will be forwarded to this chat automatically.`;
+
+        await fetch(`${telegramApi}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: statusMessage,
+            parse_mode: 'HTML',
+          }),
+        });
+        
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Handle regular message sending from the web application
     const { message, chatId } = await req.json();
     console.log('Received request:', { message, chatId });
 
