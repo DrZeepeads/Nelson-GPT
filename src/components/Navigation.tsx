@@ -1,4 +1,4 @@
-import { MessageSquare, Stethoscope, Settings, Menu, LineChart } from "lucide-react";
+import { MessageSquare, Stethoscope, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
@@ -22,13 +22,6 @@ export const Navigation = () => {
         >
           <Stethoscope className="w-6 h-6 text-gray-500" />
           <span className="text-xs mt-1 text-gray-500">Tools</span>
-        </button>
-
-        <button 
-          className="flex flex-col items-center p-2 rounded-lg transition-colors hover:bg-gray-50"
-        >
-          <Menu className="w-6 h-6 text-gray-500" />
-          <span className="text-xs mt-1 text-gray-500">Menu</span>
         </button>
 
         <button 
