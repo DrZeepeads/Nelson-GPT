@@ -24,16 +24,14 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
       }),
     });
     
-    const responseText = await response.text();
-    console.log('Telegram API raw response:', responseText);
-    
     if (!response.ok) {
-      console.error('Telegram API error response:', responseText);
-      throw new Error(`Telegram API error: ${response.status} ${responseText}`);
+      const errorText = await response.text();
+      console.error('Telegram API error response:', errorText);
+      throw new Error(`Telegram API error: ${response.status} ${errorText}`);
     }
     
-    const data = JSON.parse(responseText);
-    console.log('Telegram API parsed response:', data);
+    const data = await response.json();
+    console.log('Telegram API response:', data);
     return data;
   } catch (error) {
     console.error('Error sending Telegram message:', error);

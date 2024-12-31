@@ -58,16 +58,14 @@ serve(async (req) => {
       }
     );
 
-    const responseText = await response.text();
-    console.log('Set commands raw response:', responseText);
-
     if (!response.ok) {
-      console.error('Failed to set commands:', responseText);
-      throw new Error(`Telegram API error: ${responseText}`);
+      const errorText = await response.text();
+      console.error('Failed to set commands:', errorText);
+      throw new Error(`Telegram API error: ${errorText}`);
     }
 
-    const data = JSON.parse(responseText);
-    console.log('Set commands parsed response:', data);
+    const data = await response.json();
+    console.log('Set commands response:', data);
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
