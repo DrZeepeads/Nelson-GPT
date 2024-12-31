@@ -17,6 +17,7 @@ export const setupTelegramWebhook = async (origin: string) => {
       throw new Error(response.error.message);
     }
 
+    console.log('Webhook setup response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Webhook setup error:', error);
@@ -26,6 +27,7 @@ export const setupTelegramWebhook = async (origin: string) => {
 
 export const sendTelegramTestMessage = async (chatId: string) => {
   try {
+    console.log('Sending test message to chat ID:', chatId);
     const response = await supabase.functions.invoke('telegram-bot', {
       body: {
         message: 'Hello! Your NelsonGPT bot is now connected.',
@@ -34,9 +36,11 @@ export const sendTelegramTestMessage = async (chatId: string) => {
     });
 
     if (response.error) {
+      console.error('Error response:', response.error);
       throw new Error(response.error.message);
     }
 
+    console.log('Test message response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error sending test message:', error);

@@ -8,16 +8,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const formatTimestamp = () => {
-  const now = new Date();
-  return now.toLocaleString('en-US', { 
-    hour: 'numeric', 
-    minute: 'numeric',
-    hour12: true,
-    timeZone: 'UTC'
-  });
-};
-
 const sendTelegramMessage = async (chatId: number | string, text: string) => {
   if (!telegramToken) {
     console.error('TELEGRAM_BOT_TOKEN is not set');
@@ -54,63 +44,44 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
   }
 };
 
-const handleStart = async (chatId: number) => {
-  console.log('Handling /start command for chat ID:', chatId);
-  const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`;
-  await sendTelegramMessage(chatId, welcomeMessage);
-};
-
-const handleHelp = async (chatId: number) => {
-  console.log('Handling /help command for chat ID:', chatId);
-  const helpMessage = "Available commands:\n/start - Get your Chat ID\n/help - Show this help message";
-  await sendTelegramMessage(chatId, helpMessage);
-};
-
-const handleDirectMessage = async (chatId: number, text: string) => {
-  console.log('Handling direct message:', { chatId, text });
-  const response = `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application. To get started, use /start to get your Chat ID.`;
-  await sendTelegramMessage(chatId, response);
-};
-
 serve(async (req) => {
   console.log('Received request:', req.method, req.url);
   
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     if (!telegramToken) {
-      console.error('TELEGRAM_BOT_TOKEN is not set');
       throw new Error('TELEGRAM_BOT_TOKEN is not set');
     }
 
     const body = await req.json();
     console.log('Request body:', JSON.stringify(body, null, 2));
 
+    // Handle message sending from the web application
+    if (body.message && body.chatId) {
+      console.log('Sending message to Telegram:', { message: body.message, chatId: body.chatId });
+      const response = await sendTelegramMessage(body.chatId, body.message);
+      
+      return new Response(JSON.stringify(response), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // Handle webhook update from Telegram
     if (body.message?.chat?.id) {
       const chatId = body.message.chat.id;
       const text = body.message.text;
-      console.log('Processing Telegram message:', { chatId, text });
+      console.log('Received Telegram message:', { chatId, text });
 
-      if (text?.startsWith('/')) {
-        const command = text.split(' ')[0];
-        console.log('Processing command:', command);
-
-        switch (command) {
-          case '/start':
-            await handleStart(chatId);
-            break;
-          case '/help':
-            await handleHelp(chatId);
-            break;
-          default:
-            await sendTelegramMessage(chatId, "Command not recognized. Use /help to see available commands.");
-        }
-      } else if (text) {
-        // Handle direct messages that aren't commands
-        await handleDirectMessage(chatId, text);
+      if (text === '/start') {
+        const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`;
+        await sendTelegramMessage(chatId, welcomeMessage);
+      } else {
+        const response = `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`;
+        await sendTelegramMessage(chatId, response);
       }
       
       return new Response(JSON.stringify({ ok: true }), {
@@ -118,19 +89,8 @@ serve(async (req) => {
       });
     }
 
-    // Handle message sending from the web application
-    const { message, chatId } = body;
-    if (!message || !chatId) {
-      throw new Error('Message and chatId are required');
-    }
-    
-    const timestamp = formatTimestamp();
-    const timestampedMessage = `${message}\n\nSent at: ${timestamp} UTC`;
-    console.log('Sending message to Telegram:', { message: timestampedMessage, chatId });
-
-    const response = await sendTelegramMessage(chatId, timestampedMessage);
-
-    return new Response(JSON.stringify(response), {
+    return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+      status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
