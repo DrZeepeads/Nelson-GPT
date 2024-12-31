@@ -8,23 +8,25 @@ import Tools from "./pages/Tools";
 import GrowthChart from "./pages/GrowthChart";
 import DrugCalculator from "./pages/DrugCalculator";
 
-const queryClient = new QueryClient();
+function App() {
+  const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/tools" element={<Tools />} />
-          <Route path="/growth-chart" element={<GrowthChart />} />
-          <Route path="/drug-calculator" element={<DrugCalculator />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/tools" element={<Tools />} />
+            <Route path="/growth-chart" element={<GrowthChart />} />
+            <Route path="/drug-calculator" element={<DrugCalculator />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
 
 export default App;
