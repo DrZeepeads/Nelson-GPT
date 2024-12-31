@@ -4,7 +4,11 @@ interface ExampleQuestionsProps {
 
 const questions = [
   "What are the red flags for pediatric fever?",
-  "Describe developmental milestones 0-12 months"
+  "Describe developmental milestones 0-12 months",
+  "List common causes of respiratory distress in infants",
+  "What are the key features of Kawasaki disease?",
+  "Outline the management of status epilepticus",
+  "Describe the approach to a child with suspected sepsis"
 ];
 
 export const ExampleQuestions = ({ onQuestionClick }: ExampleQuestionsProps) => {

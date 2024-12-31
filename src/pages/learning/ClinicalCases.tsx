@@ -7,18 +7,39 @@ const ClinicalCases = () => {
   const cases = [
     {
       title: "Respiratory Distress in Newborn",
-      description: "Case study of a 2-day-old presenting with tachypnea",
-      difficulty: "Intermediate"
+      description: "2-day-old presenting with tachypnea and grunting",
+      difficulty: "Intermediate",
+      category: "Emergency"
     },
     {
       title: "Febrile Seizure",
       description: "6-month-old with first episode of seizure during fever",
-      difficulty: "Beginner"
+      difficulty: "Beginner",
+      category: "Neurology"
     },
     {
       title: "Kawasaki Disease",
       description: "Complex case of atypical Kawasaki presentation",
-      difficulty: "Advanced"
+      difficulty: "Advanced",
+      category: "Rheumatology"
+    },
+    {
+      title: "Diabetic Ketoacidosis",
+      description: "10-year-old with new-onset diabetes presenting with DKA",
+      difficulty: "Intermediate",
+      category: "Endocrinology"
+    },
+    {
+      title: "Meningitis",
+      description: "3-month-old with fever and lethargy",
+      difficulty: "Advanced",
+      category: "Infectious Disease"
+    },
+    {
+      title: "Asthma Exacerbation",
+      description: "5-year-old with acute severe asthma",
+      difficulty: "Beginner",
+      category: "Pulmonology"
     }
   ];
 
@@ -36,11 +57,20 @@ const ClinicalCases = () => {
 
       <div className="p-4 space-y-4">
         {cases.map((caseStudy, index) => (
-          <div key={index} className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium text-lg mb-2">{caseStudy.title}</h3>
+          <div key={index} className="bg-white rounded-lg shadow p-6">
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="font-medium text-lg text-nelson-primary">{caseStudy.title}</h3>
+              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                caseStudy.difficulty === "Beginner" ? "bg-green-100 text-green-800" :
+                caseStudy.difficulty === "Intermediate" ? "bg-yellow-100 text-yellow-800" :
+                "bg-red-100 text-red-800"
+              }`}>
+                {caseStudy.difficulty}
+              </span>
+            </div>
             <p className="text-gray-600 text-sm mb-2">{caseStudy.description}</p>
             <span className="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-              {caseStudy.difficulty}
+              {caseStudy.category}
             </span>
           </div>
         ))}

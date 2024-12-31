@@ -6,18 +6,33 @@ const Resources = () => {
 
   const resources = [
     {
-      title: "Common Pediatric Conditions",
-      description: "Essential information about frequently encountered pediatric conditions",
+      title: "Pediatric Emergency Medicine",
+      description: "Essential guidelines for managing pediatric emergencies",
       link: "#"
     },
     {
-      title: "Growth & Development",
-      description: "Comprehensive guide to pediatric growth and developmental milestones",
+      title: "Developmental Pediatrics",
+      description: "Growth and developmental milestones from birth to adolescence",
       link: "#"
     },
     {
-      title: "Emergency Protocols",
-      description: "Quick reference guides for pediatric emergencies",
+      title: "Pediatric Pharmacology",
+      description: "Drug dosing, interactions, and administration guidelines",
+      link: "#"
+    },
+    {
+      title: "Neonatal Care",
+      description: "Comprehensive guide to newborn care and common conditions",
+      link: "#"
+    },
+    {
+      title: "Pediatric Nutrition",
+      description: "Nutritional requirements and feeding guidelines by age",
+      link: "#"
+    },
+    {
+      title: "Infectious Diseases",
+      description: "Common pediatric infections, diagnosis, and treatment",
       link: "#"
     }
   ];
@@ -36,11 +51,11 @@ const Resources = () => {
 
       <div className="p-4 space-y-4">
         {resources.map((resource, index) => (
-          <div key={index} className="bg-white rounded-lg shadow p-4">
-            <h3 className="font-medium text-lg mb-2">{resource.title}</h3>
+          <div key={index} className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow">
+            <h3 className="font-medium text-lg mb-2 text-nelson-primary">{resource.title}</h3>
             <p className="text-gray-600 text-sm mb-4">{resource.description}</p>
-            <button className="text-nelson-accent hover:text-blue-700 text-sm font-medium">
-              Learn More →
+            <button className="text-nelson-accent hover:text-blue-700 text-sm font-medium flex items-center">
+              Access Material →
             </button>
           </div>
         ))}
