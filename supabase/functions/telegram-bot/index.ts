@@ -41,7 +41,10 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 const handleStart = async (chatId: number) => {
   console.log('Handling /start command for chat ID:', chatId);
   const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`;
-  return sendTelegramMessage(chatId, welcomeMessage);
+  await sendTelegramMessage(chatId, welcomeMessage);
+  return new Response(JSON.stringify({ ok: true }), {
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 };
 
 serve(async (req) => {
@@ -72,8 +75,7 @@ serve(async (req) => {
 
         switch (command) {
           case '/start':
-            await handleStart(chatId);
-            break;
+            return handleStart(chatId);
           case '/help':
             await sendTelegramMessage(chatId, "Available commands:\n/start - Get your Chat ID\n/help - Show this help message");
             break;
