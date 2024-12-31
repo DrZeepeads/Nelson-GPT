@@ -1,15 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { VitePWA } from 'vite-plugin-pwa';
+import path from 'path';
+import { componentTagger } from "lovable-tagger";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   server: {
-    host: true, // Listen on all available network interfaces
+    host: "::",
     port: 8080,
-    strictPort: true, // Fail if port is already in use
   },
   plugins: [
     react(),
+    mode === 'development' && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
@@ -38,10 +40,10 @@ export default defineConfig({
         ]
       }
     })
-  ],
+  ].filter(Boolean),
   resolve: {
     alias: {
-      '@': '/src',
+      "@": path.resolve(__dirname, "./src"),
     },
   },
-});
+}));
