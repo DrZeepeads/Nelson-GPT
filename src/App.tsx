@@ -9,23 +9,33 @@ import GrowthChart from "./pages/GrowthChart";
 import DrugCalculator from "./pages/DrugCalculator";
 
 function App() {
-  const queryClient = new QueryClient();
+  // Create a new QueryClient instance inside the component
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 60 * 1000, // 5 minutes
+        retry: 1,
+      },
+    },
+  });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/tools" element={<Tools />} />
-            <Route path="/growth-chart" element={<GrowthChart />} />
-            <Route path="/drug-calculator" element={<DrugCalculator />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/growth-chart" element={<GrowthChart />} />
+              <Route path="/drug-calculator" element={<DrugCalculator />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 }
 
