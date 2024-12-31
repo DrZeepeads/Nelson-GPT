@@ -16,12 +16,15 @@ serve(async (req) => {
       throw new Error('TELEGRAM_BOT_TOKEN is not set')
     }
 
-    // Get the Supabase Function URL from the request
-    const url = new URL(req.url)
-    const host = url.hostname
-    const protocol = url.protocol
-    const webhookUrl = `${protocol}//${host}/functions/v1/telegram-bot`
+    const body = await req.json()
+    const { url } = body
 
+    if (!url) {
+      throw new Error('URL is required')
+    }
+
+    // Ensure the URL is properly formatted
+    const webhookUrl = new URL('/functions/v1/telegram-bot', url).toString()
     console.log('Setting webhook URL:', webhookUrl)
 
     // Set the webhook
@@ -38,9 +41,9 @@ serve(async (req) => {
     })
 
     if (!setWebhookResponse.ok) {
-      const errorText = await setWebhookResponse.text();
-      console.error('Error setting webhook:', errorText);
-      throw new Error(`Failed to set webhook: ${errorText}`);
+      const errorText = await setWebhookResponse.text()
+      console.error('Error setting webhook:', errorText)
+      throw new Error(`Failed to set webhook: ${errorText}`)
     }
 
     const data = await setWebhookResponse.json()
@@ -51,9 +54,9 @@ serve(async (req) => {
     const webhookInfoResponse = await fetch(getWebhookInfoUrl)
     
     if (!webhookInfoResponse.ok) {
-      const errorText = await webhookInfoResponse.text();
-      console.error('Error getting webhook info:', errorText);
-      throw new Error(`Failed to get webhook info: ${errorText}`);
+      const errorText = await webhookInfoResponse.text()
+      console.error('Error getting webhook info:', errorText)
+      throw new Error(`Failed to get webhook info: ${errorText}`)
     }
 
     const webhookInfo = await webhookInfoResponse.json()

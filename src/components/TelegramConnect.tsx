@@ -16,7 +16,9 @@ export const TelegramConnect = () => {
   const setupBotCommands = async () => {
     try {
       console.log('Setting up bot commands...');
-      const { data, error } = await supabase.functions.invoke('setup-telegram-commands');
+      const { data, error } = await supabase.functions.invoke('setup-telegram-commands', {
+        body: { url: window.location.origin }
+      });
       
       if (error) {
         console.error('Error setting up bot commands:', error);
@@ -28,11 +30,11 @@ export const TelegramConnect = () => {
         return;
       }
       
-      if (!data.ok) {
+      if (!data?.ok) {
         console.error('Failed to set up bot commands:', data);
         toast({
           title: 'Error',
-          description: `Failed to set up bot commands: ${data.description}`,
+          description: `Failed to set up bot commands: ${data?.description || 'Unknown error'}`,
           variant: 'destructive',
         });
         return;
