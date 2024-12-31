@@ -8,6 +8,16 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const formatTimestamp = () => {
+  const now = new Date();
+  return now.toLocaleString('en-US', { 
+    hour: 'numeric', 
+    minute: 'numeric',
+    hour12: true,
+    timeZone: 'UTC'
+  });
+};
+
 const sendTelegramMessage = async (chatId: number | string, text: string) => {
   console.log('Attempting to send message to Telegram:', { chatId, text });
   try {
@@ -95,7 +105,8 @@ serve(async (req) => {
       throw new Error('Message and chatId are required');
     }
     
-    const timestampedMessage = `${message}\n\nSent at: ${new Date().toLocaleTimeString()}`;
+    const timestamp = formatTimestamp();
+    const timestampedMessage = `${message}\n\nSent at: ${timestamp} UTC`;
     console.log('Sending message to Telegram:', { message: timestampedMessage, chatId });
 
     const response = await sendTelegramMessage(chatId, timestampedMessage);
