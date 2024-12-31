@@ -30,7 +30,9 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
       throw new Error(`Telegram API error: ${response.status} ${errorData}`);
     }
     
-    return response.json();
+    const data = await response.json();
+    console.log('Telegram API response:', data);
+    return data;
   } catch (error) {
     console.error('Error sending Telegram message:', error);
     throw error;
@@ -38,12 +40,14 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 };
 
 const handleStart = async (chatId: number) => {
+  console.log('Handling /start command for chat ID:', chatId);
   const welcomeMessage = `Welcome to @Peadiatric_Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/ask - Ask a medical question\n/upload - Upload documents\n/calculate - Access calculators\n/history - View chat history\n/resources - Access resources\n/feedback - Submit feedback`;
   
   return sendTelegramMessage(chatId, welcomeMessage);
 };
 
 const handleHelp = async (chatId: number) => {
+  console.log('Handling /help command for chat ID:', chatId);
   const helpMessage = `Available Commands:\n\n` +
     `Core Commands:\n` +
     `/start - Initialize bot and get Chat ID\n` +
@@ -66,15 +70,16 @@ const handleHelp = async (chatId: number) => {
 };
 
 const handleDrugDose = async (chatId: number, args: string[]) => {
+  console.log('Handling /drug_dose command for chat ID:', chatId, 'with args:', args);
   if (args.length < 2) {
     return sendTelegramMessage(chatId, "Please provide drug name and weight. Format: /drug_dose <drug> <weight>");
   }
   const [drug, weight] = args;
-  // TODO: Implement drug dose calculation logic
   return sendTelegramMessage(chatId, `Calculating dose for ${drug} based on weight ${weight}kg...`);
 };
 
 const handleCalculateBMI = async (chatId: number, args: string[]) => {
+  console.log('Handling /calculate_bmi command for chat ID:', chatId, 'with args:', args);
   if (args.length < 2) {
     return sendTelegramMessage(chatId, "Please provide weight and height. Format: /calculate_bmi <weight> <height>");
   }
@@ -93,6 +98,10 @@ serve(async (req) => {
   }
 
   try {
+    if (!telegramToken) {
+      throw new Error('TELEGRAM_BOT_TOKEN is not set');
+    }
+
     // Check if this is a webhook update from Telegram
     if (req.method === 'POST' && req.headers.get('content-type') === 'application/json') {
       const update = await req.json();
@@ -103,50 +112,57 @@ serve(async (req) => {
         const text = update.message.text;
         const [command, ...args] = text.split(' ');
 
-        switch (command) {
-          case '/start':
-            await handleStart(chatId);
-            break;
-          case '/help':
-            await handleHelp(chatId);
-            break;
-          case '/drug_dose':
-            await handleDrugDose(chatId, args);
-            break;
-          case '/calculate_bmi':
-            await handleCalculateBMI(chatId, args);
-            break;
-          case '/growth_chart':
-            await sendTelegramMessage(chatId, "Access growth charts in the web application");
-            break;
-          case '/emergency_protocols':
-            await sendTelegramMessage(chatId, "Emergency protocols feature coming soon");
-            break;
-          case '/immunization':
-            await sendTelegramMessage(chatId, "Immunization schedules feature coming soon");
-            break;
-          case '/neonate_criteria':
-            await sendTelegramMessage(chatId, "Neonatal criteria feature coming soon");
-            break;
-          case '/resources':
-            await sendTelegramMessage(chatId, "Medical resources feature coming soon");
-            break;
-          case '/feedback':
-            await sendTelegramMessage(chatId, "Feedback feature coming soon");
-            break;
-          case '/history':
-            await sendTelegramMessage(chatId, "Chat history feature coming soon");
-            break;
-          case '/calculate':
-            await sendTelegramMessage(chatId, "Medical calculators feature coming soon");
-            break;
-          case '/upload':
-            await sendTelegramMessage(chatId, "Document upload feature coming soon");
-            break;
-          default:
-            if (text.startsWith('/')) {
-              await sendTelegramMessage(chatId, "Unknown command. Use /help to see available commands.");
-            }
+        console.log('Processing command:', command, 'with args:', args);
+
+        try {
+          switch (command) {
+            case '/start':
+              await handleStart(chatId);
+              break;
+            case '/help':
+              await handleHelp(chatId);
+              break;
+            case '/drug_dose':
+              await handleDrugDose(chatId, args);
+              break;
+            case '/calculate_bmi':
+              await handleCalculateBMI(chatId, args);
+              break;
+            case '/growth_chart':
+              await sendTelegramMessage(chatId, "Access growth charts in the web application");
+              break;
+            case '/emergency_protocols':
+              await sendTelegramMessage(chatId, "Emergency protocols feature coming soon");
+              break;
+            case '/immunization':
+              await sendTelegramMessage(chatId, "Immunization schedules feature coming soon");
+              break;
+            case '/neonate_criteria':
+              await sendTelegramMessage(chatId, "Neonatal criteria feature coming soon");
+              break;
+            case '/resources':
+              await sendTelegramMessage(chatId, "Medical resources feature coming soon");
+              break;
+            case '/feedback':
+              await sendTelegramMessage(chatId, "Feedback feature coming soon");
+              break;
+            case '/history':
+              await sendTelegramMessage(chatId, "Chat history feature coming soon");
+              break;
+            case '/calculate':
+              await sendTelegramMessage(chatId, "Medical calculators feature coming soon");
+              break;
+            case '/upload':
+              await sendTelegramMessage(chatId, "Document upload feature coming soon");
+              break;
+            default:
+              if (text.startsWith('/')) {
+                await sendTelegramMessage(chatId, "Unknown command. Use /help to see available commands.");
+              }
+          }
+        } catch (error) {
+          console.error('Error handling command:', error);
+          await sendTelegramMessage(chatId, "Sorry, there was an error processing your command. Please try again later.");
         }
       }
       

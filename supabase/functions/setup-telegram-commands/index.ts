@@ -19,6 +19,24 @@ serve(async (req) => {
       throw new Error('TELEGRAM_BOT_TOKEN is not set');
     }
 
+    // First, delete any existing commands
+    console.log('Deleting existing commands...');
+    const deleteResponse = await fetch(
+      `https://api.telegram.org/bot${telegramToken}/deleteMyCommands`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    if (!deleteResponse.ok) {
+      const errorData = await deleteResponse.text();
+      console.error('Error deleting commands:', errorData);
+      throw new Error(`Failed to delete commands: ${errorData}`);
+    }
+
     const commands = [
       { command: "start", description: "Initialize bot and get Chat ID" },
       { command: "help", description: "Show available commands" },
@@ -36,6 +54,7 @@ serve(async (req) => {
       { command: "neonate_criteria", description: "Access neonatal guidelines" }
     ];
 
+    console.log('Setting new commands:', commands);
     const response = await fetch(
       `https://api.telegram.org/bot${telegramToken}/setMyCommands`,
       {
@@ -48,8 +67,13 @@ serve(async (req) => {
     );
 
     const data = await response.json();
-    console.log('Bot commands set up successfully');
+    console.log('Telegram API response:', data);
 
+    if (!data.ok) {
+      throw new Error(`Telegram API error: ${data.description}`);
+    }
+
+    console.log('Bot commands set up successfully');
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
