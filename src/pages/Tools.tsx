@@ -1,4 +1,21 @@
-import { LineChart, Calculator, ArrowLeft, BookOpen, Stethoscope } from "lucide-react";
+import { 
+  LineChart, 
+  Calculator, 
+  ArrowLeft, 
+  BookOpen, 
+  Stethoscope, 
+  Brain,
+  Heart,
+  Pill,
+  Thermometer,
+  Baby,
+  Activity,
+  Scale,
+  Microscope,
+  Flask,
+  Clipboard,
+  AlarmClock
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LearningResources } from "@/components/learning/LearningResources";
 import { Card } from "@/components/ui/card";
@@ -20,6 +37,20 @@ const Tools = () => {
       description: "Calculate pediatric medication doses safely",
       route: "/drug-calculator",
       color: "text-green-500",
+    },
+    {
+      icon: Baby,
+      title: "APGAR Score",
+      description: "Calculate and track newborn APGAR scores",
+      route: "/apgar-calculator",
+      color: "text-pink-500",
+    },
+    {
+      icon: Scale,
+      title: "BMI Calculator",
+      description: "Calculate and interpret pediatric BMI",
+      route: "/bmi-calculator",
+      color: "text-purple-500",
     },
   ];
 
@@ -53,30 +84,11 @@ const Tools = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">{tool.title}</h3>
-                    <p className="text-gray-600 text-sm">{tool.description}</p>
+                    <p className="text-sm text-gray-600">{tool.description}</p>
                   </div>
                 </div>
               </Card>
             ))}
-          </div>
-        </section>
-
-        {/* Quick Access Section */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4 px-1">Quick Access</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer bg-blue-50">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <BookOpen className="w-6 h-6 text-blue-600" />
-                <span className="text-sm font-medium text-blue-900">Latest Guidelines</span>
-              </div>
-            </Card>
-            <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer bg-green-50">
-              <div className="flex flex-col items-center text-center space-y-2">
-                <Stethoscope className="w-6 h-6 text-green-600" />
-                <span className="text-sm font-medium text-green-900">Clinical Protocols</span>
-              </div>
-            </Card>
           </div>
         </section>
 
