@@ -15,7 +15,12 @@ serve(async (req) => {
 
   try {
     console.log('Setting up bot commands...');
+    console.log('Telegram API URL:', telegramApi.replace(telegramToken!, '****')); // Log API URL without exposing token
     
+    if (!telegramToken) {
+      throw new Error('TELEGRAM_BOT_TOKEN is not configured');
+    }
+
     const commands = [
       {
         command: 'start',
@@ -31,6 +36,17 @@ serve(async (req) => {
       },
     ];
 
+    // First, verify the bot token is valid by calling getMe
+    const verifyResponse = await fetch(`${telegramApi}/getMe`);
+    const verifyResult = await verifyResponse.json();
+    
+    console.log('Bot verification response:', verifyResult);
+    
+    if (!verifyResult.ok) {
+      throw new Error(`Invalid bot token: ${verifyResult.description}`);
+    }
+
+    // If verification successful, proceed with setting commands
     const response = await fetch(`${telegramApi}/setMyCommands`, {
       method: 'POST',
       headers: {
@@ -51,9 +67,15 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error setting up commands:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ 
+        error: error.message,
+        ok: false,
+        description: error.message 
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });
