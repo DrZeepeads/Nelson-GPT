@@ -60,6 +60,12 @@ const handleHelp = async (chatId: number) => {
   await sendTelegramMessage(chatId, helpMessage);
 };
 
+const handleDirectMessage = async (chatId: number, text: string) => {
+  console.log('Handling direct message:', { chatId, text });
+  const response = `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application. To get started, use /start to get your Chat ID.`;
+  await sendTelegramMessage(chatId, response);
+};
+
 serve(async (req) => {
   console.log('Received request:', req.method, req.url);
   
@@ -96,6 +102,9 @@ serve(async (req) => {
           default:
             await sendTelegramMessage(chatId, "Command not recognized. Use /help to see available commands.");
         }
+      } else if (text) {
+        // Handle direct messages that aren't commands
+        await handleDirectMessage(chatId, text);
       }
       
       return new Response(JSON.stringify({ ok: true }), {
