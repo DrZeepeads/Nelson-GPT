@@ -11,84 +11,97 @@ export const TelegramConnect = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if webhook was already set up
-    const webhookSetup = localStorage.getItem('telegram_webhook_setup');
-    if (!webhookSetup) {
-      setupWebhookAndCommands();
-    }
-  }, []);
-
-  const setupWebhookAndCommands = async () => {
-    if (isSettingUp) return;
-    
-    try {
-      setIsSettingUp(true);
-      console.log('Setting up webhook...');
-      const origin = window.location.origin;
-      console.log('Using origin:', origin);
-
-      // First set up the webhook
-      const webhookResponse = await supabase.functions.invoke('setup-telegram-webhook', {
-        body: { url: origin }
-      });
-
-      if (webhookResponse.error) {
-        console.error('Webhook setup error:', webhookResponse.error);
-        toast({
-          title: 'Error',
-          description: 'Failed to set up webhook. Please try again later.',
-          variant: 'destructive',
-        });
+    const setupWebhookIfNeeded = async () => {
+      // Check if webhook was already set up in this session
+      const webhookSetup = sessionStorage.getItem('telegram_webhook_setup');
+      if (webhookSetup) {
+        console.log('Webhook already set up in this session');
         return;
       }
 
-      console.log('Webhook setup response:', webhookResponse.data);
-
-      // Then set up bot commands
-      console.log('Setting up bot commands...');
-      const commandsResponse = await supabase.functions.invoke('setup-telegram-commands', {
-        body: { url: origin }
-      });
-      
-      if (commandsResponse.error) {
-        console.error('Commands setup error:', commandsResponse.error);
-        toast({
-          title: 'Error',
-          description: 'Failed to set up bot commands. Please try again later.',
-          variant: 'destructive',
-        });
+      if (isSettingUp) {
+        console.log('Setup already in progress');
         return;
       }
 
-      if (!commandsResponse.data?.ok) {
-        console.error('Failed to set up bot commands:', commandsResponse.data);
+      try {
+        setIsSettingUp(true);
+        console.log('Setting up webhook...');
+        const origin = window.location.origin;
+        console.log('Using origin:', origin);
+
+        // First set up the webhook with retry logic
+        let retryCount = 0;
+        const maxRetries = 3;
+        let success = false;
+
+        while (!success && retryCount < maxRetries) {
+          try {
+            const webhookResponse = await supabase.functions.invoke('setup-telegram-webhook', {
+              body: { url: origin }
+            });
+
+            if (webhookResponse.error) {
+              throw webhookResponse.error;
+            }
+
+            console.log('Webhook setup response:', webhookResponse.data);
+            success = true;
+          } catch (error) {
+            retryCount++;
+            if (retryCount === maxRetries) {
+              throw error;
+            }
+            // Wait before retrying (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount)));
+          }
+        }
+
+        // Then set up bot commands
+        console.log('Setting up bot commands...');
+        const commandsResponse = await supabase.functions.invoke('setup-telegram-commands', {
+          body: { url: origin }
+        });
+
+        if (commandsResponse.error) {
+          throw commandsResponse.error;
+        }
+
+        if (!commandsResponse.data?.ok) {
+          throw new Error(`Failed to set up bot commands: ${commandsResponse.data?.description || 'Unknown error'}`);
+        }
+
+        console.log('Bot setup completed successfully');
+        sessionStorage.setItem('telegram_webhook_setup', 'true');
+        toast({
+          title: 'Success',
+          description: 'Bot has been set up successfully.',
+        });
+      } catch (error) {
+        console.error('Error during bot setup:', error);
         toast({
           title: 'Error',
-          description: `Failed to set up bot commands: ${commandsResponse.data?.description || 'Unknown error'}`,
+          description: 'Failed to set up the bot. Please try again later.',
           variant: 'destructive',
         });
-        return;
+      } finally {
+        setIsSettingUp(false);
       }
+    };
 
-      console.log('Bot setup completed successfully');
-      localStorage.setItem('telegram_webhook_setup', 'true');
-      toast({
-        title: 'Success',
-        description: 'Bot has been set up successfully.',
-      });
-    } catch (error) {
-      console.error('Error during bot setup:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to set up the bot. Please try again later.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSettingUp(false);
-    }
-  };
+    setupWebhookIfNeeded();
+  }, []); // Empty dependency array to run only once
 
   const sendTestMessage = async () => {
+    if (!chatId.trim()) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a Chat ID',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
       const { data, error } = await supabase.functions.invoke('telegram-bot', {
         body: {
