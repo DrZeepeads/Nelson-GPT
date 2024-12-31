@@ -22,11 +22,11 @@ export default function Settings() {
 
   const handleDeleteHistory = async () => {
     try {
-      // Delete all messages from the messages table
+      // Delete all messages using a simpler query
       const { error } = await supabase
         .from('messages')
         .delete()
-        .neq('id', '') // This will delete all messages
+        .not('id', 'is', null) // This will match all non-null IDs
 
       if (error) throw error
 
@@ -38,6 +38,7 @@ export default function Settings() {
       // Navigate back to home page
       navigate('/')
     } catch (error) {
+      console.error('Delete error:', error)
       toast({
         title: "Error",
         description: "Failed to delete chat history. Please try again.",
