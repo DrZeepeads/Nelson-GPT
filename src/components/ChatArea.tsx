@@ -5,7 +5,6 @@ import { ExampleQuestions } from "./ExampleQuestions";
 import { ScrollArea } from "./ui/scroll-area";
 import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
-import { TelegramConnect } from "./TelegramConnect";
 import { supabase } from "@/integrations/supabase/client";
 
 export const ChatArea = () => {
@@ -85,7 +84,6 @@ export const ChatArea = () => {
                 Ask any question about pediatric conditions, treatments, or guidelines.
               </p>
             </div>
-            <TelegramConnect />
             <div className="space-y-3">
               <h2 className="text-lg font-semibold text-nelson-primary">Suggested Questions</h2>
               <ExampleQuestions onQuestionClick={handleSendMessage} />

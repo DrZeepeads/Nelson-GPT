@@ -14,6 +14,7 @@ import { ChevronLeft, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
+import { TelegramConnect } from "@/components/TelegramConnect"
 
 export default function Settings() {
   const navigate = useNavigate()
@@ -60,6 +61,8 @@ export default function Settings() {
       </div>
       
       <div className="space-y-4">
+        <TelegramConnect />
+        
         <div className="flex items-center justify-between p-4 border rounded-lg">
           <div>
             <h2 className="font-semibold">Delete Chat History</h2>
