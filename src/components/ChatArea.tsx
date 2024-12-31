@@ -3,6 +3,8 @@ import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ExampleQuestions } from "./ExampleQuestions";
 import { ScrollArea } from "./ui/scroll-area";
+import { getChatResponse } from "@/utils/mistralApi";
+import { useToast } from "@/components/ui/use-toast";
 
 export const ChatArea = () => {
   const [messages, setMessages] = useState<Array<{
@@ -13,6 +15,7 @@ export const ChatArea = () => {
   }>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -31,17 +34,24 @@ export const ChatArea = () => {
     setMessages((prev) => [...prev, newMessage]);
     setIsLoading(true);
 
-    // Simulate bot response
-    setTimeout(() => {
+    try {
+      const response = await getChatResponse(message);
       const botResponse = {
         id: (Date.now() + 1).toString(),
-        message: "This is a simulated response. In the future, this will be connected to the Nelson Textbook of Pediatrics knowledge base.",
+        message: response,
         isBot: true,
         timestamp: new Date().toLocaleTimeString(),
       };
       setMessages((prev) => [...prev, botResponse]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to get response. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
