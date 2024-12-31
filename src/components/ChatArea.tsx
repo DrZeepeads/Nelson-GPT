@@ -31,7 +31,7 @@ export const ChatArea = () => {
       id: Date.now().toString(),
       message,
       isBot: false,
-      timestamp: new Date().toLocaleTimeString(),
+      timestamp: new Date().toISOString(),
     };
 
     setMessages((prev) => [...prev, newMessage]);
@@ -43,7 +43,7 @@ export const ChatArea = () => {
         id: (Date.now() + 1).toString(),
         message: response,
         isBot: true,
-        timestamp: new Date().toLocaleTimeString(),
+        timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, botResponse]);
 
@@ -51,17 +51,29 @@ export const ChatArea = () => {
       const telegramChatId = localStorage.getItem('telegram_chat_id');
       if (telegramChatId) {
         try {
-          await supabase.functions.invoke('telegram-bot', {
+          console.log('Sending to Telegram:', { message, response, chatId: telegramChatId });
+          const telegramResponse = await supabase.functions.invoke('telegram-bot', {
             body: {
               message: `User: ${message}\n\nAssistant: ${response}`,
               chatId: telegramChatId,
             },
           });
+          console.log('Telegram response:', telegramResponse);
+          
+          if (telegramResponse.error) {
+            throw new Error(telegramResponse.error.message);
+          }
         } catch (error) {
           console.error('Error sending to Telegram:', error);
+          toast({
+            title: "Telegram Error",
+            description: "Failed to send message to Telegram. Please check your connection.",
+            variant: "destructive",
+          });
         }
       }
     } catch (error) {
+      console.error('Chat error:', error);
       toast({
         title: "Error",
         description: "Failed to get response. Please try again.",
