@@ -10,7 +10,7 @@ const corsHeaders = {
 };
 
 const sendTelegramMessage = async (chatId: number | string, text: string) => {
-  console.log('Sending message to Telegram:', { chatId, text });
+  console.log('Attempting to send message to Telegram:', { chatId, text });
   try {
     const response = await fetch(`${telegramApi}/sendMessage`, {
       method: 'POST',
@@ -24,14 +24,16 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
       }),
     });
     
+    const responseText = await response.text();
+    console.log('Telegram API raw response:', responseText);
+    
     if (!response.ok) {
-      const errorData = await response.text();
-      console.error('Telegram API error:', errorData);
-      throw new Error(`Telegram API error: ${response.status} ${errorData}`);
+      console.error('Telegram API error response:', responseText);
+      throw new Error(`Telegram API error: ${response.status} ${responseText}`);
     }
     
-    const data = await response.json();
-    console.log('Telegram API response:', data);
+    const data = JSON.parse(responseText);
+    console.log('Telegram API parsed response:', data);
     return data;
   } catch (error) {
     console.error('Error sending Telegram message:', error);
@@ -41,35 +43,14 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 
 const handleStart = async (chatId: number) => {
   console.log('Handling /start command for chat ID:', chatId);
-  const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/ask - Ask a medical question\n/upload - Upload documents\n/calculate - Access calculators\n/history - View chat history\n/resources - Access resources\n/feedback - Submit feedback`;
+  const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands`;
   
   return sendTelegramMessage(chatId, welcomeMessage);
 };
 
-const handleHelp = async (chatId: number) => {
-  console.log('Handling /help command for chat ID:', chatId);
-  const helpMessage = `Available Commands:\n\n` +
-    `Core Commands:\n` +
-    `/start - Initialize bot and get Chat ID\n` +
-    `/help - Show this help message\n` +
-    `/ask <question> - Submit medical questions\n` +
-    `/upload - Upload documents\n` +
-    `/calculate - Access calculators\n` +
-    `/history - View chat history\n` +
-    `/resources - Access resources\n` +
-    `/feedback - Submit feedback\n\n` +
-    `Specialized Commands:\n` +
-    `/drug_dose <drug> <weight> - Calculate drug doses\n` +
-    `/growth_chart - Access growth charts\n` +
-    `/emergency_protocols - View emergency protocols\n` +
-    `/immunization <age> - Get vaccination schedules\n` +
-    `/calculate_bmi <weight> <height> - Calculate BMI\n` +
-    `/neonate_criteria - Access neonatal guidelines`;
-
-  return sendTelegramMessage(chatId, helpMessage);
-};
-
 serve(async (req) => {
+  console.log('Received request:', req.method, req.url);
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -81,28 +62,25 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    console.log('Received request:', body);
+    console.log('Request body:', JSON.stringify(body, null, 2));
 
-    // Check if this is a webhook update from Telegram
+    // Handle webhook update from Telegram
     if (body.message?.text) {
       const chatId = body.message.chat.id;
       const text = body.message.text;
-      console.log('Processing message:', { chatId, text });
+      console.log('Processing Telegram message:', { chatId, text });
 
       if (text.startsWith('/')) {
-        const [command, ...args] = text.split(' ');
-        console.log('Processing command:', command, 'with args:', args);
+        const [command] = text.split(' ');
+        console.log('Processing command:', command);
 
         try {
           switch (command) {
             case '/start':
               await handleStart(chatId);
               break;
-            case '/help':
-              await handleHelp(chatId);
-              break;
             default:
-              await sendTelegramMessage(chatId, "Command not implemented yet. Use /help to see available commands.");
+              await sendTelegramMessage(chatId, "Command not recognized. Use /help to see available commands.");
           }
         } catch (error) {
           console.error('Error handling command:', error);
@@ -115,7 +93,7 @@ serve(async (req) => {
       });
     }
 
-    // Handle regular message sending from the web application
+    // Handle message sending from the web application
     const { message, chatId } = body;
     console.log('Sending message to Telegram:', { message, chatId });
 
@@ -127,9 +105,14 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in telegram-bot function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack 
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });

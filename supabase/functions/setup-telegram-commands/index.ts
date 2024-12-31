@@ -31,27 +31,16 @@ serve(async (req) => {
       }
     );
 
+    const deleteData = await deleteResponse.text();
+    console.log('Delete commands response:', deleteData);
+
     if (!deleteResponse.ok) {
-      const errorData = await deleteResponse.text();
-      console.error('Error deleting commands:', errorData);
-      throw new Error(`Failed to delete commands: ${errorData}`);
+      throw new Error(`Failed to delete commands: ${deleteData}`);
     }
 
     const commands = [
       { command: "start", description: "Initialize bot and get Chat ID" },
-      { command: "help", description: "Show available commands" },
-      { command: "ask", description: "Ask a medical question" },
-      { command: "upload", description: "Upload documents for analysis" },
-      { command: "calculate", description: "Access medical calculators" },
-      { command: "history", description: "View chat history" },
-      { command: "resources", description: "Access medical resources" },
-      { command: "feedback", description: "Submit feedback" },
-      { command: "drug_dose", description: "Calculate drug doses" },
-      { command: "growth_chart", description: "Access growth charts" },
-      { command: "emergency_protocols", description: "View emergency protocols" },
-      { command: "immunization", description: "Get vaccination schedules" },
-      { command: "calculate_bmi", description: "Calculate BMI" },
-      { command: "neonate_criteria", description: "Access neonatal guidelines" }
+      { command: "help", description: "Show available commands" }
     ];
 
     console.log('Setting new commands:', commands);
@@ -66,22 +55,26 @@ serve(async (req) => {
       }
     );
 
-    const data = await response.json();
-    console.log('Telegram API response:', data);
+    const responseText = await response.text();
+    console.log('Set commands raw response:', responseText);
 
-    if (!data.ok) {
-      throw new Error(`Telegram API error: ${data.description}`);
+    if (!response.ok) {
+      throw new Error(`Telegram API error: ${responseText}`);
     }
 
-    console.log('Bot commands set up successfully');
+    const data = JSON.parse(responseText);
+    console.log('Set commands parsed response:', data);
+
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error setting up bot commands:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
-      {
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack 
+      }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
