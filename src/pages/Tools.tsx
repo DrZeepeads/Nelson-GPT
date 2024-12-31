@@ -6,7 +6,6 @@ import {
   Scale,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { LearningResources } from "@/components/learning/LearningResources";
 import { Card } from "@/components/ui/card";
 
 const Tools = () => {
@@ -60,7 +59,7 @@ const Tools = () => {
         <h1 className="text-lg font-semibold ml-2">Clinical Tools</h1>
       </div>
 
-      <div className="max-w-4xl mx-auto p-4 space-y-8">
+      <div className="max-w-4xl mx-auto p-4">
         {/* Main Tools Section */}
         <section>
           <h2 className="text-xl font-semibold mb-4 px-1">Essential Tools</h2>
@@ -83,12 +82,6 @@ const Tools = () => {
               </Card>
             ))}
           </div>
-        </section>
-
-        {/* Learning Resources Section */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4 px-1">Learning Resources</h2>
-          <LearningResources />
         </section>
       </div>
     </div>
