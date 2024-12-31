@@ -113,6 +113,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               strokeDasharray="3 3"
               dot={false}
               name="+3 SD"
+              connectNulls
             />
             <Line 
               data={referenceData}
@@ -122,6 +123,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               strokeDasharray="3 3"
               dot={false}
               name="+2 SD"
+              connectNulls
             />
             <Line 
               data={referenceData}
@@ -131,6 +133,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               strokeDasharray="3 3"
               dot={false}
               name="Median"
+              connectNulls
             />
             <Line 
               data={referenceData}
@@ -140,6 +143,7 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               strokeDasharray="3 3"
               dot={false}
               name="-2 SD"
+              connectNulls
             />
             <Line 
               data={referenceData}
@@ -149,43 +153,47 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               strokeDasharray="3 3"
               dot={false}
               name="-3 SD"
+              connectNulls
             />
 
             {/* Patient Data */}
             {activeChart === 'height' && (
               <Line 
                 data={data}
-                type="monotone" 
+                type="natural" 
                 dataKey="height" 
                 stroke={getLineColor()} 
                 strokeWidth={3}
                 dot={{ fill: getLineColor(), strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6, strokeWidth: 2 }}
-                name="Height (cm)" 
+                name="Height (cm)"
+                connectNulls
               />
             )}
             {activeChart === 'weight' && (
               <Line 
                 data={data}
-                type="monotone" 
+                type="natural" 
                 dataKey="weight" 
                 stroke={getLineColor()} 
                 strokeWidth={3}
                 dot={{ fill: getLineColor(), strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6, strokeWidth: 2 }}
-                name="Weight (kg)" 
+                name="Weight (kg)"
+                connectNulls
               />
             )}
             {activeChart === 'head' && (
               <Line 
                 data={data}
-                type="monotone" 
+                type="natural" 
                 dataKey="head" 
                 stroke={getLineColor()} 
                 strokeWidth={3}
                 dot={{ fill: getLineColor(), strokeWidth: 2, r: 4 }}
                 activeDot={{ r: 6, strokeWidth: 2 }}
-                name="Head Circ. (cm)" 
+                name="Head Circ. (cm)"
+                connectNulls
               />
             )}
           </LineChart>
