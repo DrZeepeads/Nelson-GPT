@@ -9,6 +9,34 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const sendTelegramMessage = async (chatId: number | string, text: string) => {
+  console.log('Sending message to Telegram:', { chatId, text });
+  try {
+    const response = await fetch(`${telegramApi}/sendMessage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text,
+        parse_mode: 'HTML',
+      }),
+    });
+    
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('Telegram API error:', errorData);
+      throw new Error(`Telegram API error: ${response.status} ${errorData}`);
+    }
+    
+    return response.json();
+  } catch (error) {
+    console.error('Error sending Telegram message:', error);
+    throw error;
+  }
+};
+
 const handleStart = async (chatId: number) => {
   const welcomeMessage = `Welcome to @Peadiatric_Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/ask - Ask a medical question\n/upload - Upload documents\n/calculate - Access calculators\n/history - View chat history\n/resources - Access resources\n/feedback - Submit feedback`;
   
@@ -21,14 +49,14 @@ const handleHelp = async (chatId: number) => {
     `/start - Initialize bot and get Chat ID\n` +
     `/help - Show this help message\n` +
     `/ask <question> - Submit medical questions\n` +
-    `/upload - Upload documents for analysis\n` +
-    `/calculate - Access medical calculators\n` +
-    `/history - View previous queries\n` +
-    `/resources - Access pediatric resources\n` +
+    `/upload - Upload documents\n` +
+    `/calculate - Access calculators\n` +
+    `/history - View chat history\n` +
+    `/resources - Access resources\n` +
     `/feedback - Submit feedback\n\n` +
     `Specialized Commands:\n` +
     `/drug_dose <drug> <weight> - Calculate drug doses\n` +
-    `/growth_chart - Access growth chart tools\n` +
+    `/growth_chart - Access growth charts\n` +
     `/emergency_protocols - View emergency protocols\n` +
     `/immunization <age> - Get vaccination schedules\n` +
     `/calculate_bmi <weight> <height> - Calculate BMI\n` +
@@ -56,21 +84,6 @@ const handleCalculateBMI = async (chatId: number, args: string[]) => {
   }
   const bmi = weight / ((height/100) * (height/100));
   return sendTelegramMessage(chatId, `BMI: ${bmi.toFixed(2)}`);
-};
-
-const sendTelegramMessage = async (chatId: number, text: string) => {
-  const response = await fetch(`${telegramApi}/sendMessage`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: text,
-      parse_mode: 'HTML',
-    }),
-  });
-  return response.json();
 };
 
 serve(async (req) => {
