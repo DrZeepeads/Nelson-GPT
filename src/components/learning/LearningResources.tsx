@@ -1,4 +1,4 @@
-import { Book, ListCheck, Brain, Stethoscope, Microscope, Flask } from "lucide-react";
+import { Book, ListCheck, Brain, Stethoscope, Microscope, Beaker } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export const LearningResources = () => {
@@ -41,7 +41,7 @@ export const LearningResources = () => {
       route: '/learning/lab-values'
     },
     {
-      icon: Flask,
+      icon: Beaker,
       title: "Research Updates",
       description: "Latest pediatric research and guidelines",
       color: "text-amber-500",
