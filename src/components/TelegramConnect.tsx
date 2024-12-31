@@ -7,14 +7,22 @@ import { ExternalLink } from 'lucide-react';
 
 export const TelegramConnect = () => {
   const [chatId, setChatId] = useState('');
+  const [isSettingUp, setIsSettingUp] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    setupWebhookAndCommands();
+    // Check if webhook was already set up
+    const webhookSetup = localStorage.getItem('telegram_webhook_setup');
+    if (!webhookSetup) {
+      setupWebhookAndCommands();
+    }
   }, []);
 
   const setupWebhookAndCommands = async () => {
+    if (isSettingUp) return;
+    
     try {
+      setIsSettingUp(true);
       console.log('Setting up webhook...');
       const origin = window.location.origin;
       console.log('Using origin:', origin);
@@ -28,7 +36,7 @@ export const TelegramConnect = () => {
         console.error('Webhook setup error:', webhookResponse.error);
         toast({
           title: 'Error',
-          description: 'Failed to set up webhook. Please try again.',
+          description: 'Failed to set up webhook. Please try again later.',
           variant: 'destructive',
         });
         return;
@@ -46,7 +54,7 @@ export const TelegramConnect = () => {
         console.error('Commands setup error:', commandsResponse.error);
         toast({
           title: 'Error',
-          description: 'Failed to set up bot commands. Please try again.',
+          description: 'Failed to set up bot commands. Please try again later.',
           variant: 'destructive',
         });
         return;
@@ -63,6 +71,7 @@ export const TelegramConnect = () => {
       }
 
       console.log('Bot setup completed successfully');
+      localStorage.setItem('telegram_webhook_setup', 'true');
       toast({
         title: 'Success',
         description: 'Bot has been set up successfully.',
@@ -71,9 +80,11 @@ export const TelegramConnect = () => {
       console.error('Error during bot setup:', error);
       toast({
         title: 'Error',
-        description: 'Failed to set up the bot. Please try again.',
+        description: 'Failed to set up the bot. Please try again later.',
         variant: 'destructive',
       });
+    } finally {
+      setIsSettingUp(false);
     }
   };
 
