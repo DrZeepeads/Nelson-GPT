@@ -2,18 +2,8 @@ import {
   LineChart, 
   Calculator, 
   ArrowLeft, 
-  BookOpen, 
-  Stethoscope, 
-  Brain,
-  Heart,
-  Pill,
-  Thermometer,
   Baby,
-  Activity,
   Scale,
-  TestTube,
-  Clipboard,
-  AlarmClock
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { LearningResources } from "@/components/learning/LearningResources";
@@ -54,22 +44,6 @@ const Tools = () => {
       route: "/bmi-calculator",
       color: "text-purple-500",
       bgColor: "bg-purple-50",
-    },
-    {
-      icon: Heart,
-      title: "Vital Signs",
-      description: "Age-based normal ranges and monitoring",
-      route: "/vitals",
-      color: "text-red-500",
-      bgColor: "bg-red-50",
-    },
-    {
-      icon: TestTube,
-      title: "Lab Values",
-      description: "Reference ranges and interpretation",
-      route: "/lab-values",
-      color: "text-amber-500",
-      bgColor: "bg-amber-50",
     }
   ];
 
@@ -90,7 +64,7 @@ const Tools = () => {
         {/* Main Tools Section */}
         <section>
           <h2 className="text-xl font-semibold mb-4 px-1">Essential Tools</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {mainTools.map((tool) => (
               <Card
                 key={tool.route}
