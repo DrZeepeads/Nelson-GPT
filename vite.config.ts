@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
   server: {
     host: true, // Listen on all available network interfaces
     port: 8080,
@@ -44,4 +44,4 @@ export default defineConfig(({ mode }) => ({
       '@': '/src',
     },
   },
-}));
+});
