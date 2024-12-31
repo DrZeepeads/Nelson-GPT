@@ -6,10 +6,9 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Line
 } from "recharts";
 import { whoZScores } from "@/utils/whoZScores";
-import { ReferenceLines } from "./ReferenceLines";
-import { PatientDataLine } from "./PatientDataLine";
 
 interface GrowthData {
   age: number;
@@ -53,26 +52,33 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
 
   const gender = data[0]?.gender || 'boys';
   
-  // Create reference data points for WHO z-scores
-  const referenceData = Object.keys(whoZScores[gender][activeChart]).map(age => ({
-    age: parseInt(age),
-    ...whoZScores[gender][activeChart][parseInt(age)].reduce((acc, value, index) => ({
-      ...acc,
-      [`SD${index - 3}`]: value
-    }), {})
-  }));
-
-  // Create patient data points
-  const patientData = data.map(d => ({
-    age: d.age,
-    value: d[activeChart]
-  }));
+  // Create a unified dataset that includes both WHO reference data and patient data
+  const chartData = Object.keys(whoZScores[gender][activeChart]).map(ageStr => {
+    const age = parseInt(ageStr);
+    const whoValues = whoZScores[gender][activeChart][age];
+    const patientData = data.find(d => d.age === age);
+    
+    return {
+      age,
+      SD3: whoValues[6],
+      SD2: whoValues[5],
+      SD1: whoValues[4],
+      SD0: whoValues[3],
+      'SD-1': whoValues[2],
+      'SD-2': whoValues[1],
+      'SD-3': whoValues[0],
+      patientValue: patientData ? patientData[activeChart] : null
+    };
+  });
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md">
       <div className="h-[450px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+          <LineChart 
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis 
               dataKey="age" 
@@ -85,7 +91,6 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               stroke="#cbd5e1"
               type="number"
               domain={[0, 24]}
-              allowDataOverflow
             />
             <YAxis 
               label={{ 
@@ -113,11 +118,63 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               }}
             />
             
-            <ReferenceLines data={referenceData} />
-            <PatientDataLine 
-              data={patientData}
-              lineColor={getLineColor()} 
+            {/* WHO Reference Lines */}
+            <Line 
+              type="monotone"
+              dataKey="SD3"
+              stroke="#e2e8f0"
+              strokeDasharray="3 3"
+              dot={false}
+              name="+3 SD"
+              connectNulls
+            />
+            <Line 
+              type="monotone"
+              dataKey="SD2"
+              stroke="#e2e8f0"
+              strokeDasharray="3 3"
+              dot={false}
+              name="+2 SD"
+              connectNulls
+            />
+            <Line 
+              type="monotone"
+              dataKey="SD0"
+              stroke="#94a3b8"
+              strokeDasharray="3 3"
+              dot={false}
+              name="Median"
+              connectNulls
+            />
+            <Line 
+              type="monotone"
+              dataKey="SD-2"
+              stroke="#e2e8f0"
+              strokeDasharray="3 3"
+              dot={false}
+              name="-2 SD"
+              connectNulls
+            />
+            <Line 
+              type="monotone"
+              dataKey="SD-3"
+              stroke="#e2e8f0"
+              strokeDasharray="3 3"
+              dot={false}
+              name="-3 SD"
+              connectNulls
+            />
+
+            {/* Patient Data Line */}
+            <Line 
+              type="monotone"
+              dataKey="patientValue"
+              stroke={getLineColor()}
+              strokeWidth={3}
+              dot={{ fill: getLineColor(), strokeWidth: 2, r: 4 }}
+              activeDot={{ r: 6, strokeWidth: 2 }}
               name={getYAxisLabel()}
+              connectNulls
             />
           </LineChart>
         </ResponsiveContainer>
