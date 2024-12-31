@@ -30,16 +30,20 @@ serve(async (req) => {
     const webhookUrl = `${baseUrl}/functions/v1/telegram-bot`
     console.log('Setting webhook URL:', webhookUrl)
 
-    async function setWebhook(retryCount = 0): Promise<Response> {
+    // Implement retry logic with exponential backoff
+    const maxRetries = 3;
+    let lastError = null;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
-        // Add a small delay before retry attempts
-        if (retryCount > 0) {
-          await sleep(1000 * retryCount); // Exponential backoff
+        // Add delay for retry attempts
+        if (attempt > 0) {
+          const delay = Math.pow(2, attempt) * 1000; // exponential backoff
+          console.log(`Retry attempt ${attempt + 1}, waiting ${delay}ms`);
+          await sleep(delay);
         }
 
         const setWebhookUrl = `https://api.telegram.org/bot${telegramToken}/setWebhook`
-        console.log('Making request to:', setWebhookUrl)
-        
         const setWebhookResponse = await fetch(setWebhookUrl, {
           method: 'POST',
           headers: {
@@ -54,63 +58,42 @@ serve(async (req) => {
         const webhookResponseText = await setWebhookResponse.text()
         console.log('Webhook response:', webhookResponseText)
 
-        // Handle rate limiting
-        if (setWebhookResponse.status === 429 && retryCount < 3) {
-          const retryAfter = setWebhookResponse.headers.get('Retry-After') || '1'
-          await sleep(parseInt(retryAfter) * 1000)
-          return setWebhook(retryCount + 1)
-        }
-
         if (!setWebhookResponse.ok) {
-          console.error('Error setting webhook:', webhookResponseText)
-          throw new Error(`Failed to set webhook: ${webhookResponseText}`)
+          const error = new Error(`Failed to set webhook: ${webhookResponseText}`)
+          console.error('Webhook setup failed:', error)
+          lastError = error
+          
+          // If it's not a rate limit error, break the retry loop
+          if (setWebhookResponse.status !== 429) {
+            break
+          }
+          continue // Try again if it was a rate limit error
         }
 
-        let webhookData
-        try {
-          webhookData = JSON.parse(webhookResponseText)
-        } catch (e) {
-          console.error('Error parsing webhook response:', e)
-          throw new Error('Invalid response from Telegram API')
-        }
-
-        // Get webhook info for verification
+        // If successful, get webhook info for verification
         const getWebhookInfoUrl = `https://api.telegram.org/bot${telegramToken}/getWebhookInfo`
-        console.log('Getting webhook info from:', getWebhookInfoUrl)
-        
         const webhookInfoResponse = await fetch(getWebhookInfoUrl)
         const webhookInfoText = await webhookInfoResponse.text()
-        console.log('Webhook info response:', webhookInfoText)
-        
-        if (!webhookInfoResponse.ok) {
-          console.error('Error getting webhook info:', webhookInfoText)
-          throw new Error(`Failed to get webhook info: ${webhookInfoText}`)
-        }
-
-        let webhookInfo
-        try {
-          webhookInfo = JSON.parse(webhookInfoText)
-        } catch (e) {
-          console.error('Error parsing webhook info:', e)
-          throw new Error('Invalid response from Telegram API')
-        }
+        console.log('Webhook info:', webhookInfoText)
 
         return new Response(
           JSON.stringify({ 
-            setWebhook: webhookData,
-            webhookInfo: webhookInfo
+            success: true,
+            webhook: JSON.parse(webhookResponseText),
+            webhookInfo: JSON.parse(webhookInfoText)
           }),
           { 
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           },
         )
       } catch (error) {
-        console.error('Error in setWebhook:', error)
-        throw error
+        console.error(`Attempt ${attempt + 1} failed:`, error)
+        lastError = error
       }
     }
 
-    return await setWebhook()
+    // If we get here, all retries failed
+    throw lastError || new Error('Failed to set webhook after all retries')
   } catch (error) {
     console.error('Error in setup-telegram-webhook:', error)
     return new Response(
