@@ -5,6 +5,8 @@ import { ExampleQuestions } from "./ExampleQuestions";
 import { ScrollArea } from "./ui/scroll-area";
 import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
+import { TelegramConnect } from "./TelegramConnect";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ChatArea = () => {
   const [messages, setMessages] = useState<Array<{
@@ -45,6 +47,21 @@ export const ChatArea = () => {
         timestamp: new Date().toLocaleTimeString(),
       };
       setMessages((prev) => [...prev, botResponse]);
+
+      // Send to Telegram if chat ID is available
+      const telegramChatId = localStorage.getItem('telegram_chat_id');
+      if (telegramChatId) {
+        try {
+          await supabase.functions.invoke('telegram-bot', {
+            body: {
+              message: `User: ${message}\n\nAssistant: ${response}`,
+              chatId: telegramChatId,
+            },
+          });
+        } catch (error) {
+          console.error('Error sending to Telegram:', error);
+        }
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -68,6 +85,7 @@ export const ChatArea = () => {
                 Ask any question about pediatric conditions, treatments, or guidelines.
               </p>
             </div>
+            <TelegramConnect />
             <div className="space-y-3">
               <h2 className="text-lg font-semibold text-nelson-primary">Suggested Questions</h2>
               <ExampleQuestions onQuestionClick={handleSendMessage} />
