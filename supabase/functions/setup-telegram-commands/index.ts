@@ -14,6 +14,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Setting up bot commands...');
+    
     const commands = [
       {
         command: 'start',
@@ -39,6 +41,10 @@ serve(async (req) => {
 
     const result = await response.json();
     console.log('Set commands response:', result);
+
+    if (!result.ok) {
+      throw new Error(`Failed to set commands: ${result.description}`);
+    }
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
