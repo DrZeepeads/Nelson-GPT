@@ -26,7 +26,7 @@ serve(async (req) => {
 
     // Set the webhook
     const setWebhookUrl = `https://api.telegram.org/bot${telegramToken}/setWebhook`
-    const response = await fetch(setWebhookUrl, {
+    const setWebhookResponse = await fetch(setWebhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -37,12 +37,26 @@ serve(async (req) => {
       }),
     })
 
-    const data = await response.json()
+    if (!setWebhookResponse.ok) {
+      const errorText = await setWebhookResponse.text();
+      console.error('Error setting webhook:', errorText);
+      throw new Error(`Failed to set webhook: ${errorText}`);
+    }
+
+    const data = await setWebhookResponse.json()
     console.log('Webhook setup response:', data)
 
     // Get webhook info for verification
     const getWebhookInfoUrl = `https://api.telegram.org/bot${telegramToken}/getWebhookInfo`
-    const webhookInfo = await fetch(getWebhookInfoUrl).then(res => res.json())
+    const webhookInfoResponse = await fetch(getWebhookInfoUrl)
+    
+    if (!webhookInfoResponse.ok) {
+      const errorText = await webhookInfoResponse.text();
+      console.error('Error getting webhook info:', errorText);
+      throw new Error(`Failed to get webhook info: ${errorText}`);
+    }
+
+    const webhookInfo = await webhookInfoResponse.json()
     console.log('Webhook info:', webhookInfo)
 
     return new Response(
@@ -55,7 +69,7 @@ serve(async (req) => {
       },
     )
   } catch (error) {
-    console.error('Error setting up webhook:', error)
+    console.error('Error in setup-telegram-webhook:', error)
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
