@@ -9,6 +9,70 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const handleStart = async (chatId: number) => {
+  const welcomeMessage = `Welcome to @Peadiatric_Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/ask - Ask a medical question\n/upload - Upload documents\n/calculate - Access calculators\n/history - View chat history\n/resources - Access resources\n/feedback - Submit feedback`;
+  
+  return sendTelegramMessage(chatId, welcomeMessage);
+};
+
+const handleHelp = async (chatId: number) => {
+  const helpMessage = `Available Commands:\n\n` +
+    `Core Commands:\n` +
+    `/start - Initialize bot and get Chat ID\n` +
+    `/help - Show this help message\n` +
+    `/ask <question> - Submit medical questions\n` +
+    `/upload - Upload documents for analysis\n` +
+    `/calculate - Access medical calculators\n` +
+    `/history - View previous queries\n` +
+    `/resources - Access pediatric resources\n` +
+    `/feedback - Submit feedback\n\n` +
+    `Specialized Commands:\n` +
+    `/drug_dose <drug> <weight> - Calculate drug doses\n` +
+    `/growth_chart - Access growth chart tools\n` +
+    `/emergency_protocols - View emergency protocols\n` +
+    `/immunization <age> - Get vaccination schedules\n` +
+    `/calculate_bmi <weight> <height> - Calculate BMI\n` +
+    `/neonate_criteria - Access neonatal guidelines`;
+
+  return sendTelegramMessage(chatId, helpMessage);
+};
+
+const handleDrugDose = async (chatId: number, args: string[]) => {
+  if (args.length < 2) {
+    return sendTelegramMessage(chatId, "Please provide drug name and weight. Format: /drug_dose <drug> <weight>");
+  }
+  const [drug, weight] = args;
+  // TODO: Implement drug dose calculation logic
+  return sendTelegramMessage(chatId, `Calculating dose for ${drug} based on weight ${weight}kg...`);
+};
+
+const handleCalculateBMI = async (chatId: number, args: string[]) => {
+  if (args.length < 2) {
+    return sendTelegramMessage(chatId, "Please provide weight and height. Format: /calculate_bmi <weight> <height>");
+  }
+  const [weight, height] = args.map(Number);
+  if (isNaN(weight) || isNaN(height)) {
+    return sendTelegramMessage(chatId, "Please provide valid numbers for weight and height");
+  }
+  const bmi = weight / ((height/100) * (height/100));
+  return sendTelegramMessage(chatId, `BMI: ${bmi.toFixed(2)}`);
+};
+
+const sendTelegramMessage = async (chatId: number, text: string) => {
+  const response = await fetch(`${telegramApi}/sendMessage`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: text,
+      parse_mode: 'HTML',
+    }),
+  });
+  return response.json();
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -21,107 +85,71 @@ serve(async (req) => {
       const update = await req.json();
       console.log('Received Telegram update:', JSON.stringify(update));
       
-      // Handle /start command
-      if (update.message?.text === '/start') {
+      if (update.message?.text) {
         const chatId = update.message.chat.id;
-        console.log('Handling /start command for chat ID:', chatId);
-        
-        const welcomeMessage = `Welcome to @Peads_Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account. This will allow you to receive your chat history and updates directly here in Telegram.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands\n/status - Check connection status`;
+        const text = update.message.text;
+        const [command, ...args] = text.split(' ');
 
-        const response = await fetch(`${telegramApi}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: welcomeMessage,
-            parse_mode: 'HTML',
-          }),
-        });
-        
-        const result = await response.json();
-        console.log('Telegram API response for /start:', JSON.stringify(result));
-        
-        if (!result.ok) {
-          throw new Error(`Failed to send welcome message: ${result.description}`);
+        switch (command) {
+          case '/start':
+            await handleStart(chatId);
+            break;
+          case '/help':
+            await handleHelp(chatId);
+            break;
+          case '/drug_dose':
+            await handleDrugDose(chatId, args);
+            break;
+          case '/calculate_bmi':
+            await handleCalculateBMI(chatId, args);
+            break;
+          case '/growth_chart':
+            await sendTelegramMessage(chatId, "Access growth charts in the web application");
+            break;
+          case '/emergency_protocols':
+            await sendTelegramMessage(chatId, "Emergency protocols feature coming soon");
+            break;
+          case '/immunization':
+            await sendTelegramMessage(chatId, "Immunization schedules feature coming soon");
+            break;
+          case '/neonate_criteria':
+            await sendTelegramMessage(chatId, "Neonatal criteria feature coming soon");
+            break;
+          case '/resources':
+            await sendTelegramMessage(chatId, "Medical resources feature coming soon");
+            break;
+          case '/feedback':
+            await sendTelegramMessage(chatId, "Feedback feature coming soon");
+            break;
+          case '/history':
+            await sendTelegramMessage(chatId, "Chat history feature coming soon");
+            break;
+          case '/calculate':
+            await sendTelegramMessage(chatId, "Medical calculators feature coming soon");
+            break;
+          case '/upload':
+            await sendTelegramMessage(chatId, "Document upload feature coming soon");
+            break;
+          default:
+            if (text.startsWith('/')) {
+              await sendTelegramMessage(chatId, "Unknown command. Use /help to see available commands.");
+            }
         }
-        
-        return new Response(JSON.stringify({ ok: true }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
       }
-
-      // Handle /help command
-      if (update.message?.text === '/help') {
-        const chatId = update.message.chat.id;
-        console.log('Handling /help command for chat ID:', chatId);
-        
-        const helpMessage = `Available commands:\n/start - Show welcome message and your Chat ID\n/help - Show this help message\n/status - Check connection status\n\nTo use @Peads_Bot:\n1. Copy your Chat ID from the /start command\n2. Paste it in the web application\n3. Test the connection\n4. You'll receive your chat history here automatically`;
-
-        await fetch(`${telegramApi}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: helpMessage,
-            parse_mode: 'HTML',
-          }),
-        });
-        
-        return new Response(JSON.stringify({ ok: true }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-
-      // Handle /status command
-      if (update.message?.text === '/status') {
-        const chatId = update.message.chat.id;
-        console.log('Handling /status command for chat ID:', chatId);
-        
-        const statusMessage = `@Peads_Bot Status: 🟢 Online\nChat ID: ${chatId}\n\nYour messages from @Peads_Bot will be forwarded to this chat automatically.`;
-
-        await fetch(`${telegramApi}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: statusMessage,
-            parse_mode: 'HTML',
-          }),
-        });
-        
-        return new Response(JSON.stringify({ ok: true }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
+      
+      return new Response(JSON.stringify({ ok: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     // Handle regular message sending from the web application
     const { message, chatId } = await req.json();
     console.log('Sending message to Telegram:', { message, chatId });
 
-    // Send message to Telegram
-    const response = await fetch(`${telegramApi}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'HTML',
-      }),
-    });
+    const response = await sendTelegramMessage(chatId, message);
+    console.log('Telegram API response:', response);
 
-    const result = await response.json();
-    console.log('Telegram API response:', result);
-
-    return new Response(JSON.stringify(result), {
+    return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {

@@ -1,60 +1,71 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const telegramToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const telegramApi = `https://api.telegram.org/bot${telegramToken}`;
+
+const commands = [
+  {
+    command: "start",
+    description: "Initialize the bot and get your Chat ID"
+  },
+  {
+    command: "help",
+    description: "Display available commands and instructions"
+  },
+  {
+    command: "ask",
+    description: "Submit a medical or pediatric question"
+  },
+  {
+    command: "upload",
+    description: "Upload documents or images for analysis"
+  },
+  {
+    command: "calculate",
+    description: "Calculate calorie intake for premature babies"
+  },
+  {
+    command: "history",
+    description: "View your previous queries and responses"
+  },
+  {
+    command: "resources",
+    description: "Access pediatric references and guidelines"
+  },
+  {
+    command: "feedback",
+    description: "Submit feedback or report issues"
+  },
+  {
+    command: "drug_dose",
+    description: "Calculate pediatric drug dosages"
+  },
+  {
+    command: "growth_chart",
+    description: "Access growth chart tools and guidance"
+  },
+  {
+    command: "emergency_protocols",
+    description: "Quick access to emergency protocols"
+  },
+  {
+    command: "immunization",
+    description: "Get immunization schedules by age"
+  },
+  {
+    command: "calculate_bmi",
+    description: "Calculate and interpret pediatric BMI"
+  },
+  {
+    command: "neonate_criteria",
+    description: "Access neonatal care guidelines"
+  }
+];
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
-    if (!telegramToken) {
-      console.error('TELEGRAM_BOT_TOKEN is not configured');
-      return new Response(
-        JSON.stringify({
-          error: 'TELEGRAM_BOT_TOKEN is not configured in environment variables',
-          ok: false
-        }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
-    }
-
-    const telegramApi = `https://api.telegram.org/bot${telegramToken}`;
-    console.log('Setting up bot commands...');
+    console.log('Setting up Telegram bot commands...');
     
-    // First verify the bot token is valid
-    const verifyResponse = await fetch(`${telegramApi}/getMe`);
-    const verifyResult = await verifyResponse.json();
-    
-    console.log('Bot verification response:', verifyResult);
-    
-    if (!verifyResult.ok) {
-      throw new Error(`Invalid bot token: ${verifyResult.description}`);
-    }
-
-    const commands = [
-      {
-        command: 'start',
-        description: 'Start the bot and get your Chat ID',
-      },
-      {
-        command: 'help',
-        description: 'Show available commands and usage instructions',
-      },
-      {
-        command: 'status',
-        description: 'Check bot connection status',
-      },
-    ];
-
     const response = await fetch(`${telegramApi}/setMyCommands`, {
       method: 'POST',
       headers: {
@@ -64,27 +75,20 @@ serve(async (req) => {
     });
 
     const result = await response.json();
-    console.log('Set commands response:', result);
+    console.log('Setup result:', result);
 
     if (!result.ok) {
       throw new Error(`Failed to set commands: ${result.description}`);
     }
 
-    return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    return new Response(JSON.stringify({ success: true }), {
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error in setup-telegram-commands:', error);
-    return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        ok: false,
-        description: error.message 
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
-    );
+    console.error('Error setting up commands:', error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 });
