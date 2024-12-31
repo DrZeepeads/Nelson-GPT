@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
 const telegramToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
 const telegramApi = `https://api.telegram.org/bot${telegramToken}`;
@@ -31,7 +30,7 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
     }
     
     const data = await response.json();
-    console.log('Telegram API response:', data);
+    console.log('Telegram API response:', JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
     console.error('Error sending Telegram message:', error);
@@ -41,15 +40,13 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 
 const handleStart = async (chatId: number) => {
   console.log('Handling /start command for chat ID:', chatId);
-  const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.\n\nAvailable commands:\n/start - Show this welcome message\n/help - Show available commands`;
-  
+  const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`;
   return sendTelegramMessage(chatId, welcomeMessage);
 };
 
 serve(async (req) => {
   console.log('Received request:', req.method, req.url);
   
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -70,7 +67,7 @@ serve(async (req) => {
       console.log('Processing Telegram message:', { chatId, text });
 
       if (text.startsWith('/')) {
-        const [command] = text.split(' ');
+        const command = text.split(' ')[0];
         console.log('Processing command:', command);
 
         switch (command) {
@@ -78,7 +75,7 @@ serve(async (req) => {
             await handleStart(chatId);
             break;
           case '/help':
-            await sendTelegramMessage(chatId, "Available commands:\n/start - Initialize bot and get Chat ID\n/help - Show this help message");
+            await sendTelegramMessage(chatId, "Available commands:\n/start - Get your Chat ID\n/help - Show this help message");
             break;
           default:
             await sendTelegramMessage(chatId, "Command not recognized. Use /help to see available commands.");
@@ -92,13 +89,14 @@ serve(async (req) => {
 
     // Handle message sending from the web application
     const { message, chatId } = body;
+    if (!message || !chatId) {
+      throw new Error('Message and chatId are required');
+    }
     
-    // Prevent duplicate messages by adding a timestamp
     const timestampedMessage = `${message}\n\nSent at: ${new Date().toLocaleTimeString()}`;
     console.log('Sending message to Telegram:', { message: timestampedMessage, chatId });
 
     const response = await sendTelegramMessage(chatId, timestampedMessage);
-    console.log('Telegram API response:', response);
 
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -106,10 +104,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in telegram-bot function:', error);
     return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        stack: error.stack 
-      }), {
+      JSON.stringify({ error: error.message }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
