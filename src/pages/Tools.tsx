@@ -11,8 +11,7 @@ import {
   Baby,
   Activity,
   Scale,
-  Microscope,
-  Flask,
+  TestTube,
   Clipboard,
   AlarmClock
 } from "lucide-react";
@@ -30,6 +29,7 @@ const Tools = () => {
       description: "Track pediatric growth percentiles and development",
       route: "/growth-chart",
       color: "text-blue-500",
+      bgColor: "bg-blue-50",
     },
     {
       icon: Calculator,
@@ -37,6 +37,7 @@ const Tools = () => {
       description: "Calculate pediatric medication doses safely",
       route: "/drug-calculator",
       color: "text-green-500",
+      bgColor: "bg-green-50",
     },
     {
       icon: Baby,
@@ -44,6 +45,7 @@ const Tools = () => {
       description: "Calculate and track newborn APGAR scores",
       route: "/apgar-calculator",
       color: "text-pink-500",
+      bgColor: "bg-pink-50",
     },
     {
       icon: Scale,
@@ -51,7 +53,24 @@ const Tools = () => {
       description: "Calculate and interpret pediatric BMI",
       route: "/bmi-calculator",
       color: "text-purple-500",
+      bgColor: "bg-purple-50",
     },
+    {
+      icon: Heart,
+      title: "Vital Signs",
+      description: "Age-based normal ranges and monitoring",
+      route: "/vitals",
+      color: "text-red-500",
+      bgColor: "bg-red-50",
+    },
+    {
+      icon: TestTube,
+      title: "Lab Values",
+      description: "Reference ranges and interpretation",
+      route: "/lab-values",
+      color: "text-amber-500",
+      bgColor: "bg-amber-50",
+    }
   ];
 
   return (
@@ -71,15 +90,15 @@ const Tools = () => {
         {/* Main Tools Section */}
         <section>
           <h2 className="text-xl font-semibold mb-4 px-1">Essential Tools</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {mainTools.map((tool) => (
               <Card
                 key={tool.route}
-                className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+                className={`p-4 hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer ${tool.bgColor}`}
                 onClick={() => navigate(tool.route)}
               >
                 <div className="flex items-start space-x-4">
-                  <div className={`p-3 rounded-lg bg-gray-50 ${tool.color}`}>
+                  <div className={`p-3 rounded-lg bg-white/80 ${tool.color}`}>
                     <tool.icon className="w-6 h-6" />
                   </div>
                   <div>
