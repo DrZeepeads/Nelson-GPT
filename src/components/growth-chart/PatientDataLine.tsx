@@ -1,16 +1,17 @@
 import { Line } from "recharts";
 
 interface PatientDataLineProps {
-  dataKey: string;
+  data: { age: number; value: number }[];
   lineColor: string;
   name: string;
 }
 
-export const PatientDataLine = ({ dataKey, lineColor, name }: PatientDataLineProps) => {
+export const PatientDataLine = ({ data, lineColor, name }: PatientDataLineProps) => {
   return (
     <Line 
+      data={data}
       type="monotone" 
-      dataKey={dataKey} 
+      dataKey="value" 
       stroke={lineColor} 
       strokeWidth={3}
       dot={{ fill: lineColor, strokeWidth: 2, r: 4 }}

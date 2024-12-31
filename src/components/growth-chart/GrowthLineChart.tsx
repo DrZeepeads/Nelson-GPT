@@ -52,20 +52,27 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
   };
 
   const gender = data[0]?.gender || 'boys';
-  const combinedData = data.map(d => ({
-    age: d.age,
-    patientValue: d[activeChart],
-    ...Object.entries(whoZScores[gender][activeChart][d.age] || {}).reduce((acc, [key, value]) => ({
+  
+  // Create reference data points for WHO z-scores
+  const referenceData = Object.keys(whoZScores[gender][activeChart]).map(age => ({
+    age: parseInt(age),
+    ...whoZScores[gender][activeChart][parseInt(age)].reduce((acc, value, index) => ({
       ...acc,
-      [`SD${key}`]: value
+      [`SD${index - 3}`]: value
     }), {})
+  }));
+
+  // Create patient data points
+  const patientData = data.map(d => ({
+    age: d.age,
+    value: d[activeChart]
   }));
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md">
       <div className="h-[450px]">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={combinedData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+          <LineChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
             <XAxis 
               dataKey="age" 
@@ -76,7 +83,9 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               }}
               tick={{ fontSize: 12, fill: '#64748b' }}
               stroke="#cbd5e1"
-              allowDuplicatedCategory={false}
+              type="number"
+              domain={[0, 24]}
+              allowDataOverflow
             />
             <YAxis 
               label={{ 
@@ -104,9 +113,9 @@ export const GrowthLineChart = ({ data, activeChart }: GrowthLineChartProps) => 
               }}
             />
             
-            <ReferenceLines />
+            <ReferenceLines data={referenceData} />
             <PatientDataLine 
-              dataKey="patientValue"
+              data={patientData}
               lineColor={getLineColor()} 
               name={getYAxisLabel()}
             />

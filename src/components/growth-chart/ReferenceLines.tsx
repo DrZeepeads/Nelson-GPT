@@ -1,9 +1,14 @@
 import { Line } from "recharts";
 
-export const ReferenceLines = () => {
+interface ReferenceLinesProps {
+  data: any[];
+}
+
+export const ReferenceLines = ({ data }: ReferenceLinesProps) => {
   return (
     <>
       <Line 
+        data={data}
         type="monotone" 
         dataKey="SD3" 
         stroke="#e2e8f0"
@@ -13,6 +18,7 @@ export const ReferenceLines = () => {
         connectNulls
       />
       <Line 
+        data={data}
         type="monotone" 
         dataKey="SD2" 
         stroke="#e2e8f0"
@@ -22,6 +28,7 @@ export const ReferenceLines = () => {
         connectNulls
       />
       <Line 
+        data={data}
         type="monotone" 
         dataKey="SD0" 
         stroke="#94a3b8"
@@ -31,6 +38,7 @@ export const ReferenceLines = () => {
         connectNulls
       />
       <Line 
+        data={data}
         type="monotone" 
         dataKey="SD-2" 
         stroke="#e2e8f0"
@@ -40,6 +48,7 @@ export const ReferenceLines = () => {
         connectNulls
       />
       <Line 
+        data={data}
         type="monotone" 
         dataKey="SD-3" 
         stroke="#e2e8f0"
