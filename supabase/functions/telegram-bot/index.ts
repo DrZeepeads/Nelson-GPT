@@ -58,6 +58,7 @@ serve(async (req) => {
 
   try {
     if (!telegramToken) {
+      console.error('TELEGRAM_BOT_TOKEN is not set');
       throw new Error('TELEGRAM_BOT_TOKEN is not set');
     }
 
@@ -78,6 +79,9 @@ serve(async (req) => {
           switch (command) {
             case '/start':
               await handleStart(chatId);
+              break;
+            case '/help':
+              await sendTelegramMessage(chatId, "Available commands:\n/start - Initialize bot and get Chat ID\n/help - Show this help message");
               break;
             default:
               await sendTelegramMessage(chatId, "Command not recognized. Use /help to see available commands.");

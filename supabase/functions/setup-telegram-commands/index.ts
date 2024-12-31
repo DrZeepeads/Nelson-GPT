@@ -16,6 +16,7 @@ serve(async (req) => {
     
     const telegramToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
     if (!telegramToken) {
+      console.error('TELEGRAM_BOT_TOKEN is not set');
       throw new Error('TELEGRAM_BOT_TOKEN is not set');
     }
 
@@ -35,9 +36,11 @@ serve(async (req) => {
     console.log('Delete commands response:', deleteData);
 
     if (!deleteResponse.ok) {
+      console.error('Failed to delete commands:', deleteData);
       throw new Error(`Failed to delete commands: ${deleteData}`);
     }
 
+    // Set up new commands
     const commands = [
       { command: "start", description: "Initialize bot and get Chat ID" },
       { command: "help", description: "Show available commands" }
@@ -59,6 +62,7 @@ serve(async (req) => {
     console.log('Set commands raw response:', responseText);
 
     if (!response.ok) {
+      console.error('Failed to set commands:', responseText);
       throw new Error(`Telegram API error: ${responseText}`);
     }
 
