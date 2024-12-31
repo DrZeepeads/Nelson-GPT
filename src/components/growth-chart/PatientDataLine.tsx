@@ -1,30 +1,16 @@
 import { Line } from "recharts";
 
 interface PatientDataLineProps {
-  data: any[];
-  activeChart: 'height' | 'weight' | 'head';
+  dataKey: string;
   lineColor: string;
+  name: string;
 }
 
-export const PatientDataLine = ({ data, activeChart, lineColor }: PatientDataLineProps) => {
-  const getDataKey = () => {
-    switch (activeChart) {
-      case 'height':
-        return { key: 'height', name: 'Height (cm)' };
-      case 'weight':
-        return { key: 'weight', name: 'Weight (kg)' };
-      case 'head':
-        return { key: 'head', name: 'Head Circ. (cm)' };
-    }
-  };
-
-  const { key, name } = getDataKey();
-
+export const PatientDataLine = ({ dataKey, lineColor, name }: PatientDataLineProps) => {
   return (
     <Line 
-      data={data}
       type="monotone" 
-      dataKey={key} 
+      dataKey={dataKey} 
       stroke={lineColor} 
       strokeWidth={3}
       dot={{ fill: lineColor, strokeWidth: 2, r: 4 }}
