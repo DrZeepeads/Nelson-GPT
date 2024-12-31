@@ -2,7 +2,7 @@ import { MessageSquare, Stethoscope, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
-export default function Navigation() {
+export const Navigation = () => {
   const navigate = useNavigate();
 
   return (
@@ -36,4 +36,6 @@ export default function Navigation() {
       </div>
     </nav>
   );
-}
+};
+
+export default Navigation;
