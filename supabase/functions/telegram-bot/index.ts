@@ -60,6 +60,30 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
   }
 };
 
+const handleCommand = async (chatId: number, command: string) => {
+  console.log('Handling command:', { chatId, command });
+  
+  switch (command) {
+    case '/start':
+      return await sendTelegramMessage(
+        chatId,
+        `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`
+      );
+    case '/help':
+      return await sendTelegramMessage(
+        chatId,
+        'Available commands:\n\n' +
+        '/start - Get your Chat ID and connect to the web app\n' +
+        '/help - Show this help message'
+      );
+    default:
+      return await sendTelegramMessage(
+        chatId,
+        'Sorry, I don\'t understand that command. Try /help to see available commands.'
+      );
+  }
+};
+
 serve(async (req) => {
   console.log('Received request:', req.method, req.url);
   
@@ -91,9 +115,8 @@ serve(async (req) => {
       const text = body.message.text;
       console.log('Processing Telegram webhook message:', { chatId, text });
 
-      if (text === '/start') {
-        const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`;
-        await sendTelegramMessage(chatId, welcomeMessage);
+      if (text.startsWith('/')) {
+        await handleCommand(chatId, text);
       } else {
         const response = `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`;
         await sendTelegramMessage(chatId, response);
