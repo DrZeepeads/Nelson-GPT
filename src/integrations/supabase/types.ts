@@ -74,6 +74,7 @@ export type Database = {
       }
       drugs: {
         Row: {
+          category: string
           created_at: string
           dose_per_kg: number
           frequency: string | null
@@ -84,6 +85,7 @@ export type Database = {
           side_effects: string | null
         }
         Insert: {
+          category?: string
           created_at?: string
           dose_per_kg: number
           frequency?: string | null
@@ -94,6 +96,7 @@ export type Database = {
           side_effects?: string | null
         }
         Update: {
+          category?: string
           created_at?: string
           dose_per_kg?: number
           frequency?: string | null
