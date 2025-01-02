@@ -14,34 +14,47 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
     throw new Error('TELEGRAM_BOT_TOKEN is not set');
   }
 
-  console.log('Sending message to Telegram:', { chatId, text });
+  console.log('Starting sendTelegramMessage function with:', { chatId, text });
+  console.log('Using Telegram API URL:', `${telegramApi}/sendMessage`);
   
   try {
+    const requestBody = {
+      chat_id: chatId,
+      text: text,
+      parse_mode: 'HTML',
+    };
+    console.log('Request body:', JSON.stringify(requestBody, null, 2));
+
     const response = await fetch(`${telegramApi}/sendMessage`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: text,
-        parse_mode: 'HTML',
-      }),
+      body: JSON.stringify(requestBody),
     });
     
     const responseText = await response.text();
     console.log('Raw Telegram API response:', responseText);
 
     if (!response.ok) {
-      console.error('Telegram API error response:', responseText);
+      console.error('Telegram API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        response: responseText
+      });
       throw new Error(`Telegram API error: ${response.status} ${responseText}`);
     }
     
-    const data = JSON.parse(responseText);
-    console.log('Parsed Telegram API response:', JSON.stringify(data, null, 2));
-    return data;
+    try {
+      const data = JSON.parse(responseText);
+      console.log('Successfully parsed Telegram API response:', JSON.stringify(data, null, 2));
+      return data;
+    } catch (parseError) {
+      console.error('Error parsing Telegram API response:', parseError);
+      throw new Error(`Invalid JSON response: ${responseText}`);
+    }
   } catch (error) {
-    console.error('Error sending Telegram message:', error);
+    console.error('Error in sendTelegramMessage:', error);
     throw error;
   }
 };
@@ -49,7 +62,6 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 serve(async (req) => {
   console.log('Received request:', req.method, req.url);
   
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -64,7 +76,7 @@ serve(async (req) => {
 
     // Handle message sending from the web application
     if (body.message && body.chatId) {
-      console.log('Sending message to Telegram:', { message: body.message, chatId: body.chatId });
+      console.log('Processing web app message:', { message: body.message, chatId: body.chatId });
       const response = await sendTelegramMessage(body.chatId, body.message);
       
       return new Response(JSON.stringify(response), {
@@ -76,7 +88,7 @@ serve(async (req) => {
     if (body.message?.chat?.id) {
       const chatId = body.message.chat.id;
       const text = body.message.text;
-      console.log('Received Telegram message:', { chatId, text });
+      console.log('Processing Telegram webhook message:', { chatId, text });
 
       if (text === '/start') {
         const welcomeMessage = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`;
@@ -91,6 +103,7 @@ serve(async (req) => {
       });
     }
 
+    console.log('Invalid request body - missing required fields');
     return new Response(JSON.stringify({ error: 'Invalid request body' }), {
       status: 400,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

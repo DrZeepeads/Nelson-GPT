@@ -53,23 +53,32 @@ export const ChatArea = () => {
       const telegramChatId = localStorage.getItem('telegram_chat_id');
       if (telegramChatId) {
         try {
-          console.log('Sending to Telegram:', { message, response, chatId: telegramChatId });
+          console.log('Attempting to send message to Telegram:', { 
+            message, 
+            response, 
+            chatId: telegramChatId 
+          });
+          
           const telegramResponse = await supabase.functions.invoke('telegram-bot', {
             body: {
               message: `User: ${message}\n\nAssistant: ${response}`,
               chatId: telegramChatId,
             },
           });
-          console.log('Telegram response:', telegramResponse);
+          
+          console.log('Telegram API response:', telegramResponse);
           
           if (telegramResponse.error) {
+            console.error('Telegram API error:', telegramResponse.error);
             throw new Error(telegramResponse.error.message);
           }
+          
+          console.log('Successfully sent message to Telegram');
         } catch (error) {
           console.error('Error sending to Telegram:', error);
           toast({
             title: "Telegram Error",
-            description: "Failed to send message to Telegram. Please check your connection.",
+            description: "Failed to send message to Telegram. Please check your connection and chat ID.",
             variant: "destructive",
           });
         }
