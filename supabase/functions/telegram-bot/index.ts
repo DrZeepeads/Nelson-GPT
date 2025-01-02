@@ -16,6 +16,7 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 
   console.log('Starting sendTelegramMessage function with:', { chatId, text });
   console.log('Using Telegram API URL:', `${telegramApi}/sendMessage`);
+  console.log('Token exists:', !!telegramToken);
   
   try {
     const requestBody = {
