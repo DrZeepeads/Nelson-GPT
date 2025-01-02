@@ -32,7 +32,8 @@ export const DrugInformation = ({ selectedDrug, weight, age, drugs }: DrugInform
     const drug = drugs.find((d) => d.name === selectedDrug);
     if (!drug) return;
 
-    const calculatedDose = calculateDrugDose(weight, drug.dose);
+    const calculatedDose = (parseFloat(weight) * drug.dose_per_kg).toFixed(2);
+    const standardDose = `${drug.dose_per_kg} mg/kg ${drug.frequency || ''}`;
     
     const warnings: string[] = [];
     const clinicalNotes: string[] = [];
@@ -54,33 +55,25 @@ export const DrugInformation = ({ selectedDrug, weight, age, drugs }: DrugInform
       toxicityRisk = "medium";
     }
 
-    // Drug-specific warnings
-    if (drug.name.toLowerCase().includes("warfarin") || 
-        drug.name.toLowerCase().includes("heparin")) {
-      warnings.push("Anticoagulant - monitor coagulation parameters closely");
-      clinicalNotes.push("Regular PT/INR monitoring required");
+    // Maximum dose check
+    if (drug.max_dose && parseFloat(calculatedDose) > drug.max_dose) {
+      warnings.push(`Calculated dose exceeds maximum dose of ${drug.max_dose}mg`);
       toxicityRisk = "high";
     }
 
-    if (drug.dose.toLowerCase().includes("iv")) {
-      warnings.push("Ensure IV administration rate and dilution are appropriate");
-      clinicalNotes.push("Check compatibility with other IV medications");
+    // Add route information
+    if (drug.route) {
+      clinicalNotes.push(`Administration route: ${drug.route}`);
     }
 
-    // Add specific drug class warnings
-    if (drug.name.toLowerCase().includes("aminoglycoside")) {
-      warnings.push("Monitor renal function and drug levels");
-      clinicalNotes.push("Consider therapeutic drug monitoring");
-      toxicityRisk = "high";
-    }
-
-    if (drug.dose.toLowerCase().includes("kg")) {
-      clinicalNotes.push("Regular weight monitoring recommended for dose adjustments");
+    // Add side effects information
+    if (drug.side_effects) {
+      clinicalNotes.push(`Potential side effects: ${drug.side_effects}`);
     }
 
     setCalculationResult({
-      doseInfo: calculatedDose || "Unable to calculate specific dose",
-      standardDose: drug.dose,
+      doseInfo: `${calculatedDose} mg${drug.frequency ? ` ${drug.frequency}` : ''}`,
+      standardDose,
       warnings,
       clinicalNotes,
       toxicityRisk

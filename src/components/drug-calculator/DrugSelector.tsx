@@ -29,7 +29,7 @@ export const DrugSelector = ({
         <SelectContent>
           {drugs.map((drug) => (
             <SelectItem
-              key={drug.name}
+              key={drug.id}
               value={drug.name}
               className="text-base md:text-sm"
             >

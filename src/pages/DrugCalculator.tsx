@@ -1,28 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CategorySelector, type DrugCategory } from "@/components/drug-calculator/CategorySelector";
 import { PatientInfoForm } from "@/components/drug-calculator/PatientInfoForm";
 import { DrugSelector } from "@/components/drug-calculator/DrugSelector";
 import { DrugInformation } from "@/components/drug-calculator/DrugInformation";
-import {
-  nutritionDrugs,
-  endocrineDrugs,
-  rheumaticDrugs,
-  metabolicDrugs,
-  fluidElectrolyteDrugs,
-  geneticDrugs,
-  skinDrugs,
-  boneDrugs,
-  infectiousDrugs,
-  emergencyDrugs,
-  bloodDrugs,
-  urologyDrugs,
-  nephrologyDrugs,
-  gitDrugs,
-  respiratoryDrugs,
-  cardiovascularDrugs,
-} from "@/data/drugData";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchDrugs = async () => {
+  const { data, error } = await supabase
+    .from('drugs')
+    .select('*');
+  
+  if (error) throw error;
+  return data;
+};
 
 const DrugCalculator = () => {
   const navigate = useNavigate();
@@ -31,27 +24,18 @@ const DrugCalculator = () => {
   const [selectedDrug, setSelectedDrug] = useState("");
   const [category, setCategory] = useState<DrugCategory>("nutrition");
 
-  const getDrugsByCategory = (category: DrugCategory) => {
-    switch (category) {
-      case "nutrition": return nutritionDrugs;
-      case "endocrine": return endocrineDrugs;
-      case "rheumatic": return rheumaticDrugs;
-      case "metabolic": return metabolicDrugs;
-      case "fluid-electrolyte": return fluidElectrolyteDrugs;
-      case "genetic": return geneticDrugs;
-      case "skin": return skinDrugs;
-      case "bones": return boneDrugs;
-      case "infectious": return infectiousDrugs;
-      case "emergency": return emergencyDrugs;
-      case "blood": return bloodDrugs;
-      case "urology": return urologyDrugs;
-      case "nephrology": return nephrologyDrugs;
-      case "git": return gitDrugs;
-      case "respiratory": return respiratoryDrugs;
-      case "cardiovascular": return cardiovascularDrugs;
-      default: return nutritionDrugs;
-    }
-  };
+  const { data: drugs, isLoading, error } = useQuery({
+    queryKey: ['drugs'],
+    queryFn: fetchDrugs,
+  });
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex items-center justify-center min-h-screen">Error loading drugs data</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -85,14 +69,14 @@ const DrugCalculator = () => {
           <DrugSelector
             selectedDrug={selectedDrug}
             onDrugChange={setSelectedDrug}
-            drugs={getDrugsByCategory(category)}
+            drugs={drugs || []}
           />
 
           <DrugInformation
             selectedDrug={selectedDrug}
             weight={weight}
             age={age}
-            drugs={getDrugsByCategory(category)}
+            drugs={drugs || []}
           />
         </div>
       </div>
