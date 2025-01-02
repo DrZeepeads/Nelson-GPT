@@ -7,6 +7,7 @@ import { DrugSelector } from "@/components/drug-calculator/DrugSelector";
 import { DrugInformation } from "@/components/drug-calculator/DrugInformation";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { Drug } from "@/data/drugData";
 
 const fetchDrugs = async () => {
   const { data, error } = await supabase
@@ -14,7 +15,7 @@ const fetchDrugs = async () => {
     .select('*');
   
   if (error) throw error;
-  return data;
+  return data as Drug[];
 };
 
 const DrugCalculator = () => {

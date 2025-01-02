@@ -16,8 +16,14 @@ import { respiratoryDrugs } from "./drug-categories/respiratoryDrugs";
 import { cardiovascularDrugs } from "./drug-categories/cardiovascularDrugs";
 
 export interface Drug {
+  id: string;
   name: string;
-  dose: string;
+  dose_per_kg: number;
+  max_dose?: number;
+  frequency?: string;
+  route?: string;
+  side_effects?: string;
+  created_at: string;
 }
 
 export {
