@@ -24,11 +24,18 @@ export const ChatMessageList = ({ messages, isLoading }: ChatMessageListProps) =
         />
       ))}
       {isLoading && (
-        <div className="p-4">
-          <div className="flex gap-2 items-center text-gray-500">
-            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
-            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.2s]" />
-            <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce [animation-delay:0.4s]" />
+        <div className="flex items-start space-x-2 p-4 max-w-[80%]">
+          <div className="h-8 w-8 rounded-full bg-nelson-primary flex items-center justify-center">
+            <span className="text-white text-sm">AI</span>
+          </div>
+          <div className="flex-1">
+            <div className="bg-gray-100 rounded-lg p-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-nelson-primary rounded-full animate-bounce" />
+                <div className="w-2 h-2 bg-nelson-primary rounded-full animate-bounce [animation-delay:0.2s]" />
+                <div className="w-2 h-2 bg-nelson-primary rounded-full animate-bounce [animation-delay:0.4s]" />
+              </div>
+            </div>
           </div>
         </div>
       )}
