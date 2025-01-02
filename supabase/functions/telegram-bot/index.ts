@@ -17,6 +17,7 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
   console.log('Starting sendTelegramMessage function with:', { chatId, text });
   console.log('Using Telegram API URL:', `${telegramApi}/sendMessage`);
   console.log('Token exists:', !!telegramToken);
+  console.log('Token length:', telegramToken?.length);
   
   try {
     const requestBody = {
@@ -63,24 +64,29 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 const handleCommand = async (chatId: number, command: string) => {
   console.log('Handling command:', { chatId, command });
   
-  switch (command) {
-    case '/start':
-      return await sendTelegramMessage(
-        chatId,
-        `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`
-      );
-    case '/help':
-      return await sendTelegramMessage(
-        chatId,
-        'Available commands:\n\n' +
-        '/start - Get your Chat ID and connect to the web app\n' +
-        '/help - Show this help message'
-      );
-    default:
-      return await sendTelegramMessage(
-        chatId,
-        'Sorry, I don\'t understand that command. Try /help to see available commands.'
-      );
+  try {
+    switch (command) {
+      case '/start':
+        return await sendTelegramMessage(
+          chatId,
+          `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`
+        );
+      case '/help':
+        return await sendTelegramMessage(
+          chatId,
+          'Available commands:\n\n' +
+          '/start - Get your Chat ID and connect to the web app\n' +
+          '/help - Show this help message'
+        );
+      default:
+        return await sendTelegramMessage(
+          chatId,
+          'Sorry, I don\'t understand that command. Try /help to see available commands.'
+        );
+    }
+  } catch (error) {
+    console.error('Error handling command:', { command, error });
+    throw error;
   }
 };
 
