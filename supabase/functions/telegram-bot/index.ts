@@ -14,7 +14,7 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
     throw new Error('TELEGRAM_BOT_TOKEN is not set');
   }
 
-  console.log('Attempting to send message to Telegram:', { chatId, text });
+  console.log('Sending message to Telegram:', { chatId, text });
   
   try {
     const response = await fetch(`${telegramApi}/sendMessage`, {
@@ -29,14 +29,16 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
       }),
     });
     
+    const responseText = await response.text();
+    console.log('Raw Telegram API response:', responseText);
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Telegram API error response:', errorText);
-      throw new Error(`Telegram API error: ${response.status} ${errorText}`);
+      console.error('Telegram API error response:', responseText);
+      throw new Error(`Telegram API error: ${response.status} ${responseText}`);
     }
     
-    const data = await response.json();
-    console.log('Telegram API response:', JSON.stringify(data, null, 2));
+    const data = JSON.parse(responseText);
+    console.log('Parsed Telegram API response:', JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
     console.error('Error sending Telegram message:', error);
