@@ -1,4 +1,5 @@
 import type { ManifestOptions } from 'vite-plugin-pwa'
+import type { GenerateSWOptions } from 'workbox-build'
 
 export const pwaManifest: Partial<ManifestOptions> = {
   id: 'com.nelsongpt.app',
@@ -58,10 +59,10 @@ export const pwaManifest: Partial<ManifestOptions> = {
   ]
 }
 
-export const pwaWorkboxConfig = {
+export const pwaWorkboxConfig: Partial<GenerateSWOptions> = {
   runtimeCaching: [{
     urlPattern: /^https:\/\/api\./,
-    handler: 'NetworkFirst',
+    handler: 'NetworkFirst' as const,
     options: {
       cacheName: 'api-cache',
       backgroundSync: {
