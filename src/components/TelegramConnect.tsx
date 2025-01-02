@@ -35,10 +35,21 @@ export const TelegramConnect = () => {
       console.log('Setting up webhook with origin:', origin);
 
       const response = await supabase.functions.invoke('setup-telegram-webhook', {
-        body: { url: origin }
+        body: { url: `${origin}/functions/v1/telegram-bot` }
       });
 
       if (response.error) {
+        // Check if it's a rate limit error
+        if (response.error.status === 429) {
+          toast({
+            title: 'Rate Limit Exceeded',
+            description: 'Please wait a few seconds and try again.',
+            variant: 'destructive',
+          });
+          // Reset setup attempted so it can try again
+          setSetupAttempted(false);
+          return;
+        }
         throw new Error(response.error.message);
       }
 

@@ -20,23 +20,42 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const webhookUrl = `${body.url}/functions/v1/telegram-bot`;
+    const webhookUrl = body.url;
     
     console.log('Setting webhook URL:', webhookUrl);
 
-    // First, delete any existing webhook
+    // First, check current webhook info
+    const getWebhookResponse = await fetch(
+      `https://api.telegram.org/bot${telegramToken}/getWebhookInfo`
+    );
+    const webhookInfo = await getWebhookResponse.json();
+    console.log('Current webhook info:', webhookInfo);
+
+    // If webhook is already set to our URL, return success
+    if (webhookInfo.ok && webhookInfo.result.url === webhookUrl) {
+      console.log('Webhook already set to correct URL');
+      return new Response(
+        JSON.stringify({ ok: true, result: true, description: "Webhook was already set" }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Add delay to respect rate limits
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Delete existing webhook
     const deleteResponse = await fetch(
       `https://api.telegram.org/bot${telegramToken}/deleteWebhook`
     );
     const deleteData = await deleteResponse.json();
     console.log('Delete webhook response:', deleteData);
 
-    // Get current webhook info
-    const getWebhookResponse = await fetch(
-      `https://api.telegram.org/bot${telegramToken}/getWebhookInfo`
-    );
-    const webhookInfo = await getWebhookResponse.json();
-    console.log('Current webhook info:', webhookInfo);
+    if (!deleteData.ok) {
+      throw new Error(`Failed to delete webhook: ${JSON.stringify(deleteData)}`);
+    }
+
+    // Add delay to respect rate limits
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     // Set the new webhook
     const response = await fetch(
@@ -65,6 +84,27 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error setting webhook:', error);
+    
+    // Check if it's a rate limit error
+    if (error.message?.includes('Too Many Requests')) {
+      const retryAfter = error.parameters?.retry_after || 1;
+      return new Response(
+        JSON.stringify({ 
+          error: 'Rate limit exceeded', 
+          retryAfter,
+          message: 'Please try again in a few seconds'
+        }),
+        {
+          status: 429,
+          headers: { 
+            ...corsHeaders, 
+            'Content-Type': 'application/json',
+            'Retry-After': String(retryAfter)
+          },
+        }
+      );
+    }
+
     return new Response(
       JSON.stringify({ error: error.message }),
       {
