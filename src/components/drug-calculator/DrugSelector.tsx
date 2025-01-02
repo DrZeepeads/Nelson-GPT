@@ -19,6 +19,8 @@ export const DrugSelector = ({
   onDrugChange,
   drugs,
 }: DrugSelectorProps) => {
+  console.log('DrugSelector received drugs:', drugs);
+  
   return (
     <div className="space-y-2">
       <Label htmlFor="drug">Select Medication</Label>

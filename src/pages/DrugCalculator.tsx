@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Drug } from "@/data/drugData";
 
 const fetchDrugs = async (category: DrugCategory) => {
+  console.log('Fetching drugs for category:', category);
   const { data, error } = await supabase
     .from('drugs')
     .select('*')
@@ -20,6 +21,7 @@ const fetchDrugs = async (category: DrugCategory) => {
     throw error;
   }
   
+  console.log('Fetched drugs:', data);
   return data as Drug[];
 };
 
@@ -66,6 +68,7 @@ const DrugCalculator = () => {
           <CategorySelector 
             category={category} 
             onCategoryChange={(value) => {
+              console.log('Category changed to:', value);
               setCategory(value);
               setSelectedDrug("");
             }} 
