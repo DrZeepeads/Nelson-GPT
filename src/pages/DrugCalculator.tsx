@@ -15,7 +15,11 @@ const fetchDrugs = async (category: DrugCategory) => {
     .select('*')
     .eq('category', category);
   
-  if (error) throw error;
+  if (error) {
+    console.error('Error fetching drugs:', error);
+    throw error;
+  }
+  
   return data as Drug[];
 };
 
@@ -26,7 +30,7 @@ const DrugCalculator = () => {
   const [selectedDrug, setSelectedDrug] = useState("");
   const [category, setCategory] = useState<DrugCategory>("nutrition");
 
-  const { data: drugs, isLoading, error } = useQuery({
+  const { data: drugs = [], isLoading, error } = useQuery({
     queryKey: ['drugs', category],
     queryFn: () => fetchDrugs(category),
   });
@@ -41,6 +45,7 @@ const DrugCalculator = () => {
   }
 
   if (error) {
+    console.error('Error in drug calculator:', error);
     return <div className="flex items-center justify-center min-h-screen">Error loading drugs data</div>;
   }
 
@@ -76,14 +81,14 @@ const DrugCalculator = () => {
           <DrugSelector
             selectedDrug={selectedDrug}
             onDrugChange={setSelectedDrug}
-            drugs={drugs || []}
+            drugs={drugs}
           />
 
           <DrugInformation
             selectedDrug={selectedDrug}
             weight={weight}
             age={age}
-            drugs={drugs || []}
+            drugs={drugs}
           />
         </div>
       </div>
