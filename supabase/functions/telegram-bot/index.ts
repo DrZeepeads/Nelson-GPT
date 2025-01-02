@@ -16,8 +16,6 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
 
   console.log('Starting sendTelegramMessage function with:', { chatId, text });
   console.log('Using Telegram API URL:', `${telegramApi}/sendMessage`);
-  console.log('Token exists:', !!telegramToken);
-  console.log('Token length:', telegramToken?.length);
   
   try {
     const requestBody = {
@@ -124,8 +122,7 @@ serve(async (req) => {
       if (text.startsWith('/')) {
         await handleCommand(chatId, text);
       } else {
-        const response = `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`;
-        await sendTelegramMessage(chatId, response);
+        await sendTelegramMessage(chatId, `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`);
       }
       
       return new Response(JSON.stringify({ ok: true }), {

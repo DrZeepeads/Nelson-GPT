@@ -1,4 +1,7 @@
 project_id = "lnuzvcwusafxoaehrbzu"
 
-[functions.chat]
+[functions.telegram-bot]
+verify_jwt = false
+
+[functions.setup-telegram-webhook]
 verify_jwt = false

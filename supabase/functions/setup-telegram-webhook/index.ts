@@ -17,7 +17,7 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const webhookUrl = body.url;
+    const webhookUrl = `${body.url}/functions/v1/telegram-bot`;
     
     console.log('Setting webhook URL:', webhookUrl);
 
