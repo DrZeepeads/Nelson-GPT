@@ -9,10 +9,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Drug } from "@/data/drugData";
 
-const fetchDrugs = async () => {
+const fetchDrugs = async (category: DrugCategory) => {
   const { data, error } = await supabase
     .from('drugs')
-    .select('*');
+    .select('*')
+    .eq('category', category);
   
   if (error) throw error;
   return data as Drug[];
@@ -26,9 +27,14 @@ const DrugCalculator = () => {
   const [category, setCategory] = useState<DrugCategory>("nutrition");
 
   const { data: drugs, isLoading, error } = useQuery({
-    queryKey: ['drugs'],
-    queryFn: fetchDrugs,
+    queryKey: ['drugs', category],
+    queryFn: () => fetchDrugs(category),
   });
+
+  // Reset selected drug when category changes
+  useEffect(() => {
+    setSelectedDrug("");
+  }, [category]);
 
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
