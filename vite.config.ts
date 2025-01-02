@@ -11,6 +11,29 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['apple-touch-icon.png', 'masked-icon.svg'],
+      workbox: {
+        // Enable background sync
+        runtimeCaching: [{
+          urlPattern: /^https:\/\/api\./,
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'api-cache',
+            backgroundSync: {
+              name: 'api-queue',
+              options: {
+                maxRetentionTime: 24 * 60 // Retry for 24 hours
+              }
+            }
+          }
+        }],
+        // Periodic sync for background updates
+        periodicSync: {
+          name: 'content-sync',
+          options: {
+            minInterval: 24 * 60 * 60 * 1000 // Once per day
+          }
+        }
+      },
       manifest: {
         id: 'com.nelsongpt.app',
         name: 'NelsonGPT - Pediatric Knowledge Assistant',
@@ -20,8 +43,16 @@ export default defineConfig(({ mode }) => ({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait',
+        dir: 'ltr',
         scope: '/',
         start_url: '/',
+        prefer_related_applications: false,
+        categories: [
+          'medical',
+          'education',
+          'healthcare',
+          'reference'
+        ],
         launch_handler: {
           client_mode: ['navigate-existing', 'auto']
         },
