@@ -25,14 +25,7 @@ export default defineConfig(({ mode }) => ({
               }
             }
           }
-        }],
-        // Periodic sync for background updates
-        periodicSync: {
-          name: 'content-sync',
-          options: {
-            minInterval: 24 * 60 * 60 * 1000 // Once per day
-          }
-        }
+        }]
       },
       manifest: {
         id: 'com.nelsongpt.app',
