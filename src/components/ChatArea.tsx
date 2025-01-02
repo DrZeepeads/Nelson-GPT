@@ -96,7 +96,7 @@ export const ChatArea = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden pb-32">
       <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
           <WelcomeScreen onQuestionClick={handleSendMessage} />
@@ -107,10 +107,7 @@ export const ChatArea = () => {
           </>
         )}
       </ScrollArea>
-      
-      <div className="mt-auto">
-        <ChatInput onSendMessage={handleSendMessage} />
-      </div>
+      <ChatInput onSendMessage={handleSendMessage} />
     </div>
   );
 };
