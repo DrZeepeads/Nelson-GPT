@@ -15,7 +15,6 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
   }
 
   console.log('Starting sendTelegramMessage function with:', { chatId, text });
-  console.log('Using Telegram API URL:', `${telegramApi}/sendMessage`);
   
   try {
     const requestBody = {
@@ -45,45 +44,11 @@ const sendTelegramMessage = async (chatId: number | string, text: string) => {
       throw new Error(`Telegram API error: ${response.status} ${responseText}`);
     }
     
-    try {
-      const data = JSON.parse(responseText);
-      console.log('Successfully parsed Telegram API response:', JSON.stringify(data, null, 2));
-      return data;
-    } catch (parseError) {
-      console.error('Error parsing Telegram API response:', parseError);
-      throw new Error(`Invalid JSON response: ${responseText}`);
-    }
+    const data = JSON.parse(responseText);
+    console.log('Successfully parsed Telegram API response:', JSON.stringify(data, null, 2));
+    return data;
   } catch (error) {
     console.error('Error in sendTelegramMessage:', error);
-    throw error;
-  }
-};
-
-const handleCommand = async (chatId: number, command: string) => {
-  console.log('Handling command:', { chatId, command });
-  
-  try {
-    switch (command) {
-      case '/start':
-        return await sendTelegramMessage(
-          chatId,
-          `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`
-        );
-      case '/help':
-        return await sendTelegramMessage(
-          chatId,
-          'Available commands:\n\n' +
-          '/start - Get your Chat ID and connect to the web app\n' +
-          '/help - Show this help message'
-        );
-      default:
-        return await sendTelegramMessage(
-          chatId,
-          'Sorry, I don\'t understand that command. Try /help to see available commands.'
-        );
-    }
-  } catch (error) {
-    console.error('Error handling command:', { command, error });
     throw error;
   }
 };
@@ -120,9 +85,32 @@ serve(async (req) => {
       console.log('Processing Telegram webhook message:', { chatId, text });
 
       if (text.startsWith('/')) {
-        await handleCommand(chatId, text);
+        switch (text) {
+          case '/start':
+            await sendTelegramMessage(
+              chatId,
+              `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`
+            );
+            break;
+          case '/help':
+            await sendTelegramMessage(
+              chatId,
+              'Available commands:\n\n' +
+              '/start - Get your Chat ID and connect to the web app\n' +
+              '/help - Show this help message'
+            );
+            break;
+          default:
+            await sendTelegramMessage(
+              chatId,
+              'Sorry, I don\'t understand that command. Try /help to see available commands.'
+            );
+        }
       } else {
-        await sendTelegramMessage(chatId, `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`);
+        await sendTelegramMessage(
+          chatId,
+          `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`
+        );
       }
       
       return new Response(JSON.stringify({ ok: true }), {
@@ -131,10 +119,12 @@ serve(async (req) => {
     }
 
     console.log('Invalid request body - missing required fields');
-    return new Response(JSON.stringify({ error: 'Invalid request body' }), {
-      status: 400,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ error: 'Invalid request body' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   } catch (error) {
     console.error('Error in telegram-bot function:', error);
     return new Response(

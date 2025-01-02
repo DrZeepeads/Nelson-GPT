@@ -13,14 +13,23 @@ serve(async (req) => {
   try {
     const telegramToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
     if (!telegramToken) {
+      console.error('TELEGRAM_BOT_TOKEN is not set');
       throw new Error('TELEGRAM_BOT_TOKEN is not set');
     }
 
     const body = await req.json();
-    const webhookUrl = body.url;
+    const webhookUrl = body.url + "/functions/v1/telegram-bot";
     
     console.log('Setting webhook URL:', webhookUrl);
 
+    // First, get current webhook info
+    const getWebhookResponse = await fetch(
+      `https://api.telegram.org/bot${telegramToken}/getWebhookInfo`
+    );
+    const webhookInfo = await getWebhookResponse.json();
+    console.log('Current webhook info:', webhookInfo);
+
+    // Set the new webhook
     const response = await fetch(
       `https://api.telegram.org/bot${telegramToken}/setWebhook`,
       {
@@ -30,13 +39,17 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           url: webhookUrl,
-          allowed_updates: ['message'],
+          allowed_updates: ['message', 'callback_query'],
         }),
       }
     );
 
     const data = await response.json();
     console.log('Telegram setWebhook response:', data);
+
+    if (!data.ok) {
+      throw new Error(`Telegram API error: ${JSON.stringify(data)}`);
+    }
 
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
