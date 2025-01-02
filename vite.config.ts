@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
+        id: 'com.nelsongpt.app',
         name: 'NelsonGPT - Pediatric Knowledge Assistant',
         short_name: 'NelsonGPT',
         description: 'Evidence-based pediatric knowledge assistant powered by Nelson Textbook of Pediatrics',
@@ -21,6 +22,25 @@ export default defineConfig(({ mode }) => ({
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        launch_handler: {
+          client_mode: ['navigate-existing', 'auto']
+        },
+        screenshots: [
+          {
+            src: 'screenshot-1.png',
+            sizes: '1170x2532',
+            type: 'image/png',
+            platform: 'narrow',
+            label: 'Chat Interface'
+          },
+          {
+            src: 'screenshot-2.png',
+            sizes: '1170x2532',
+            type: 'image/png',
+            platform: 'narrow',
+            label: 'Drug Calculator'
+          }
+        ],
         icons: [
           {
             src: 'pwa-192x192.png',
