@@ -72,6 +72,39 @@ export type Database = {
         }
         Relationships: []
       }
+      drugs: {
+        Row: {
+          created_at: string
+          dose_per_kg: number
+          frequency: string | null
+          id: string
+          max_dose: number | null
+          name: string
+          route: string | null
+          side_effects: string | null
+        }
+        Insert: {
+          created_at?: string
+          dose_per_kg: number
+          frequency?: string | null
+          id?: string
+          max_dose?: number | null
+          name: string
+          route?: string | null
+          side_effects?: string | null
+        }
+        Update: {
+          created_at?: string
+          dose_per_kg?: number
+          frequency?: string | null
+          id?: string
+          max_dose?: number | null
+          name?: string
+          route?: string | null
+          side_effects?: string | null
+        }
+        Relationships: []
+      }
       knowledge: {
         Row: {
           chapter: string
