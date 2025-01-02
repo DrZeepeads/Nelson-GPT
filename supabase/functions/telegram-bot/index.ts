@@ -1,56 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const telegramToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
-const telegramApi = `https://api.telegram.org/bot${telegramToken}`;
-
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-const sendTelegramMessage = async (chatId: number | string, text: string) => {
-  if (!telegramToken) {
-    console.error('TELEGRAM_BOT_TOKEN is not set');
-    throw new Error('TELEGRAM_BOT_TOKEN is not set');
-  }
-
-  console.log('Starting sendTelegramMessage function with:', { chatId, text });
-  
-  try {
-    const requestBody = {
-      chat_id: chatId,
-      text: text,
-      parse_mode: 'HTML',
-    };
-    console.log('Request body:', JSON.stringify(requestBody, null, 2));
-
-    const response = await fetch(`${telegramApi}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    });
-    
-    const responseText = await response.text();
-    console.log('Raw Telegram API response:', responseText);
-
-    if (!response.ok) {
-      console.error('Telegram API error:', {
-        status: response.status,
-        statusText: response.statusText,
-        response: responseText
-      });
-      throw new Error(`Telegram API error: ${response.status} ${responseText}`);
-    }
-    
-    const data = JSON.parse(responseText);
-    console.log('Successfully parsed Telegram API response:', JSON.stringify(data, null, 2));
-    return data;
-  } catch (error) {
-    console.error('Error in sendTelegramMessage:', error);
-    throw error;
-  }
 };
 
 serve(async (req) => {
@@ -61,6 +13,7 @@ serve(async (req) => {
   }
 
   try {
+    const telegramToken = Deno.env.get('TELEGRAM_BOT_TOKEN');
     if (!telegramToken) {
       throw new Error('TELEGRAM_BOT_TOKEN is not set');
     }
@@ -71,9 +24,27 @@ serve(async (req) => {
     // Handle message sending from the web application
     if (body.message && body.chatId) {
       console.log('Processing web app message:', { message: body.message, chatId: body.chatId });
-      const response = await sendTelegramMessage(body.chatId, body.message);
+      const response = await fetch(
+        `https://api.telegram.org/bot${telegramToken}/sendMessage`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: body.chatId,
+            text: body.message,
+            parse_mode: 'HTML',
+          }),
+        }
+      );
       
-      return new Response(JSON.stringify(response), {
+      const responseData = await response.json();
+      console.log('Telegram API response:', responseData);
+      
+      if (!responseData.ok) {
+        throw new Error(`Telegram API error: ${JSON.stringify(responseData)}`);
+      }
+      
+      return new Response(JSON.stringify(responseData), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -84,34 +55,39 @@ serve(async (req) => {
       const text = body.message.text;
       console.log('Processing Telegram webhook message:', { chatId, text });
 
+      let responseText = '';
       if (text.startsWith('/')) {
         switch (text) {
           case '/start':
-            await sendTelegramMessage(
-              chatId,
-              `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`
-            );
+            responseText = `Welcome to NelsonGPT Bot! 👋\n\nYour Chat ID is: ${chatId}\n\nPlease copy this Chat ID and paste it in the web application to connect your Telegram account.`;
             break;
           case '/help':
-            await sendTelegramMessage(
-              chatId,
-              'Available commands:\n\n' +
+            responseText = 'Available commands:\n\n' +
               '/start - Get your Chat ID and connect to the web app\n' +
-              '/help - Show this help message'
-            );
+              '/help - Show this help message';
             break;
           default:
-            await sendTelegramMessage(
-              chatId,
-              'Sorry, I don\'t understand that command. Try /help to see available commands.'
-            );
+            responseText = 'Sorry, I don\'t understand that command. Try /help to see available commands.';
         }
       } else {
-        await sendTelegramMessage(
-          chatId,
-          `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`
-        );
+        responseText = `I received your message: "${text}"\n\nI'm a bot that forwards messages from the NelsonGPT web application.`;
       }
+
+      const response = await fetch(
+        `https://api.telegram.org/bot${telegramToken}/sendMessage`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: responseText,
+            parse_mode: 'HTML',
+          }),
+        }
+      );
+      
+      const responseData = await response.json();
+      console.log('Telegram API response:', responseData);
       
       return new Response(JSON.stringify({ ok: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

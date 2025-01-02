@@ -6,6 +6,8 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('Received webhook setup request');
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -18,11 +20,18 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const webhookUrl = body.url + "/functions/v1/telegram-bot";
+    const webhookUrl = `${body.url}/functions/v1/telegram-bot`;
     
     console.log('Setting webhook URL:', webhookUrl);
 
-    // First, get current webhook info
+    // First, delete any existing webhook
+    const deleteResponse = await fetch(
+      `https://api.telegram.org/bot${telegramToken}/deleteWebhook`
+    );
+    const deleteData = await deleteResponse.json();
+    console.log('Delete webhook response:', deleteData);
+
+    // Get current webhook info
     const getWebhookResponse = await fetch(
       `https://api.telegram.org/bot${telegramToken}/getWebhookInfo`
     );
