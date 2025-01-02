@@ -1,9 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { corsHeaders } from '../_shared/cors.ts'
 
 const supabaseUrl = Deno.env.get('SUPABASE_URL')
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
@@ -11,6 +7,7 @@ const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
 const mistralApiKey = Deno.env.get('MISTRAL_API_KEY')
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -19,7 +16,11 @@ Deno.serve(async (req) => {
     const { message } = await req.json()
     console.log('Received message:', message)
 
-    // Call Mistral API with the enhanced medical context
+    if (!mistralApiKey) {
+      throw new Error('MISTRAL_API_KEY is not set')
+    }
+
+    // Call Mistral API
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -47,7 +48,8 @@ Deno.serve(async (req) => {
             10. Provide parental guidance based on book recommendations
             
             Format responses with:
-            - Clear structure
+            - Clear structure with paragraphs
+            - Bullet points for lists
             - Relevant chapter/page citations
             - Evidence-based recommendations
             - Clinical pearls from the text`,
@@ -59,6 +61,12 @@ Deno.serve(async (req) => {
         ],
       }),
     })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('Mistral API error:', errorData)
+      throw new Error(`Mistral API error: ${response.status}`)
+    }
 
     const result = await response.json()
     console.log('Received Mistral response')
