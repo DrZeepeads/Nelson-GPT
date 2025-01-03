@@ -103,9 +103,7 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden pb-32">
-      <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur-sm border-b">
-        <h2 className="text-lg font-semibold text-gray-700">NelsonGPT Assistant</h2>
-      </div>
+      <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur-sm border-b" />
       <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
           <WelcomeScreen onQuestionClick={handleSendMessage} />
