@@ -72,7 +72,7 @@ export const ChatArea = () => {
       await sendTelegramNotification(message, response);
 
       toast({
-        title: "AI Response Ready",
+        title: "Response Ready",
         description: (
           <div className="flex items-center gap-2">
             <Brain className="h-4 w-4 text-blue-500" />
@@ -96,7 +96,7 @@ export const ChatArea = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden pb-32">
       <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur-sm border-b">
-        <h2 className="text-lg font-semibold text-gray-700">NelsonGPT Assistant</h2>
+        <h2 className="text-lg font-semibold text-gray-700">AI Assistant</h2>
         {isThinking && (
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Loader2 className="h-4 w-4 animate-spin" />
