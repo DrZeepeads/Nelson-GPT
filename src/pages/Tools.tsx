@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 const Tools = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Tools = () => {
       route: "/growth-chart",
       color: "text-blue-500",
       bgColor: "bg-blue-50",
+      delay: 0.1,
     },
     {
       icon: Calculator,
@@ -27,6 +29,7 @@ const Tools = () => {
       route: "/drug-calculator",
       color: "text-green-500",
       bgColor: "bg-green-50",
+      delay: 0.2,
     },
     {
       icon: Baby,
@@ -35,6 +38,7 @@ const Tools = () => {
       route: "/apgar-calculator",
       color: "text-pink-500",
       bgColor: "bg-pink-50",
+      delay: 0.3,
     },
     {
       icon: Scale,
@@ -43,13 +47,14 @@ const Tools = () => {
       route: "/bmi-calculator",
       color: "text-purple-500",
       bgColor: "bg-purple-50",
+      delay: 0.4,
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-14 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-14 pb-20">
       {/* Header */}
-      <div className="px-4 py-2 bg-white shadow-sm flex items-center fixed top-0 w-full z-10">
+      <div className="px-4 py-2 bg-white/80 backdrop-blur-lg shadow-sm flex items-center fixed top-0 w-full z-10">
         <button 
           onClick={() => navigate('/')}
           className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -62,24 +67,41 @@ const Tools = () => {
       <div className="max-w-4xl mx-auto p-4">
         {/* Main Tools Section */}
         <section>
-          <h2 className="text-xl font-semibold mb-4 px-1">Essential Tools</h2>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-xl font-semibold mb-4 px-1"
+          >
+            Essential Tools
+          </motion.h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             {mainTools.map((tool) => (
-              <Card
+              <motion.div
                 key={tool.route}
-                className={`p-4 hover:shadow-md transition-all hover:scale-[1.02] cursor-pointer ${tool.bgColor}`}
-                onClick={() => navigate(tool.route)}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.5,
+                  delay: tool.delay,
+                  ease: "easeOut"
+                }}
               >
-                <div className="flex items-start space-x-4">
-                  <div className={`p-3 rounded-lg bg-white/80 ${tool.color}`}>
-                    <tool.icon className="w-6 h-6" />
+                <Card
+                  className={`p-4 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer ${tool.bgColor} border-none`}
+                  onClick={() => navigate(tool.route)}
+                >
+                  <div className="flex items-start space-x-4">
+                    <div className={`p-3 rounded-lg bg-white/80 backdrop-blur-sm shadow-sm ${tool.color}`}>
+                      <tool.icon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{tool.title}</h3>
+                      <p className="text-sm text-gray-600">{tool.description}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">{tool.title}</h3>
-                    <p className="text-sm text-gray-600">{tool.description}</p>
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </section>
