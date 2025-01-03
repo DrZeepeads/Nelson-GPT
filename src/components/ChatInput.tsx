@@ -1,5 +1,7 @@
-import { Send } from "lucide-react";
+import { Send, Brain } from "lucide-react";
 import { useState } from "react";
+import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -27,24 +29,36 @@ export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
       <div className="container max-w-4xl mx-auto px-4">
         <div className="flex items-center space-x-2 py-4">
           <div className="relative flex-1">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Brain className="h-5 w-5 text-nelson-accent opacity-40" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>AI-powered pediatric assistant</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <input
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask me anything about pediatrics..."
-              className="w-full p-4 pr-12 rounded-xl border-2 border-nelson-accent/20 focus:border-nelson-accent focus:outline-none focus:ring-2 focus:ring-nelson-accent/20 transition-all duration-200 placeholder:text-gray-400 bg-white/80"
+              className="w-full p-4 pl-12 pr-12 rounded-xl border-2 border-nelson-accent/20 focus:border-nelson-accent focus:outline-none focus:ring-2 focus:ring-nelson-accent/20 transition-all duration-200 placeholder:text-gray-400 bg-white/80"
               aria-label="Chat input"
             />
           </div>
-          <button
+          <Button
             type="submit"
             className="p-4 bg-nelson-accent text-white rounded-xl hover:bg-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             disabled={!message.trim()}
             aria-label="Send message"
           >
             <Send className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
       </div>
     </form>

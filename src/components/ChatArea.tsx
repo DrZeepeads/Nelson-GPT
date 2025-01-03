@@ -7,6 +7,7 @@ import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTelegramNotification } from "@/hooks/useTelegramNotification";
+import { Brain, Loader2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -20,6 +21,7 @@ interface Message {
 export const ChatArea = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { sendTelegramNotification } = useTelegramNotification();
@@ -42,6 +44,7 @@ export const ChatArea = () => {
 
     setMessages((prev) => [...prev, newMessage]);
     setIsLoading(true);
+    setIsThinking(true);
 
     try {
       const response = await getChatResponse(message);
@@ -51,6 +54,10 @@ export const ChatArea = () => {
         .select('enhanced_content, confidence_score, keywords')
         .eq('original_content', message)
         .single();
+
+      if (enhancedError) {
+        console.warn('Error fetching enhanced content:', enhancedError);
+      }
 
       const botResponse = {
         id: (Date.now() + 1).toString(),
@@ -63,6 +70,12 @@ export const ChatArea = () => {
       
       setMessages((prev) => [...prev, botResponse]);
       await sendTelegramNotification(message, response);
+
+      toast({
+        title: "AI Response Ready",
+        description: "The response has been generated with enhanced capabilities.",
+        icon: <Brain className="h-4 w-4 text-blue-500" />,
+      });
     } catch (error) {
       console.error('Chat error:', error);
       toast({
@@ -72,11 +85,21 @@ export const ChatArea = () => {
       });
     } finally {
       setIsLoading(false);
+      setIsThinking(false);
     }
   };
 
   return (
     <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden pb-32">
+      <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur-sm border-b">
+        <h2 className="text-lg font-semibold text-gray-700">NelsonGPT Assistant</h2>
+        {isThinking && (
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Thinking...
+          </div>
+        )}
+      </div>
       <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
           <WelcomeScreen onQuestionClick={handleSendMessage} />
