@@ -12,6 +12,8 @@ interface Message {
   message: string;
   isBot: boolean;
   timestamp: string;
+  confidence?: number;
+  keywords?: string[];
 }
 
 export const ChatArea = () => {
@@ -41,12 +43,23 @@ export const ChatArea = () => {
 
     try {
       const response = await getChatResponse(message);
+      
+      // Query for enhanced content
+      const { data: enhancedContent, error: enhancedError } = await supabase
+        .from('content_enhancements')
+        .select('enhanced_content, confidence_score, keywords')
+        .eq('original_content', message)
+        .single();
+
       const botResponse = {
         id: (Date.now() + 1).toString(),
         message: response,
         isBot: true,
         timestamp: new Date().toISOString(),
+        confidence: enhancedContent?.confidence_score,
+        keywords: enhancedContent?.keywords,
       };
+      
       setMessages((prev) => [...prev, botResponse]);
 
       // Send to Telegram if chat ID is available

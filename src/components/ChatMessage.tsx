@@ -1,13 +1,29 @@
 import { cn } from "@/lib/utils";
 import { format, isValid } from "date-fns";
+import { Badge } from "./ui/badge";
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 interface ChatMessageProps {
   message: string;
   isBot: boolean;
   timestamp?: string;
+  confidence?: number;
+  keywords?: string[];
 }
 
-export const ChatMessage = ({ message, isBot, timestamp }: ChatMessageProps) => {
+export const ChatMessage = ({ 
+  message, 
+  isBot, 
+  timestamp,
+  confidence,
+  keywords 
+}: ChatMessageProps) => {
   const formatTimestamp = (timestamp?: string) => {
     if (!timestamp) return '';
     
@@ -65,6 +81,34 @@ export const ChatMessage = ({ message, isBot, timestamp }: ChatMessageProps) => 
 
     return (
       <>
+        {confidence !== undefined && isBot && (
+          <div className="mb-2 flex items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div className="flex items-center gap-1">
+                    <Info className="w-4 h-4 text-nelson-accent" />
+                    <span className="text-sm text-gray-600">
+                      Confidence: {(confidence * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>AI confidence score for this response</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )}
+        {keywords && keywords.length > 0 && (
+          <div className="mb-2 flex flex-wrap gap-1">
+            {keywords.map((keyword, index) => (
+              <Badge key={index} variant="secondary" className="text-xs">
+                {keyword}
+              </Badge>
+            ))}
+          </div>
+        )}
         {formattedSections}
         {allCitations.length > 0 && (
           <div className="mt-4 pt-2 border-t border-gray-200 text-sm text-gray-600">

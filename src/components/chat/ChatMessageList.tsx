@@ -5,6 +5,8 @@ interface Message {
   message: string;
   isBot: boolean;
   timestamp: string;
+  confidence?: number;
+  keywords?: string[];
 }
 
 interface ChatMessageListProps {
@@ -21,6 +23,8 @@ export const ChatMessageList = ({ messages, isLoading }: ChatMessageListProps) =
           message={msg.message}
           isBot={msg.isBot}
           timestamp={msg.timestamp}
+          confidence={msg.confidence}
+          keywords={msg.keywords}
         />
       ))}
       {isLoading && (
