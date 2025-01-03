@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,7 +7,6 @@ const corsHeaders = {
 
 const TELEGRAM_BOT_TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN')
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')
-const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -17,12 +15,8 @@ serve(async (req) => {
   }
 
   try {
-    const { origin } = await req.json()
-    console.log('Setting up webhook for origin:', origin)
-
-    // Create webhook URL using the Edge Function URL
-    const webhookUrl = `${SUPABASE_URL}/functions/v1/telegram-bot`
-    console.log('Webhook URL:', webhookUrl)
+    const { url } = await req.json()
+    console.log('Setting up webhook for URL:', url)
 
     // Set up webhook with Telegram
     const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/setWebhook`
@@ -32,7 +26,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        url: webhookUrl,
+        url: url,
         allowed_updates: ['message'],
       }),
     })
@@ -41,6 +35,26 @@ serve(async (req) => {
     console.log('Telegram webhook setup response:', result)
 
     if (!response.ok) {
+      // Handle rate limiting specifically
+      if (response.status === 429) {
+        const retryAfter = parseInt(result.parameters?.retry_after || '5')
+        return new Response(
+          JSON.stringify({
+            error: result,
+            status: 429,
+            message: `Rate limit exceeded. Retry after ${retryAfter} seconds.`
+          }),
+          {
+            status: 429,
+            headers: {
+              ...corsHeaders,
+              'Content-Type': 'application/json',
+              'Retry-After': retryAfter.toString()
+            }
+          }
+        )
+      }
+      
       throw new Error(`Telegram API error: ${JSON.stringify(result)}`)
     }
 
@@ -50,9 +64,15 @@ serve(async (req) => {
     })
   } catch (error) {
     console.error('Error setting up webhook:', error)
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: error.status || 500,
-    })
+    return new Response(
+      JSON.stringify({ 
+        error: error.message,
+        status: error.status || 500
+      }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: error.status || 500,
+      }
+    )
   }
 })
