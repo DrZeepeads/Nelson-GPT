@@ -80,52 +80,100 @@ export type Database = {
       }
       chapters: {
         Row: {
+          age_groups: string[] | null
           book_id: string
+          case_studies: Json[] | null
           chapter_number: number
+          clinical_pearls: string[] | null
+          clinical_specialties: string[] | null
+          content_warnings: string[] | null
+          contributor_ids: string[] | null
           created_at: string
           difficulty_level: string | null
           estimated_reading_time: number | null
+          evidence_level: string | null
           id: string
           is_published: boolean | null
           keywords: string[] | null
+          last_peer_reviewed: string | null
           last_updated: string | null
           learning_objectives: string[] | null
+          multimedia_resources: Json | null
+          next_review_date: string | null
+          peer_reviewer_ids: string[] | null
+          practice_guidelines: Json | null
           prerequisites: string[] | null
+          quiz_questions: Json[] | null
+          references: string[] | null
+          related_chapters: string[] | null
           review_status: string | null
+          revision_history: Json[] | null
           summary: string | null
           title: string
           version: number | null
         }
         Insert: {
+          age_groups?: string[] | null
           book_id: string
+          case_studies?: Json[] | null
           chapter_number: number
+          clinical_pearls?: string[] | null
+          clinical_specialties?: string[] | null
+          content_warnings?: string[] | null
+          contributor_ids?: string[] | null
           created_at?: string
           difficulty_level?: string | null
           estimated_reading_time?: number | null
+          evidence_level?: string | null
           id?: string
           is_published?: boolean | null
           keywords?: string[] | null
+          last_peer_reviewed?: string | null
           last_updated?: string | null
           learning_objectives?: string[] | null
+          multimedia_resources?: Json | null
+          next_review_date?: string | null
+          peer_reviewer_ids?: string[] | null
+          practice_guidelines?: Json | null
           prerequisites?: string[] | null
+          quiz_questions?: Json[] | null
+          references?: string[] | null
+          related_chapters?: string[] | null
           review_status?: string | null
+          revision_history?: Json[] | null
           summary?: string | null
           title: string
           version?: number | null
         }
         Update: {
+          age_groups?: string[] | null
           book_id?: string
+          case_studies?: Json[] | null
           chapter_number?: number
+          clinical_pearls?: string[] | null
+          clinical_specialties?: string[] | null
+          content_warnings?: string[] | null
+          contributor_ids?: string[] | null
           created_at?: string
           difficulty_level?: string | null
           estimated_reading_time?: number | null
+          evidence_level?: string | null
           id?: string
           is_published?: boolean | null
           keywords?: string[] | null
+          last_peer_reviewed?: string | null
           last_updated?: string | null
           learning_objectives?: string[] | null
+          multimedia_resources?: Json | null
+          next_review_date?: string | null
+          peer_reviewer_ids?: string[] | null
+          practice_guidelines?: Json | null
           prerequisites?: string[] | null
+          quiz_questions?: Json[] | null
+          references?: string[] | null
+          related_chapters?: string[] | null
           review_status?: string | null
+          revision_history?: Json[] | null
           summary?: string | null
           title?: string
           version?: number | null
