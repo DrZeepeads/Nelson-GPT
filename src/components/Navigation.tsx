@@ -5,9 +5,9 @@ const Navigation = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t shadow-lg z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t z-50">
       <div className="container max-w-md mx-auto">
-        <div className="flex justify-around py-3">
+        <div className="flex justify-around py-2">
           <button 
             onClick={() => navigate('/')}
             className="flex flex-col items-center p-2 rounded-xl transition-all duration-200 hover:bg-nelson-accent/10 active:scale-95"
