@@ -53,7 +53,7 @@ export const ChatArea = () => {
         .from('content_enhancements')
         .select('enhanced_content, confidence_score, keywords')
         .eq('original_content', message)
-        .single();
+        .maybeSingle();
 
       if (enhancedError) {
         console.warn('Error fetching enhanced content:', enhancedError);
