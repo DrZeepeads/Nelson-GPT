@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useToast } from '../ui/use-toast';
-import { setupTelegramWebhook } from '@/utils/telegram';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useTelegramWebhook = () => {
   const [isSettingUp, setIsSettingUp] = useState(false);
@@ -14,7 +14,13 @@ export const useTelegramWebhook = () => {
     setIsSettingUp(true);
     try {
       const origin = window.location.origin;
-      await setupTelegramWebhook(origin);
+      const { data, error } = await supabase.functions.invoke('setup-telegram-webhook', {
+        body: { origin },
+      });
+
+      if (error) throw error;
+
+      console.log('Webhook setup response:', data);
       sessionStorage.setItem('telegram_webhook_setup', 'true');
       setRetryCount(0);
       
@@ -53,6 +59,7 @@ export const useTelegramWebhook = () => {
       });
     } finally {
       setIsSettingUp(false);
+      setSetupAttempted(true);
     }
   };
 

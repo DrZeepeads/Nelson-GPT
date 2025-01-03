@@ -218,6 +218,45 @@ export type Database = {
         }
         Relationships: []
       }
+      content_enhancements: {
+        Row: {
+          completed_at: string | null
+          content_id: string
+          content_type: Database["public"]["Enums"]["content_enhancement_type"]
+          created_at: string | null
+          enhanced_content: string | null
+          error_message: string | null
+          id: string
+          metadata: Json | null
+          original_content: string
+          status: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          content_id: string
+          content_type: Database["public"]["Enums"]["content_enhancement_type"]
+          created_at?: string | null
+          enhanced_content?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          original_content: string
+          status?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          content_id?: string
+          content_type?: Database["public"]["Enums"]["content_enhancement_type"]
+          created_at?: string | null
+          enhanced_content?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json | null
+          original_content?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
       drugs: {
         Row: {
           category: string
@@ -773,6 +812,15 @@ export type Database = {
           similarity: number
         }[]
       }
+      queue_content_enhancement: {
+        Args: {
+          p_content_type: Database["public"]["Enums"]["content_enhancement_type"]
+          p_content_id: string
+          p_content: string
+          p_metadata?: Json
+        }
+        Returns: string
+      }
       search_nelson: {
         Args: {
           query: string
@@ -820,6 +868,15 @@ export type Database = {
         }
         Returns: number
       }
+      update_enhancement_status: {
+        Args: {
+          p_enhancement_id: string
+          p_status: string
+          p_enhanced_content?: string
+          p_error_message?: string
+        }
+        Returns: undefined
+      }
       vector_avg: {
         Args: {
           "": number[]
@@ -865,6 +922,12 @@ export type Database = {
       }
     }
     Enums: {
+      content_enhancement_type:
+        | "chapter"
+        | "section"
+        | "subsection"
+        | "clinical_case"
+        | "reference"
       user_role: "student" | "doctor"
     }
     CompositeTypes: {
