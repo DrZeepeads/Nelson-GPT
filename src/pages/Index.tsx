@@ -1,7 +1,6 @@
 import { Header } from "@/components/Header";
 import Navigation from "@/components/Navigation";
 import { ChatArea } from "@/components/ChatArea";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
@@ -14,23 +13,6 @@ const Index = () => {
           <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">
               <ChatArea />
-            </div>
-          </div>
-          
-          {/* Sidebar */}
-          <div className="w-full md:w-64 space-y-4">
-            <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900 mb-2">Tips</h3>
-              <ScrollArea className="h-[200px]">
-                <div className="space-y-3 text-sm text-gray-600">
-                  <p>• Ask specific questions about pediatric conditions</p>
-                  <p>• Use medical calculators in the Tools section</p>
-                  <p>• Check growth charts and developmental milestones</p>
-                  <p>• Get drug dosing information</p>
-                  <p>• Review APGAR scoring</p>
-                  <p>• Calculate BMI for pediatric patients</p>
-                </div>
-              </ScrollArea>
             </div>
           </div>
         </div>
