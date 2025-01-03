@@ -7,6 +7,7 @@ const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
 const mistralApiKey = Deno.env.get('MISTRAL_API_KEY')
 
 Deno.serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -70,6 +71,8 @@ Deno.serve(async (req) => {
             content: message,
           },
         ],
+        temperature: 0.7,
+        max_tokens: 2048,
       }),
     })
 
@@ -82,16 +85,22 @@ Deno.serve(async (req) => {
     const result = await response.json()
     console.log('Received Mistral response')
 
-    await supabase.from('messages').insert([
-      {
-        content: message,
-        role: 'user',
-      },
-      {
-        content: result.choices[0].message.content,
-        role: 'assistant',
-      },
-    ])
+    // Store messages in Supabase
+    try {
+      await supabase.from('messages').insert([
+        {
+          content: message,
+          role: 'user',
+        },
+        {
+          content: result.choices[0].message.content,
+          role: 'assistant',
+        },
+      ])
+    } catch (error) {
+      console.error('Error storing messages:', error)
+      // Don't throw here, we still want to return the response
+    }
 
     return new Response(
       JSON.stringify({ response: result.choices[0].message.content }),
@@ -102,7 +111,10 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Error:', error)
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack 
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
