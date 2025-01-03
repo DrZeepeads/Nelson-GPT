@@ -220,37 +220,52 @@ export type Database = {
       }
       content_enhancements: {
         Row: {
+          category: string | null
           completed_at: string | null
+          confidence_score: number | null
           content_id: string
           content_type: Database["public"]["Enums"]["content_enhancement_type"]
           created_at: string | null
+          embedding: string | null
           enhanced_content: string | null
+          enhancement_version: number | null
           error_message: string | null
           id: string
+          keywords: string[] | null
           metadata: Json | null
           original_content: string
           status: string | null
         }
         Insert: {
+          category?: string | null
           completed_at?: string | null
+          confidence_score?: number | null
           content_id: string
           content_type: Database["public"]["Enums"]["content_enhancement_type"]
           created_at?: string | null
+          embedding?: string | null
           enhanced_content?: string | null
+          enhancement_version?: number | null
           error_message?: string | null
           id?: string
+          keywords?: string[] | null
           metadata?: Json | null
           original_content: string
           status?: string | null
         }
         Update: {
+          category?: string | null
           completed_at?: string | null
+          confidence_score?: number | null
           content_id?: string
           content_type?: Database["public"]["Enums"]["content_enhancement_type"]
           created_at?: string | null
+          embedding?: string | null
           enhanced_content?: string | null
+          enhancement_version?: number | null
           error_message?: string | null
           id?: string
+          keywords?: string[] | null
           metadata?: Json | null
           original_content?: string
           status?: string | null
@@ -627,6 +642,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      analyze_enhancement_metrics: {
+        Args: {
+          start_date?: string
+          end_date?: string
+        }
+        Returns: {
+          content_type: Database["public"]["Enums"]["content_enhancement_type"]
+          total_enhancements: number
+          successful_enhancements: number
+          failed_enhancements: number
+          average_confidence: number
+          average_processing_time: unknown
+        }[]
+      }
       binary_quantize:
         | {
             Args: {
@@ -772,6 +801,19 @@ export type Database = {
             }
             Returns: unknown
           }
+      match_enhanced_content: {
+        Args: {
+          query_embedding: string
+          similarity_threshold?: number
+          max_matches?: number
+        }
+        Returns: {
+          id: string
+          content_type: Database["public"]["Enums"]["content_enhancement_type"]
+          enhanced_content: string
+          similarity: number
+        }[]
+      }
       match_knowledge: {
         Args: {
           query_embedding: string
@@ -868,15 +910,28 @@ export type Database = {
         }
         Returns: number
       }
-      update_enhancement_status: {
-        Args: {
-          p_enhancement_id: string
-          p_status: string
-          p_enhanced_content?: string
-          p_error_message?: string
-        }
-        Returns: undefined
-      }
+      update_enhancement_status:
+        | {
+            Args: {
+              p_enhancement_id: string
+              p_status: string
+              p_enhanced_content?: string
+              p_error_message?: string
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_enhancement_id: string
+              p_status: string
+              p_enhanced_content?: string
+              p_error_message?: string
+              p_embedding?: string
+              p_confidence_score?: number
+              p_keywords?: string[]
+            }
+            Returns: undefined
+          }
       vector_avg: {
         Args: {
           "": number[]
