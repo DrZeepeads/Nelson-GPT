@@ -318,6 +318,7 @@ export type Database = {
           embedding: string | null
           id: string
           page_number: number | null
+          searchable: unknown | null
         }
         Insert: {
           chapter?: string | null
@@ -326,6 +327,7 @@ export type Database = {
           embedding?: string | null
           id?: string
           page_number?: number | null
+          searchable?: unknown | null
         }
         Update: {
           chapter?: string | null
@@ -334,6 +336,7 @@ export type Database = {
           embedding?: string | null
           id?: string
           page_number?: number | null
+          searchable?: unknown | null
         }
         Relationships: []
       }
@@ -681,6 +684,17 @@ export type Database = {
           content: string
           chapter: string
           page_number: number
+          similarity: number
+        }[]
+      }
+      match_references_to_content: {
+        Args: {
+          query_text: string
+        }
+        Returns: {
+          id: string
+          citation: string
+          content_preview: string
           similarity: number
         }[]
       }
