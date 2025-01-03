@@ -73,8 +73,12 @@ export const ChatArea = () => {
 
       toast({
         title: "AI Response Ready",
-        description: "The response has been generated with enhanced capabilities.",
-        icon: <Brain className="h-4 w-4 text-blue-500" />,
+        description: (
+          <div className="flex items-center gap-2">
+            <Brain className="h-4 w-4 text-blue-500" />
+            <span>The response has been generated with enhanced capabilities.</span>
+          </div>
+        ),
       });
     } catch (error) {
       console.error('Chat error:', error);
