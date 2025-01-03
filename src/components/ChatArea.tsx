@@ -7,7 +7,7 @@ import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTelegramNotification } from "@/hooks/useTelegramNotification";
-import { Brain, Loader2 } from "lucide-react";
+import { Brain } from "lucide-react";
 
 interface Message {
   id: string;
@@ -18,7 +18,11 @@ interface Message {
   keywords?: string[];
 }
 
-export const ChatArea = () => {
+interface ChatAreaProps {
+  onThinkingChange?: (thinking: boolean) => void;
+}
+
+export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
@@ -33,6 +37,10 @@ export const ChatArea = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    onThinkingChange?.(isThinking);
+  }, [isThinking, onThinkingChange]);
 
   const handleSendMessage = async (message: string) => {
     const newMessage = {
@@ -97,12 +105,6 @@ export const ChatArea = () => {
     <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden pb-32">
       <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur-sm border-b">
         <h2 className="text-lg font-semibold text-gray-700">NelsonGPT Assistant</h2>
-        {isThinking && (
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Thinking...
-          </div>
-        )}
       </div>
       <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
