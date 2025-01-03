@@ -9,38 +9,109 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      book_references: {
+        Row: {
+          citation: string
+          created_at: string
+          id: string
+          section_id: string | null
+          subsection_id: string | null
+        }
+        Insert: {
+          citation: string
+          created_at?: string
+          id?: string
+          section_id?: string | null
+          subsection_id?: string | null
+        }
+        Update: {
+          citation?: string
+          created_at?: string
+          id?: string
+          section_id?: string | null
+          subsection_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_references_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_references_subsection_id_fkey"
+            columns: ["subsection_id"]
+            isOneToOne: false
+            referencedRelation: "subsections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           author: string
-          content_type: string | null
           created_at: string
-          description: string | null
-          file_path: string
+          edition: string | null
           id: string
-          size: number | null
+          isbn: string | null
+          publication_year: number | null
           title: string
         }
         Insert: {
           author: string
-          content_type?: string | null
           created_at?: string
-          description?: string | null
-          file_path: string
+          edition?: string | null
           id?: string
-          size?: number | null
+          isbn?: string | null
+          publication_year?: number | null
           title: string
         }
         Update: {
           author?: string
-          content_type?: string | null
           created_at?: string
-          description?: string | null
-          file_path?: string
+          edition?: string | null
           id?: string
-          size?: number | null
+          isbn?: string | null
+          publication_year?: number | null
           title?: string
         }
         Relationships: []
+      }
+      chapters: {
+        Row: {
+          book_id: string
+          chapter_number: number
+          created_at: string
+          id: string
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          book_id: string
+          chapter_number: number
+          created_at?: string
+          id?: string
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          book_id?: string
+          chapter_number?: number
+          created_at?: string
+          id?: string
+          summary?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapters_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chunked_nelson_knowledge: {
         Row: {
@@ -107,6 +178,80 @@ export type Database = {
           side_effects?: string | null
         }
         Relationships: []
+      }
+      images: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          section_id: string | null
+          subsection_id: string | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          section_id?: string | null
+          subsection_id?: string | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          section_id?: string | null
+          subsection_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "images_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "images_subsection_id_fkey"
+            columns: ["subsection_id"]
+            isOneToOne: false
+            referencedRelation: "subsections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      keywords: {
+        Row: {
+          context: string | null
+          created_at: string
+          id: string
+          keyword: string
+          section_id: string
+        }
+        Insert: {
+          context?: string | null
+          created_at?: string
+          id?: string
+          keyword: string
+          section_id: string
+        }
+        Update: {
+          context?: string | null
+          created_at?: string
+          id?: string
+          keyword?: string
+          section_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "keywords_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       knowledge: {
         Row: {
@@ -240,6 +385,82 @@ export type Database = {
         }
         Relationships: []
       }
+      sections: {
+        Row: {
+          chapter_id: string
+          content: string
+          created_at: string
+          id: string
+          page_end: number | null
+          page_start: number | null
+          section_number: number
+          title: string | null
+        }
+        Insert: {
+          chapter_id: string
+          content: string
+          created_at?: string
+          id?: string
+          page_end?: number | null
+          page_start?: number | null
+          section_number: number
+          title?: string | null
+        }
+        Update: {
+          chapter_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          page_end?: number | null
+          page_start?: number | null
+          section_number?: number
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sections_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subsections: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          section_id: string
+          subsection_number: number
+          title: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          section_id: string
+          subsection_number: number
+          title?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          section_id?: string
+          subsection_number?: number
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subsections_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -261,6 +482,36 @@ export type Database = {
       chunk_knowledge: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      gtrgm_compress: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_decompress: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_in: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
+      gtrgm_options: {
+        Args: {
+          "": unknown
+        }
+        Returns: undefined
+      }
+      gtrgm_out: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
       }
       halfvec_avg: {
         Args: {
@@ -401,6 +652,22 @@ export type Database = {
           page_number: number
           relevance_score: number
         }[]
+      }
+      set_limit: {
+        Args: {
+          "": number
+        }
+        Returns: number
+      }
+      show_limit: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      show_trgm: {
+        Args: {
+          "": string
+        }
+        Returns: string[]
       }
       sparsevec_out: {
         Args: {

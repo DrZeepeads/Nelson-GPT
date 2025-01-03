@@ -1,4 +1,7 @@
 project_id = "lnuzvcwusafxoaehrbzu"
 
-[functions.chat]
+[functions.chat-with-context]
+verify_jwt = false
+
+[functions.search-knowledge]
 verify_jwt = false
