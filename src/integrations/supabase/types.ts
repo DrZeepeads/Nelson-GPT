@@ -83,25 +83,52 @@ export type Database = {
           book_id: string
           chapter_number: number
           created_at: string
+          difficulty_level: string | null
+          estimated_reading_time: number | null
           id: string
+          is_published: boolean | null
+          keywords: string[] | null
+          last_updated: string | null
+          learning_objectives: string[] | null
+          prerequisites: string[] | null
+          review_status: string | null
           summary: string | null
           title: string
+          version: number | null
         }
         Insert: {
           book_id: string
           chapter_number: number
           created_at?: string
+          difficulty_level?: string | null
+          estimated_reading_time?: number | null
           id?: string
+          is_published?: boolean | null
+          keywords?: string[] | null
+          last_updated?: string | null
+          learning_objectives?: string[] | null
+          prerequisites?: string[] | null
+          review_status?: string | null
           summary?: string | null
           title: string
+          version?: number | null
         }
         Update: {
           book_id?: string
           chapter_number?: number
           created_at?: string
+          difficulty_level?: string | null
+          estimated_reading_time?: number | null
           id?: string
+          is_published?: boolean | null
+          keywords?: string[] | null
+          last_updated?: string | null
+          learning_objectives?: string[] | null
+          prerequisites?: string[] | null
+          review_status?: string | null
           summary?: string | null
           title?: string
+          version?: number | null
         }
         Relationships: [
           {
