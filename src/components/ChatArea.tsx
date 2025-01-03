@@ -6,6 +6,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useTelegramNotification } from "@/hooks/useTelegramNotification";
 
 interface Message {
   id: string;
@@ -21,6 +22,7 @@ export const ChatArea = () => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { sendTelegramNotification } = useTelegramNotification();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -44,7 +46,6 @@ export const ChatArea = () => {
     try {
       const response = await getChatResponse(message);
       
-      // Query for enhanced content
       const { data: enhancedContent, error: enhancedError } = await supabase
         .from('content_enhancements')
         .select('enhanced_content, confidence_score, keywords')
@@ -61,41 +62,7 @@ export const ChatArea = () => {
       };
       
       setMessages((prev) => [...prev, botResponse]);
-
-      // Send to Telegram if chat ID is available
-      const telegramChatId = localStorage.getItem('telegram_chat_id');
-      if (telegramChatId) {
-        try {
-          console.log('Attempting to send message to Telegram:', { 
-            message, 
-            response, 
-            chatId: telegramChatId 
-          });
-          
-          const telegramResponse = await supabase.functions.invoke('telegram-bot', {
-            body: {
-              message: `User: ${message}\n\nAssistant: ${response}`,
-              chatId: telegramChatId,
-            },
-          });
-          
-          console.log('Telegram API response:', telegramResponse);
-          
-          if (telegramResponse.error) {
-            console.error('Telegram API error:', telegramResponse.error);
-            throw new Error(telegramResponse.error.message);
-          }
-          
-          console.log('Successfully sent message to Telegram');
-        } catch (error) {
-          console.error('Error sending to Telegram:', error);
-          toast({
-            title: "Telegram Error",
-            description: "Failed to send message to Telegram. Please check your connection and chat ID.",
-            variant: "destructive",
-          });
-        }
-      }
+      await sendTelegramNotification(message, response);
     } catch (error) {
       console.error('Chat error:', error);
       toast({
