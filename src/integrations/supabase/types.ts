@@ -385,6 +385,50 @@ export type Database = {
         }
         Relationships: []
       }
+      reference_citations: {
+        Row: {
+          authors: string[] | null
+          citation: string
+          content_id: string | null
+          created_at: string | null
+          id: string
+          journal: string | null
+          title: string | null
+          validated: boolean | null
+          year: number | null
+        }
+        Insert: {
+          authors?: string[] | null
+          citation: string
+          content_id?: string | null
+          created_at?: string | null
+          id?: string
+          journal?: string | null
+          title?: string | null
+          validated?: boolean | null
+          year?: number | null
+        }
+        Update: {
+          authors?: string[] | null
+          citation?: string
+          content_id?: string | null
+          created_at?: string | null
+          id?: string
+          journal?: string | null
+          title?: string | null
+          validated?: boolean | null
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reference_citations_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "nelson_content"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sections: {
         Row: {
           chapter_id: string
