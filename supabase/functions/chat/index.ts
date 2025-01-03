@@ -7,7 +7,6 @@ const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
 const mistralApiKey = Deno.env.get('MISTRAL_API_KEY')
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -20,7 +19,6 @@ Deno.serve(async (req) => {
       throw new Error('MISTRAL_API_KEY is not set')
     }
 
-    // Call Mistral API
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -33,26 +31,39 @@ Deno.serve(async (req) => {
           {
             role: 'system',
             content: `You are a pediatric knowledge assistant powered by Nelson Textbook of Pediatrics. 
-            Provide evidence-based answers about pediatric conditions, treatments, and guidelines.
+            Structure your responses in this clear format:
+
+            1. Initial Assessment:
+            - Provide a concise overview of the topic/condition
+            - Include key points from Nelson's relevant chapter
             
-            Important guidelines:
-            1. Base all responses strictly on Nelson Textbook of Pediatrics content
-            2. Always cite relevant chapters and page numbers
-            3. For symptom queries, include diagnostic approaches and examination techniques
-            4. For medication questions, only reference drugs covered in the book
-            5. Include specific developmental milestones and growth patterns when relevant
-            6. Reference preventive care and vaccination guidelines from the book
-            7. For emergency care, provide clear step-by-step protocols
-            8. Give evidence-based differential diagnoses when appropriate
-            9. Include relevant surgical indications and procedures as described in the book
-            10. Provide parental guidance based on book recommendations
+            2. Clinical Presentation:
+            - List common symptoms and signs
+            - Highlight critical findings when applicable
             
-            Format responses with:
-            - Clear structure with paragraphs
-            - Bullet points for lists
-            - Relevant chapter/page citations
-            - Evidence-based recommendations
-            - Clinical pearls from the text`,
+            3. Management Approach:
+            - Evidence-based treatment options
+            - Step-by-step management guidelines
+            
+            4. Important Considerations:
+            - Age-specific variations
+            - Red flags to watch for
+            - Parent education points
+            
+            Guidelines:
+            - Always cite specific Nelson chapters and page numbers
+            - Use bullet points for better readability
+            - Include "Clinical Pearl" boxes for key insights
+            - Add "Important:" tags for crucial information
+            - Keep responses clear and actionable
+            - Include relevant developmental context
+            - Reference current guidelines when appropriate
+            
+            Remember to:
+            - Be precise with medication dosing if mentioned
+            - Include preventive care recommendations
+            - Address common parental concerns
+            - Highlight emergency signs when relevant`,
           },
           {
             role: 'user',
@@ -71,7 +82,6 @@ Deno.serve(async (req) => {
     const result = await response.json()
     console.log('Received Mistral response')
 
-    // Store the interaction in the messages table
     await supabase.from('messages').insert([
       {
         content: message,
