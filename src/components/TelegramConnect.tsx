@@ -9,6 +9,7 @@ export const TelegramConnect = () => {
   const [chatId, setChatId] = useState('');
   const [isSettingUp, setIsSettingUp] = useState(false);
   const [setupAttempted, setSetupAttempted] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -39,15 +40,29 @@ export const TelegramConnect = () => {
       });
 
       if (response.error) {
-        // Check if it's a rate limit error
+        // Handle rate limit error
         if (response.error.status === 429) {
+          const retryAfter = parseInt(response.error.message?.match(/\d+/)?.[0] || '5');
+          
+          // Implement exponential backoff
+          const backoffTime = Math.min(Math.pow(2, retryCount) * 1000, 30000); // Max 30 seconds
+          const waitTime = retryAfter * 1000 || backoffTime;
+
           toast({
             title: 'Rate Limit Exceeded',
-            description: 'Please wait a few seconds and try again.',
-            variant: 'destructive',
+            description: `Retrying in ${Math.ceil(waitTime/1000)} seconds...`,
+            duration: waitTime + 1000,
           });
+
           // Reset setup attempted so it can try again
           setSetupAttempted(false);
+          setRetryCount(prev => prev + 1);
+          
+          // Wait and retry
+          setTimeout(() => {
+            setupWebhook();
+          }, waitTime);
+          
           return;
         }
         throw new Error(response.error.message);
@@ -55,6 +70,7 @@ export const TelegramConnect = () => {
 
       console.log('Webhook setup response:', response.data);
       sessionStorage.setItem('telegram_webhook_setup', 'true');
+      setRetryCount(0); // Reset retry count on success
       
       toast({
         title: 'Bot Setup Complete',
