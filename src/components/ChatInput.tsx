@@ -23,21 +23,23 @@ export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="fixed bottom-16 left-0 right-0 bg-white border-t shadow-sm z-40">
+    <form onSubmit={handleSubmit} className="fixed bottom-16 left-0 right-0 bg-white/80 backdrop-blur-md border-t shadow-lg z-40">
       <div className="container max-w-4xl mx-auto px-4">
-        <div className="flex items-center space-x-2 py-2">
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Type your medical question here..."
-            className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-nelson-accent focus:border-transparent transition-all duration-200 placeholder:text-gray-400"
-            aria-label="Chat input"
-          />
+        <div className="flex items-center space-x-2 py-4">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask me anything about pediatrics..."
+              className="w-full p-4 pr-12 rounded-xl border-2 border-nelson-accent/20 focus:border-nelson-accent focus:outline-none focus:ring-2 focus:ring-nelson-accent/20 transition-all duration-200 placeholder:text-gray-400 bg-white/80"
+              aria-label="Chat input"
+            />
+          </div>
           <button
             type="submit"
-            className="p-3 bg-nelson-accent text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-4 bg-nelson-accent text-white rounded-xl hover:bg-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
             disabled={!message.trim()}
             aria-label="Send message"
           >
