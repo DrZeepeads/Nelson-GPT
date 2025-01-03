@@ -18,6 +18,11 @@ export const WelcomeScreen = ({ onQuestionClick }: WelcomeScreenProps) => {
           </h1>
           <Heart className="h-6 w-6 text-red-500 animate-pulse" />
         </div>
+        <p className="text-gray-600">
+          Your trusted companion for pediatric knowledge and clinical guidance.
+          <br />
+          Ask me anything about pediatric care, medications, or clinical cases.
+        </p>
       </div>
       
       <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-none shadow-lg">
