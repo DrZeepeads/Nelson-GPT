@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { useToast } from '../ui/use-toast';
-import { setupTelegramWebhook, sendTelegramTestMessage } from '@/utils/telegram';
+import { sendTelegramTestMessage } from '@/utils/telegram';
 import { TelegramInstructions } from './TelegramInstructions';
+import { useTelegramWebhook } from './TelegramWebhookSetup';
 
 export const TelegramConnect = () => {
   const [chatId, setChatId] = useState('');
-  const [isSettingUp, setIsSettingUp] = useState(false);
+  const { isSettingUp } = useTelegramWebhook();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -15,37 +16,7 @@ export const TelegramConnect = () => {
     if (savedChatId) {
       setChatId(savedChatId);
     }
-
-    const hasSetup = sessionStorage.getItem('telegram_webhook_setup');
-    if (!hasSetup) {
-      handleWebhookSetup();
-    }
   }, []);
-
-  const handleWebhookSetup = async () => {
-    if (isSettingUp) return;
-
-    setIsSettingUp(true);
-    try {
-      const origin = window.location.origin;
-      await setupTelegramWebhook(origin);
-      sessionStorage.setItem('telegram_webhook_setup', 'true');
-      
-      toast({
-        title: 'Bot Setup Complete',
-        description: 'You can now connect your Telegram account.',
-      });
-    } catch (error) {
-      console.error('Webhook setup error:', error);
-      toast({
-        title: 'Setup Error',
-        description: 'Could not set up the bot. Please try again later.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSettingUp(false);
-    }
-  };
 
   const handleTestConnection = async () => {
     if (!chatId.trim()) {
