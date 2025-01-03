@@ -81,12 +81,51 @@ serve(async (req) => {
     const result = await response.json()
     console.log('Enhancement completed for:', title)
 
+    // Get embedding for the enhanced content
+    const embeddingResponse = await fetch('https://api.mistral.ai/v1/embeddings', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${mistralApiKey}`,
+      },
+      body: JSON.stringify({
+        model: "mistral-embed",
+        input: result.choices[0].message.content,
+      }),
+    })
+
+    if (!embeddingResponse.ok) {
+      throw new Error('Failed to generate embedding')
+    }
+
+    const embeddingResult = await embeddingResponse.json()
+    const embedding = embeddingResult.data[0].embedding
+
+    // Extract keywords using a simple approach
+    const keywords = result.choices[0].message.content
+      .toLowerCase()
+      .split(/[\s.,;:]/)
+      .filter((word: string) => word.length > 4)
+      .slice(0, 10)
+
+    // Calculate a simple confidence score based on response length and structure
+    const confidenceScore = Math.min(
+      (result.choices[0].message.content.length / content.length) * 0.5 + 
+      (result.choices[0].message.content.includes('Clinical Pearl') ? 0.2 : 0) +
+      (result.choices[0].message.content.includes('Evidence-Based') ? 0.2 : 0) +
+      0.1,
+      1.0
+    )
+
     return new Response(
       JSON.stringify({ 
         enhancedContent: result.choices[0].message.content,
         originalContent: content,
         contentType,
-        title 
+        title,
+        embedding,
+        keywords,
+        confidenceScore
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
