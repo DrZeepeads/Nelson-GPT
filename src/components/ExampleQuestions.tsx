@@ -17,12 +17,15 @@ const questions = [
 
 export const ExampleQuestions = ({ onQuestionClick }: ExampleQuestionsProps) => {
   return (
-    <div className="grid grid-cols-1 gap-2">
+    <div className="grid grid-cols-1 gap-3">
       {questions.map((question) => (
         <button
           key={question}
           onClick={() => onQuestionClick(question)}
-          className="w-full text-left p-3 text-sm bg-white hover:bg-blue-50 rounded-lg text-nelson-accent transition-colors border border-blue-100 hover:border-blue-200 shadow-sm hover:shadow"
+          className="w-full text-left p-4 text-sm bg-white hover:bg-blue-50 rounded-lg 
+                   text-gray-700 hover:text-blue-700 transition-all duration-200 
+                   border border-gray-100 hover:border-blue-200 shadow-sm hover:shadow
+                   transform hover:-translate-y-0.5"
         >
           {question}
         </button>
