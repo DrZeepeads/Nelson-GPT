@@ -11,7 +11,7 @@ export const pwaManifest = {
   display: 'standalone',
   scope: '/',
   start_url: '/',
-  orientation: 'portrait',
+  orientation: 'portrait-primary' as const,
   icons: pwaIcons,
   related_applications: pwaRelatedApps,
   prefer_related_applications: false

@@ -1,4 +1,4 @@
-export const relatedApplications = [
+export const pwaRelatedApps = [
   {
     platform: 'webapp',
     url: 'https://nelsongpt.com/manifest.json',

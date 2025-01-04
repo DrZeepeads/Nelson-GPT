@@ -1,6 +1,6 @@
 import type { GenerateSWOptions } from 'workbox-build';
 
-export const workboxConfig: Partial<GenerateSWOptions> = {
+export const pwaWorkboxConfig: Partial<GenerateSWOptions> = {
   runtimeCaching: [
     {
       urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
