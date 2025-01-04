@@ -8,21 +8,32 @@ import { DrugInformation } from "@/components/drug-calculator/DrugInformation";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { Drug } from "@/data/drugData";
+import { useToast } from "@/hooks/use-toast";
 
 const fetchDrugs = async (category: DrugCategory) => {
   console.log('Fetching drugs for category:', category);
-  const { data, error } = await supabase
-    .from('drugs')
-    .select('*')
-    .eq('category', category);
-  
-  if (error) {
-    console.error('Error fetching drugs:', error);
+  try {
+    const { data, error } = await supabase
+      .from('drugs')
+      .select('*')
+      .eq('category', category);
+    
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+    
+    if (!data) {
+      console.log('No data returned from Supabase');
+      return [];
+    }
+    
+    console.log('Fetched drugs:', data);
+    return data as Drug[];
+  } catch (error) {
+    console.error('Error in fetchDrugs:', error);
     throw error;
   }
-  
-  console.log('Fetched drugs:', data);
-  return data as Drug[];
 };
 
 const DrugCalculator = () => {
@@ -31,10 +42,19 @@ const DrugCalculator = () => {
   const [age, setAge] = useState("");
   const [selectedDrug, setSelectedDrug] = useState("");
   const [category, setCategory] = useState<DrugCategory>("nutrition");
+  const { toast } = useToast();
 
   const { data: drugs = [], isLoading, error } = useQuery({
     queryKey: ['drugs', category],
     queryFn: () => fetchDrugs(category),
+    onError: (error) => {
+      console.error('Query error:', error);
+      toast({
+        title: "Error loading drugs",
+        description: "There was a problem loading the drug list. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   // Reset selected drug when category changes
@@ -42,13 +62,16 @@ const DrugCalculator = () => {
     setSelectedDrug("");
   }, [category]);
 
-  if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-  }
-
   if (error) {
     console.error('Error in drug calculator:', error);
-    return <div className="flex items-center justify-center min-h-screen">Error loading drugs data</div>;
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm p-6">
+          <h2 className="text-red-600 font-semibold">Error loading drugs data</h2>
+          <p className="text-gray-600">Please try refreshing the page</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -81,11 +104,15 @@ const DrugCalculator = () => {
             onAgeChange={setAge}
           />
 
-          <DrugSelector
-            selectedDrug={selectedDrug}
-            onDrugChange={setSelectedDrug}
-            drugs={drugs}
-          />
+          {isLoading ? (
+            <div className="text-center py-4">Loading drugs...</div>
+          ) : (
+            <DrugSelector
+              selectedDrug={selectedDrug}
+              onDrugChange={setSelectedDrug}
+              drugs={drugs}
+            />
+          )}
 
           <DrugInformation
             selectedDrug={selectedDrug}
