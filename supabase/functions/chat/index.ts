@@ -22,26 +22,13 @@ Deno.serve(async (req) => {
       throw new Error('Method not allowed. Expected POST.')
     }
 
-    // Clone the request for multiple reads if needed
-    const clonedReq = req.clone()
-    
-    // First try to read the raw body
-    const rawBody = await clonedReq.text()
-    console.log('Raw request body:', rawBody)
+    // Get the request body
+    const body = await req.json().catch((error) => {
+      console.error('Error parsing request body:', error)
+      throw new Error('Invalid JSON in request body')
+    })
 
-    // Validate raw body
-    if (!rawBody) {
-      throw new Error('Request body is empty')
-    }
-
-    // Parse JSON
-    let body
-    try {
-      body = JSON.parse(rawBody)
-    } catch (error) {
-      console.error('JSON parse error:', error)
-      throw new Error(`Invalid JSON format: ${error.message}`)
-    }
+    console.log('Processed request body:', body)
 
     // Validate message field
     if (!body?.message || typeof body.message !== 'string' || !body.message.trim()) {
