@@ -58,33 +58,34 @@ export const PediaDx = () => {
       const matchedConditions = await findMatchingConditions(symptomsArray, data.age);
       setMatchedConditions(matchedConditions);
 
-      // Generate AI response
-      const prompt = `Based on the following patient information from Nelson Textbook of Pediatrics, suggest three possible differential diagnoses. Rank them by likelihood and relevance:
+      // Generate AI response with enhanced prompt
+      const prompt = `Based on the Nelson Textbook of Pediatrics, analyze these symptoms and provide three differential diagnoses:
 
-Symptoms: ${data.symptoms}
-Patient Age: ${data.age}
-Relevant History: ${data.history}
+Patient Information:
+- Symptoms: ${data.symptoms}
+- Age: ${data.age}
+- History: ${data.history}
 
-Please structure your response as follows:
-1. Most Likely Diagnosis:
-   - Clinical reasoning
-   - Key findings supporting this diagnosis
-   - Recommended next steps
+For each diagnosis, provide:
+1. Name of the condition
+2. Key supporting features from the patient's presentation
+3. Recommended next steps (diagnostic tests and/or initial treatment)
+4. Any red flags or warning signs to watch for
 
-2. Second Most Likely:
-   - Clinical reasoning
-   - Key findings supporting this diagnosis
-   - Recommended next steps
+Format your response as follows for each diagnosis:
 
-3. Third Most Likely:
-   - Clinical reasoning
-   - Key findings supporting this diagnosis
-   - Recommended next steps
+1. [Condition Name]:
+   - Supporting Features: [list key findings that support this diagnosis]
+   - Next Steps: [specific tests or treatments to consider]
+   - Red Flags: [any warning signs to monitor]
 
-Important Considerations:
-- Age-specific variations
-- Red flags to watch for
-- Recommended initial workup`;
+2. [Second Condition]:
+   [same format as above]
+
+3. [Third Condition]:
+   [same format as above]
+
+Important: Prioritize evidence-based recommendations and highlight any urgent actions needed.`;
 
       const response = await getChatResponse(prompt);
       setResponse(response);

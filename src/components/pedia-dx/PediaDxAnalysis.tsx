@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertTriangle } from "lucide-react";
 
 interface MatchedCondition {
   condition_name: string;
@@ -36,13 +37,18 @@ export const PediaDxAnalysis = ({ matchedConditions, isLoading }: PediaDxAnalysi
       {matchedConditions.map((condition, index) => (
         <Card key={index} className="bg-white">
           <CardHeader>
-            <CardTitle className="text-lg">{condition.condition_name}</CardTitle>
+            <CardTitle className="text-lg flex items-center gap-2">
+              {condition.condition_name}
+              {condition.typical_history?.toLowerCase().includes("red flag") && (
+                <AlertTriangle className="h-5 w-5 text-red-500" />
+              )}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             <p className="text-gray-600">{condition.description}</p>
             {condition.typical_history && (
               <div>
-                <p className="font-medium">Typical History:</p>
+                <p className="font-medium">Key Features:</p>
                 <p className="text-gray-600">{condition.typical_history}</p>
               </div>
             )}
