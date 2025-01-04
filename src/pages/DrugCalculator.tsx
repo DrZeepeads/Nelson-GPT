@@ -47,13 +47,14 @@ const DrugCalculator = () => {
   const { data: drugs = [], isLoading, error } = useQuery({
     queryKey: ['drugs', category],
     queryFn: () => fetchDrugs(category),
-    onError: (error) => {
-      console.error('Query error:', error);
-      toast({
-        title: "Error loading drugs",
-        description: "There was a problem loading the drug list. Please try again.",
-        variant: "destructive",
-      });
+    meta: {
+      onError: () => {
+        toast({
+          title: "Error loading drugs",
+          description: "There was a problem loading the drug list. Please try again.",
+          variant: "destructive",
+        });
+      },
     },
   });
 
