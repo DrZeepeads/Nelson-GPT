@@ -39,7 +39,7 @@ export const WelcomeScreen = ({ onQuestionClick }: WelcomeScreenProps) => {
         <div className="flex justify-center items-center space-x-2">
           <Trophy className="h-5 w-5 text-yellow-500" />
           <span className="text-sm text-gray-600 italic">
-            Powered by the latest medical research
+            Powered by Nelson Textbook of Pediatrics
           </span>
         </div>
       </div>
