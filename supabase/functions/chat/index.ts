@@ -20,6 +20,10 @@ Deno.serve(async (req) => {
       throw new Error('MISTRAL_API_KEY is not set')
     }
 
+    if (!message) {
+      throw new Error('Message is required')
+    }
+
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {

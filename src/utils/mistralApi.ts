@@ -6,11 +6,18 @@ export const getChatResponse = async (message: string): Promise<string> => {
     
     const { data, error } = await supabase.functions.invoke('chat', {
       body: { message },
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
     if (error) {
       console.error('Chat function error:', error);
       throw error;
+    }
+
+    if (!data || !data.response) {
+      throw new Error('Invalid response format from chat function');
     }
 
     console.log('Received chat response:', data);
