@@ -14,15 +14,27 @@ export const pwaManifest: Partial<ManifestOptions> = {
   scope: '/',
   start_url: '/',
   prefer_related_applications: false,
-  categories: [
-    'medical',
-    'education',
-    'healthcare',
-    'reference'
-  ],
+  categories: ['medical', 'education', 'healthcare', 'reference'],
   launch_handler: {
     client_mode: ['navigate-existing', 'auto']
   },
+  display_override: ['standalone', 'window-controls-overlay'],
+  handle_links: 'preferred',
+  edge_side_panel: {
+    preferred_width: 480
+  },
+  shortcuts: [
+    {
+      name: 'Chat',
+      url: '/',
+      description: 'Start a new chat session'
+    },
+    {
+      name: 'Drug Calculator',
+      url: '/drug-calculator',
+      description: 'Calculate drug dosages'
+    }
+  ],
   screenshots: [
     {
       src: 'screenshot-1.png',
@@ -60,17 +72,38 @@ export const pwaManifest: Partial<ManifestOptions> = {
 }
 
 export const pwaWorkboxConfig: Partial<GenerateSWOptions> = {
-  runtimeCaching: [{
-    urlPattern: /^https:\/\/api\./,
-    handler: 'NetworkFirst' as const,
-    options: {
-      cacheName: 'api-cache',
-      backgroundSync: {
-        name: 'api-queue',
-        options: {
-          maxRetentionTime: 24 * 60 // Retry for 24 hours
+  skipWaiting: true,
+  clientsClaim: true,
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/api\./,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'api-cache',
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 60 * 60 * 24 // 24 hours
+        },
+        backgroundSync: {
+          name: 'api-queue',
+          options: {
+            maxRetentionTime: 24 * 60 // Retry for 24 hours
+          }
+        }
+      }
+    },
+    {
+      urlPattern: /\.(png|jpg|jpeg|svg|gif)$/,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'image-cache',
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
         }
       }
     }
-  }]
+  ],
+  navigationPreload: true,
+  cleanupOutdatedCaches: true
 }

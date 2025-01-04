@@ -1,6 +1,23 @@
 import { Share2, Smartphone } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const HomeScreenGuide = () => {
+  const isMobile = useIsMobile();
+
+  if (!isMobile) {
+    return (
+      <div className="p-4 bg-white rounded-lg shadow-sm border">
+        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <Smartphone className="h-5 w-5" />
+          Mobile Only Application
+        </h3>
+        <p className="text-sm text-gray-600">
+          NelsonGPT is optimized for mobile devices. Please access it from your smartphone or tablet.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 bg-white rounded-lg shadow-sm border space-y-6">
       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -11,7 +28,7 @@ export const HomeScreenGuide = () => {
       <div className="space-y-4">
         <div className="space-y-2">
           <p className="text-sm text-gray-600">
-            Install NelsonGPT on your device for quick access:
+            Install NelsonGPT on your device for the best experience:
           </p>
           <div className="space-y-4">
             {/* iOS Instructions */}
