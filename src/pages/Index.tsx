@@ -12,14 +12,14 @@ const Index = () => {
 
   if (!isMobile) {
     return (
-      <div className="min-h-screen bg-nelson-primary p-4">
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-4">
         <HomeScreenGuide />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-nelson-primary">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Header isThinking={isThinking} />
       <main className="pt-14 pb-24 container mx-auto max-w-7xl px-4">
         <div className="flex flex-col md:flex-row gap-4">
