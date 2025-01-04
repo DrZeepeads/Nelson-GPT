@@ -13,9 +13,15 @@ export const useTelegramWebhook = () => {
 
     setIsSettingUp(true);
     try {
-      const origin = window.location.origin;
+      // Ensure we have a valid origin without trailing colon
+      const origin = window.location.origin.replace(/:\/$/, '');
+      console.log('Setting up webhook with origin:', origin);
+      
       const { data, error } = await supabase.functions.invoke('setup-telegram-webhook', {
-        body: { origin },
+        body: { 
+          origin,
+          path: '/api/telegram-webhook' // Add explicit path
+        },
       });
 
       if (error) throw error;
