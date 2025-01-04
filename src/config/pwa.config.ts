@@ -11,8 +11,21 @@ export const pwaManifest: Partial<ManifestOptions> = {
   display: 'standalone',
   orientation: 'portrait',
   dir: 'ltr',
+  iarc_rating_id: 'e84b072d-71b3-4d3e-86ae-31a8ce4e53b7',
   scope: '/',
+  scope_extensions: [
+    {
+      origin: 'https://nelsongpt.com'
+    }
+  ],
   start_url: '/',
+  related_applications: [
+    {
+      platform: 'webapp',
+      url: 'https://nelsongpt.com/manifest.json',
+      id: 'com.nelsongpt.app'
+    }
+  ],
   prefer_related_applications: false,
   categories: ['medical', 'education', 'healthcare', 'reference'],
   launch_handler: {
@@ -100,6 +113,24 @@ export const pwaWorkboxConfig: Partial<GenerateSWOptions> = {
         expiration: {
           maxEntries: 50,
           maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
+        }
+      }
+    },
+    {
+      urlPattern: new RegExp('^https://.*(?:/api/|/functions/).*'),
+      handler: 'NetworkOnly',
+      options: {
+        backgroundSync: {
+          name: 'api-queue',
+          options: {
+            maxRetentionTime: 24 * 60 // Retry for 24 hours
+          }
+        },
+        broadcastUpdate: {
+          channelName: 'api-updates'
+        },
+        matchOptions: {
+          ignoreSearch: true
         }
       }
     }
