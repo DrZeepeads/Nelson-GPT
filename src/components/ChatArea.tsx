@@ -7,6 +7,7 @@ import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTelegramNotification } from "@/hooks/useTelegramNotification";
+import { useSession } from "@supabase/auth-helpers-react";
 
 interface Message {
   id: string;
@@ -28,6 +29,7 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { sendTelegramNotification } = useTelegramNotification();
+  const session = useSession();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -42,6 +44,15 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
   }, [isThinking, onThinkingChange]);
 
   const handleSendMessage = async (message: string) => {
+    if (!session) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to use the chat feature.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const newMessage = {
       id: Date.now().toString(),
       message,
@@ -81,7 +92,7 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
       console.error('Chat error:', error);
       toast({
         title: "Error",
-        description: "Failed to get response. Please try again.",
+        description: error.message || "Failed to get response. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -91,7 +102,7 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-7rem)] w-full overflow-hidden pb-32">
+    <div className="flex flex-col h-[calc(100vh-7rem)] w-full max-w-4xl mx-auto overflow-hidden pb-32">
       <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur-sm border-b" />
       <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (

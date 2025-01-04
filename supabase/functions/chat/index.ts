@@ -1,25 +1,34 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import { corsHeaders } from '../_shared/cors.ts'
 
+const mistralApiKey = Deno.env.get('MISTRAL_API_KEY')
 const supabaseUrl = Deno.env.get('SUPABASE_URL')
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
-const mistralApiKey = Deno.env.get('MISTRAL_API_KEY')
 
-Deno.serve(async (req) => {
+const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
+
+serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
 
   try {
-    const { message } = await req.json()
-    console.log('Received message:', message)
-
-    if (!mistralApiKey) {
-      throw new Error('MISTRAL_API_KEY is not set')
+    // Verify request method
+    if (req.method !== 'POST') {
+      throw new Error('Method not allowed')
     }
 
+    // Get the request body
+    const requestData = await req.json().catch(() => null)
+    if (!requestData || !requestData.message) {
+      throw new Error('Invalid request: message is required')
+    }
+
+    console.log('Processing chat request:', requestData)
+
+    // Call Mistral API
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -49,26 +58,11 @@ Deno.serve(async (req) => {
             4. Important Considerations:
             - Age-specific variations
             - Red flags to watch for
-            - Parent education points
-            
-            Guidelines:
-            - Always cite specific Nelson chapters and page numbers
-            - Use bullet points for better readability
-            - Include "Clinical Pearl" boxes for key insights
-            - Add "Important:" tags for crucial information
-            - Keep responses clear and actionable
-            - Include relevant developmental context
-            - Reference current guidelines when appropriate
-            
-            Remember to:
-            - Be precise with medication dosing if mentioned
-            - Include preventive care recommendations
-            - Address common parental concerns
-            - Highlight emergency signs when relevant`,
+            - Parent education points`,
           },
           {
             role: 'user',
-            content: message,
+            content: requestData.message,
           },
         ],
         temperature: 0.7,
@@ -89,7 +83,7 @@ Deno.serve(async (req) => {
     try {
       await supabase.from('messages').insert([
         {
-          content: message,
+          content: requestData.message,
           role: 'user',
         },
         {
@@ -104,18 +98,16 @@ Deno.serve(async (req) => {
 
     return new Response(
       JSON.stringify({ response: result.choices[0].message.content }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     )
   } catch (error) {
-    console.error('Error:', error)
+    console.error('Error in chat function:', error)
     return new Response(
       JSON.stringify({ 
         error: error.message,
         details: error.stack 
       }),
-      {
+      { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },

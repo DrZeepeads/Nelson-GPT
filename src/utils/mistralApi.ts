@@ -10,13 +10,17 @@ export const getChatResponse = async (message: string): Promise<string> => {
 
     if (error) {
       console.error('Chat function error:', error);
-      throw error;
+      throw new Error(error.message || 'Failed to get response from chat function');
+    }
+
+    if (!data || !data.response) {
+      throw new Error('Invalid response from chat function');
     }
 
     console.log('Received chat response:', data);
     return data.response;
   } catch (error) {
     console.error('Error calling chat function:', error);
-    throw new Error('Failed to get response from chat function');
+    throw error;
   }
 };
