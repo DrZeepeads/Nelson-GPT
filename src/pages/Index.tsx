@@ -5,7 +5,6 @@ import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { HomeScreenGuide } from "@/components/settings/HomeScreenGuide";
-import { PediaDx } from "@/components/pedia-dx/PediaDx";
 
 const Index = () => {
   const [isThinking, setIsThinking] = useState(false);
@@ -26,7 +25,7 @@ const Index = () => {
         <div className="flex flex-col md:flex-row">
           <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <PediaDx />
+              <ChatArea setIsThinking={setIsThinking} />
             </div>
           </div>
         </div>
