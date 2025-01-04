@@ -19,12 +19,9 @@ const Login = () => {
     });
   }, [navigate]);
 
-  // Update session configuration when rememberMe changes
+  // Update session persistence when rememberMe changes
   useEffect(() => {
     supabase.auth.setSession({
-      access_token: '',
-      refresh_token: ''
-    }, {
       persistSession: rememberMe
     });
   }, [rememberMe]);
