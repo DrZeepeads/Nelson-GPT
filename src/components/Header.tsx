@@ -31,7 +31,7 @@ export const Header = ({ isThinking }: HeaderProps) => {
 
   return (
     <header className="w-full bg-nelson-primary text-white fixed top-0 left-0 right-0 z-50">
-      <div className="w-full px-4 py-4">
+      <div className="w-full px-4 pt-safe pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Stethoscope className="w-6 h-6 animate-[spin_3s_linear_infinite]" />

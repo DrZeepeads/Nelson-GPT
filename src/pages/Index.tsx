@@ -21,7 +21,7 @@ const Index = () => {
   return (
     <div className="min-h-screen w-full bg-nelson-primary">
       <Header isThinking={isThinking} />
-      <main className="w-full pt-14 pb-24">
+      <main className="w-full pt-safe pb-24">
         <div className="w-full">
           <div className="bg-white">
             <ChatArea onThinkingChange={setIsThinking} />
