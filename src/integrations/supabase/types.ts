@@ -983,7 +983,7 @@ export type Database = {
         | "subsection"
         | "clinical_case"
         | "reference"
-      user_role: "student" | "doctor"
+      user_role: "student" | "doctor" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
