@@ -13,27 +13,38 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Check if request has content
-    const contentLength = req.headers.get('content-length')
-    if (!contentLength || parseInt(contentLength) === 0) {
+    // Log request details for debugging
+    console.log('Request method:', req.method)
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()))
+
+    // Ensure request is POST
+    if (req.method !== 'POST') {
+      throw new Error('Method not allowed. Expected POST.')
+    }
+
+    // Clone the request for multiple reads if needed
+    const clonedReq = req.clone()
+    
+    // First try to read the raw body
+    const rawBody = await clonedReq.text()
+    console.log('Raw request body:', rawBody)
+
+    // Validate raw body
+    if (!rawBody) {
       throw new Error('Request body is empty')
     }
 
-    // Get the request body as text first
-    const bodyText = await req.text()
-    console.log('Received body:', bodyText)
-
-    // Try to parse the JSON
+    // Parse JSON
     let body
     try {
-      body = JSON.parse(bodyText)
+      body = JSON.parse(rawBody)
     } catch (error) {
       console.error('JSON parse error:', error)
       throw new Error(`Invalid JSON format: ${error.message}`)
     }
 
-    // Validate the message field
-    if (!body.message || typeof body.message !== 'string') {
+    // Validate message field
+    if (!body?.message || typeof body.message !== 'string' || !body.message.trim()) {
       throw new Error('Message field must be a non-empty string')
     }
 
