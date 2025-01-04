@@ -23,9 +23,10 @@ export const ExampleQuestions = ({ onQuestionClick }: ExampleQuestionsProps) => 
           key={question}
           onClick={() => onQuestionClick(question)}
           className="w-full text-left p-4 text-sm bg-white hover:bg-blue-50 rounded-lg 
-                   text-gray-700 hover:text-blue-700 transition-all duration-200 
+                   text-gray-700 hover:text-blue-700 transition-all duration-300 
                    border border-gray-100 hover:border-blue-200 shadow-sm hover:shadow
-                   transform hover:-translate-y-0.5"
+                   transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 
+                   focus:ring-blue-200 focus:ring-opacity-50"
         >
           {question}
         </button>
