@@ -127,7 +127,10 @@ export const pwaWorkboxConfig: Partial<GenerateSWOptions> = {
           }
         },
         broadcastUpdate: {
-          channelName: 'api-updates'
+          channelName: 'api-updates',
+          options: {
+            headersToCheck: ['ETag', 'Last-Modified']
+          }
         },
         matchOptions: {
           ignoreSearch: true
