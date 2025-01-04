@@ -7,7 +7,6 @@ import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useTelegramNotification } from "@/hooks/useTelegramNotification";
-import { Brain } from "lucide-react";
 
 interface Message {
   id: string;
@@ -78,16 +77,6 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
       
       setMessages((prev) => [...prev, botResponse]);
       await sendTelegramNotification(message, response);
-
-      toast({
-        title: "AI Response Ready",
-        description: (
-          <div className="flex items-center gap-2">
-            <Brain className="h-4 w-4 text-blue-500" />
-            <span>The response has been generated with enhanced capabilities.</span>
-          </div>
-        ),
-      });
     } catch (error) {
       console.error('Chat error:', error);
       toast({
