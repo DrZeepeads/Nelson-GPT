@@ -14,6 +14,7 @@ export const getChatResponse = async (message: string): Promise<string> => {
     }
 
     if (!data || !data.response) {
+      console.error('Invalid response structure:', data);
       throw new Error('Invalid response from chat function');
     }
 

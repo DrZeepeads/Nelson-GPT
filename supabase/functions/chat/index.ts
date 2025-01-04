@@ -7,6 +7,7 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -16,8 +17,11 @@ serve(async (req) => {
     const mistralApiKey = Deno.env.get('MISTRAL_API_KEY');
 
     if (!mistralApiKey) {
+      console.error('MISTRAL_API_KEY is not set');
       throw new Error('MISTRAL_API_KEY is not set');
     }
+
+    console.log('Sending request to Mistral API with message:', message);
 
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
@@ -43,12 +47,15 @@ serve(async (req) => {
     });
 
     const data = await response.json();
+    console.log('Received response from Mistral API:', data);
     
     if (!response.ok) {
+      console.error('Mistral API error:', data);
       throw new Error(data.error?.message || 'Failed to get response from Mistral AI');
     }
 
     const aiResponse = data.choices[0].message.content;
+    console.log('Extracted AI response:', aiResponse);
 
     return new Response(
       JSON.stringify({ response: aiResponse }),

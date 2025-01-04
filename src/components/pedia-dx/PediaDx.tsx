@@ -24,6 +24,8 @@ export const PediaDx = () => {
 
   const findMatchingConditions = async (symptoms: string[], age: string) => {
     try {
+      console.log('Searching for conditions with symptoms:', symptoms, 'and age:', age);
+      
       const { data, error } = await supabase
         .from('clinical_conditions')
         .select('*')
@@ -35,6 +37,7 @@ export const PediaDx = () => {
         return [];
       }
 
+      console.log('Found matching conditions:', data);
       return data || [];
     } catch (error) {
       console.error("Error in findMatchingConditions:", error);
@@ -47,6 +50,8 @@ export const PediaDx = () => {
     age: string;
     history: string;
   }) => {
+    console.log('Form submitted with data:', data);
+    
     if (!session) {
       toast({
         title: "Authentication Required",
@@ -60,6 +65,8 @@ export const PediaDx = () => {
     try {
       // Find matching conditions from the database
       const symptomsArray = data.symptoms.toLowerCase().split(',').map(s => s.trim());
+      console.log('Processing symptoms array:', symptomsArray);
+      
       const matchedConditions = await findMatchingConditions(symptomsArray, data.age);
       setMatchedConditions(matchedConditions);
 
@@ -92,7 +99,10 @@ Format your response exactly like this example:
 
 Important: Prioritize evidence-based recommendations and highlight any urgent actions needed.`;
 
+      console.log('Sending prompt to Mistral API:', prompt);
       const response = await getChatResponse(prompt);
+      console.log('Received response from Mistral API:', response);
+      
       setResponse(response);
     } catch (error) {
       console.error("Error generating differential diagnoses:", error);
