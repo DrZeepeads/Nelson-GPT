@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import { corsHeaders } from '../_shared/cors.ts'
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL')
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
 const mistralApiKey = Deno.env.get('MISTRAL_API_KEY')
 
 Deno.serve(async (req) => {
@@ -13,15 +13,25 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { message } = await req.json()
+    // Ensure request has a body
+    if (!req.body) {
+      throw new Error('Request body is required')
+    }
+
+    // Parse request body with error handling
+    let { message } = await req.json().catch(error => {
+      console.error('Error parsing request body:', error)
+      throw new Error('Invalid JSON in request body')
+    })
+
+    if (!message || typeof message !== 'string') {
+      throw new Error('Message is required and must be a string')
+    }
+
     console.log('Received message:', message)
 
     if (!mistralApiKey) {
       throw new Error('MISTRAL_API_KEY is not set')
-    }
-
-    if (!message) {
-      throw new Error('Message is required')
     }
 
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
@@ -53,22 +63,7 @@ Deno.serve(async (req) => {
             4. Important Considerations:
             - Age-specific variations
             - Red flags to watch for
-            - Parent education points
-            
-            Guidelines:
-            - Always cite specific Nelson chapters and page numbers
-            - Use bullet points for better readability
-            - Include "Clinical Pearl" boxes for key insights
-            - Add "Important:" tags for crucial information
-            - Keep responses clear and actionable
-            - Include relevant developmental context
-            - Reference current guidelines when appropriate
-            
-            Remember to:
-            - Be precise with medication dosing if mentioned
-            - Include preventive care recommendations
-            - Address common parental concerns
-            - Highlight emergency signs when relevant`,
+            - Parent education points`,
           },
           {
             role: 'user',
