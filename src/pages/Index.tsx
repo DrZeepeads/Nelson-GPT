@@ -25,7 +25,7 @@ const Index = () => {
         <div className="flex flex-col md:flex-row">
           <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <ChatArea setIsThinking={setIsThinking} />
+              <ChatArea onThinkingChange={setIsThinking} />
             </div>
           </div>
         </div>
