@@ -24,6 +24,16 @@ export const pwaManifest: Partial<ManifestOptions> = {
       platform: 'webapp',
       url: 'https://nelsongpt.com/manifest.json',
       id: 'com.nelsongpt.app'
+    },
+    {
+      platform: 'play',
+      url: 'https://play.google.com/store/apps/details?id=com.nelsongpt.app',
+      id: 'com.nelsongpt.app'
+    },
+    {
+      platform: 'itunes',
+      url: 'https://apps.apple.com/app/nelsongpt/id123456789',
+      id: 'com.nelsongpt.app'
     }
   ],
   prefer_related_applications: false,
@@ -66,20 +76,28 @@ export const pwaManifest: Partial<ManifestOptions> = {
   ],
   icons: [
     {
-      src: 'pwa-192x192.png',
+      src: '/lovable-uploads/5610b56d-239c-4b1a-9eac-d5a6f06435bc.png',
       sizes: '192x192',
-      type: 'image/png'
+      type: 'image/png',
+      purpose: 'any'
     },
     {
-      src: 'pwa-512x512.png',
-      sizes: '512x512',
-      type: 'image/png'
-    },
-    {
-      src: 'pwa-512x512.png',
+      src: '/lovable-uploads/9e6dacf9-d662-473c-9105-1fda32982304.png',
       sizes: '512x512',
       type: 'image/png',
-      purpose: 'any maskable'
+      purpose: 'any'
+    },
+    {
+      src: '/lovable-uploads/9e6dacf9-d662-473c-9105-1fda32982304.png',
+      sizes: '512x512',
+      type: 'image/png',
+      purpose: 'maskable'
+    },
+    {
+      src: '/lovable-uploads/5610b56d-239c-4b1a-9eac-d5a6f06435bc.png',
+      sizes: '192x192',
+      type: 'image/png',
+      purpose: 'apple touch'
     }
   ]
 }
