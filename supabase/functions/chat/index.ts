@@ -13,22 +13,31 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Ensure request has a body
-    if (!req.body) {
-      throw new Error('Request body is required')
+    // Check if request has content
+    const contentLength = req.headers.get('content-length')
+    if (!contentLength || parseInt(contentLength) === 0) {
+      throw new Error('Request body is empty')
     }
 
-    // Parse request body with error handling
-    let { message } = await req.json().catch(error => {
-      console.error('Error parsing request body:', error)
-      throw new Error('Invalid JSON in request body')
-    })
+    // Get the request body as text first
+    const bodyText = await req.text()
+    console.log('Received body:', bodyText)
 
-    if (!message || typeof message !== 'string') {
-      throw new Error('Message is required and must be a string')
+    // Try to parse the JSON
+    let body
+    try {
+      body = JSON.parse(bodyText)
+    } catch (error) {
+      console.error('JSON parse error:', error)
+      throw new Error(`Invalid JSON format: ${error.message}`)
     }
 
-    console.log('Received message:', message)
+    // Validate the message field
+    if (!body.message || typeof body.message !== 'string') {
+      throw new Error('Message field must be a non-empty string')
+    }
+
+    console.log('Processing message:', body.message)
 
     if (!mistralApiKey) {
       throw new Error('MISTRAL_API_KEY is not set')
@@ -67,7 +76,7 @@ Deno.serve(async (req) => {
           },
           {
             role: 'user',
-            content: message,
+            content: body.message,
           },
         ],
         temperature: 0.7,
@@ -88,7 +97,7 @@ Deno.serve(async (req) => {
     try {
       await supabase.from('messages').insert([
         {
-          content: message,
+          content: body.message,
           role: 'user',
         },
         {
