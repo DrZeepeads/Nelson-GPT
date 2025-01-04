@@ -46,18 +46,22 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error('Mistral API error response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorData
+      });
+      throw new Error(`Mistral API error: ${response.status} ${response.statusText}`);
+    }
+
     const data = await response.json();
     console.log('Received response from Mistral API:', {
       status: response.status,
       statusText: response.statusText,
-      headers: Object.fromEntries(response.headers.entries()),
-      data: data
+      headers: Object.fromEntries(response.headers.entries())
     });
-
-    if (!response.ok) {
-      console.error('Mistral API error:', data);
-      throw new Error(data.error?.message || `Failed to get response from Mistral AI: ${response.statusText}`);
-    }
 
     if (!data.choices?.[0]?.message?.content) {
       console.error('Invalid response structure:', data);
@@ -65,7 +69,7 @@ serve(async (req) => {
     }
 
     const aiResponse = data.choices[0].message.content;
-    console.log('Successfully extracted AI response');
+    console.log('Successfully extracted AI response:', aiResponse.substring(0, 100) + '...');
 
     return new Response(
       JSON.stringify({ response: aiResponse }),
@@ -81,7 +85,8 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        details: error.stack
+        details: error.stack,
+        timestamp: new Date().toISOString()
       }),
       { 
         status: 500,
