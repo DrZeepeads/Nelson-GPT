@@ -19,14 +19,12 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen w-full bg-nelson-primary">
       <Header isThinking={isThinking} />
-      <main className="pt-14 pb-24">
-        <div className="flex flex-col md:flex-row">
-          <div className="flex-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100">
-              <ChatArea onThinkingChange={setIsThinking} />
-            </div>
+      <main className="w-full pt-14 pb-24">
+        <div className="w-full">
+          <div className="bg-white">
+            <ChatArea onThinkingChange={setIsThinking} />
           </div>
         </div>
       </main>

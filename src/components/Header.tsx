@@ -30,26 +30,28 @@ export const Header = ({ isThinking }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-nelson-primary text-white p-4 fixed top-0 left-0 right-0 z-50">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Stethoscope className="w-6 h-6 animate-[spin_3s_linear_infinite]" />
-          <h1 className="text-xl font-semibold">Nelson-GPT</h1>
-        </div>
-        <div className="flex items-center gap-4">
-          {isThinking && (
-            <div className="flex items-center gap-2">
-              <Loader2 className="h-5 w-5 text-red-500 animate-spin" />
-            </div>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-white hover:text-white/80"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
+    <header className="w-full bg-nelson-primary text-white fixed top-0 left-0 right-0 z-50">
+      <div className="w-full px-4 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Stethoscope className="w-6 h-6 animate-[spin_3s_linear_infinite]" />
+            <h1 className="text-xl font-semibold">Nelson-GPT</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            {isThinking && (
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-5 w-5 text-red-500 animate-spin" />
+              </div>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-white hover:text-white/80"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
       </div>
     </header>
