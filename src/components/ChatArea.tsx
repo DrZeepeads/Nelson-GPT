@@ -91,7 +91,7 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-7rem)] max-w-[100vw] overflow-hidden pb-32">
+    <div className="flex flex-col h-[calc(100vh-7rem)] w-full overflow-hidden pb-32">
       <div className="flex items-center justify-between px-4 py-2 bg-white/80 backdrop-blur-sm border-b" />
       <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
