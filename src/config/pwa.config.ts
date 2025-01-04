@@ -1,24 +1,20 @@
-import { icons } from './pwa/icons.config';
-import { relatedApplications } from './pwa/apps.config';
-import { workboxConfig } from './pwa/workbox.config';
+import { pwaIcons } from './pwa/icons.config';
+import { pwaWorkboxConfig } from './pwa/workbox.config';
+import { pwaRelatedApps } from './pwa/apps.config';
 
 export const pwaManifest = {
-  name: 'Nelson-GPT',
-  short_name: 'Nelson-GPT',
-  description: 'Your AI-powered pediatric assistant',
-  theme_color: '#003B4D',
-  background_color: '#003B4D',
+  name: 'NelsonGPT',
+  short_name: 'NelsonGPT',
+  description: 'Evidence-based pediatric knowledge assistant powered by Nelson Textbook of Pediatrics',
+  theme_color: '#ffffff',
+  background_color: '#ffffff',
   display: 'standalone',
-  orientation: 'portrait',
   scope: '/',
   start_url: '/',
-  iarc_rating_id: 'e84b072d-71b3-4d3e-86ae-31a8ce4e53b7',
-  id: 'com.nelsongpt.app',
-  categories: ['medical', 'education', 'healthcare'],
-  screenshots: [],
-  related_applications: relatedApplications,
-  prefer_related_applications: false,
-  icons,
+  orientation: 'portrait',
+  icons: pwaIcons,
+  related_applications: pwaRelatedApps,
+  prefer_related_applications: false
 };
 
-export const pwaWorkboxConfig = workboxConfig;
+export { pwaWorkboxConfig };

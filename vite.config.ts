@@ -11,7 +11,14 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: [
+        'android-chrome-192x192.png',
+        'android-chrome-512x512.png',
+        'android-chrome-maskable-192x192.png',
+        'android-chrome-maskable-512x512.png',
+        'apple-touch-icon.png',
+        'favicon.ico'
+      ],
       workbox: pwaWorkboxConfig,
       manifest: pwaManifest,
     })

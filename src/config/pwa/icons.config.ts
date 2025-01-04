@@ -1,26 +1,32 @@
-export const icons = [
+export const pwaIcons = [
   {
-    src: '/lovable-uploads/5610b56d-239c-4b1a-9eac-d5a6f06435bc.png',
+    src: '/android-chrome-192x192.png',
     sizes: '192x192',
     type: 'image/png',
     purpose: 'any'
   },
   {
-    src: '/lovable-uploads/9e6dacf9-d662-473c-9105-1fda32982304.png',
+    src: '/android-chrome-512x512.png',
     sizes: '512x512',
     type: 'image/png',
     purpose: 'any'
   },
   {
-    src: '/lovable-uploads/9e6dacf9-d662-473c-9105-1fda32982304.png',
+    src: '/android-chrome-maskable-192x192.png',
+    sizes: '192x192',
+    type: 'image/png',
+    purpose: 'maskable'
+  },
+  {
+    src: '/android-chrome-maskable-512x512.png',
     sizes: '512x512',
     type: 'image/png',
     purpose: 'maskable'
   },
   {
-    src: '/lovable-uploads/5610b56d-239c-4b1a-9eac-d5a6f06435bc.png',
-    sizes: '192x192',
+    src: '/apple-touch-icon.png',
+    sizes: '180x180',
     type: 'image/png',
-    purpose: 'apple touch'
+    purpose: 'any apple'
   }
 ];
