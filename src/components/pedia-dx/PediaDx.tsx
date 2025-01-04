@@ -64,20 +64,20 @@ export const PediaDx = () => {
       setMatchedConditions(matchedConditions);
 
       // Generate AI response with enhanced prompt
-      const prompt = `Based on the Nelson Textbook of Pediatrics, analyze these symptoms and provide three differential diagnoses:
+      const prompt = `As a pediatric diagnostic assistant based on the Nelson Textbook of Pediatrics, analyze these symptoms and provide three differential diagnoses:
 
 Patient Information:
-- Symptoms: ${data.symptoms}
 - Age: ${data.age}
-- History: ${data.history}
+- Presenting Symptoms: ${data.symptoms}
+- Relevant History: ${data.history}
 
-For each diagnosis, provide:
+For each differential diagnosis, provide:
 1. Name of the condition
 2. Key supporting features from the patient's presentation
 3. Recommended next steps (diagnostic tests and/or initial treatment)
 4. Any red flags or warning signs to watch for
 
-Format your response as follows for each diagnosis:
+Format your response exactly like this example:
 
 1. [Condition Name]:
    - Supporting Features: [list key findings that support this diagnosis]
@@ -122,7 +122,7 @@ Important: Prioritize evidence-based recommendations and highlight any urgent ac
         isLoading={isLoading}
       />
 
-      <PediaDxResponse response={response} />
+      <PediaDxResponse response={response} isLoading={isLoading} />
     </div>
   );
 };
