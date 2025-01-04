@@ -1,15 +1,41 @@
 import { useState } from "react";
 import { PediaDxForm } from "./PediaDxForm";
-import { ChatMessage } from "../ChatMessage";
+import { PediaDxResponse } from "./PediaDxResponse";
+import { PediaDxAnalysis } from "./PediaDxAnalysis";
 import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { useSession } from "@supabase/auth-helpers-react";
+import { supabase } from "@/integrations/supabase/client";
+
+interface MatchedCondition {
+  condition_name: string;
+  description: string;
+  common_symptoms: string[];
+  typical_history?: string;
+  chapter_reference?: string;
+}
 
 export const PediaDx = () => {
   const [response, setResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [matchedConditions, setMatchedConditions] = useState<MatchedCondition[]>([]);
   const { toast } = useToast();
   const session = useSession();
+
+  const findMatchingConditions = async (symptoms: string[], age: string) => {
+    const { data, error } = await supabase
+      .from('clinical_conditions')
+      .select('*')
+      .contains('common_symptoms', symptoms)
+      .contains('age_groups', [age]);
+
+    if (error) {
+      console.error("Error fetching matching conditions:", error);
+      return [];
+    }
+
+    return data;
+  };
 
   const handleSubmit = async (data: {
     symptoms: string;
@@ -27,6 +53,12 @@ export const PediaDx = () => {
 
     setIsLoading(true);
     try {
+      // Find matching conditions from the database
+      const symptomsArray = data.symptoms.toLowerCase().split(',').map(s => s.trim());
+      const matchedConditions = await findMatchingConditions(symptomsArray, data.age);
+      setMatchedConditions(matchedConditions);
+
+      // Generate AI response
       const prompt = `Based on the following patient information from Nelson Textbook of Pediatrics, suggest three possible differential diagnoses. Rank them by likelihood and relevance:
 
 Symptoms: ${data.symptoms}
@@ -79,25 +111,12 @@ Important Considerations:
         <PediaDxForm onSubmit={handleSubmit} />
       </div>
 
-      {isLoading && (
-        <div className="flex items-center justify-center p-8">
-          <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-nelson-primary rounded-full animate-bounce" />
-            <div className="w-3 h-3 bg-nelson-primary rounded-full animate-bounce [animation-delay:0.2s]" />
-            <div className="w-3 h-3 bg-nelson-primary rounded-full animate-bounce [animation-delay:0.4s]" />
-          </div>
-        </div>
-      )}
+      <PediaDxAnalysis 
+        matchedConditions={matchedConditions}
+        isLoading={isLoading}
+      />
 
-      {response && (
-        <div className="mt-6">
-          <ChatMessage
-            message={response}
-            isBot={true}
-            timestamp={new Date().toISOString()}
-          />
-        </div>
-      )}
+      <PediaDxResponse response={response} />
     </div>
   );
 };
