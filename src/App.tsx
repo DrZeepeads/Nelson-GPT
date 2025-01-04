@@ -6,7 +6,6 @@ import GrowthChart from "./pages/GrowthChart"
 import Settings from "./pages/Settings"
 import BmiCalculator from "./pages/BmiCalculator"
 import ApgarCalculator from "./pages/ApgarCalculator"
-import PediaDx from "./pages/PediaDx"
 import Login from "./pages/Login"
 import { useEffect, useState } from "react"
 import { supabase } from "./integrations/supabase/client"
@@ -100,14 +99,6 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ApgarCalculator />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/pedia-dx"
-          element={
-            <ProtectedRoute>
-              <PediaDx />
             </ProtectedRoute>
           }
         />

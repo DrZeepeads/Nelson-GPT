@@ -4,7 +4,6 @@ import {
   ArrowLeft, 
   Baby,
   Scale,
-  Stethoscope
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -49,15 +48,6 @@ const Tools = () => {
       color: "text-purple-500",
       bgColor: "bg-purple-50",
       delay: 0.4,
-    },
-    {
-      icon: Stethoscope,
-      title: "PediaDx",
-      description: "Pediatric diagnosis assistant and clinical guide",
-      route: "/pedia-dx",
-      color: "text-indigo-500",
-      bgColor: "bg-indigo-50",
-      delay: 0.5,
     }
   ];
 

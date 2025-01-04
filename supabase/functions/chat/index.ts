@@ -1,9 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import { corsHeaders } from '../_shared/cors.ts'
 
-const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+const supabaseUrl = Deno.env.get('SUPABASE_URL')
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+const supabase = createClient(supabaseUrl!, supabaseServiceKey!)
 const mistralApiKey = Deno.env.get('MISTRAL_API_KEY')
 
 Deno.serve(async (req) => {
@@ -13,29 +13,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Log request details for debugging
-    console.log('Request method:', req.method)
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()))
-
-    // Ensure request is POST
-    if (req.method !== 'POST') {
-      throw new Error('Method not allowed. Expected POST.')
-    }
-
-    // Get the request body
-    const body = await req.json().catch((error) => {
-      console.error('Error parsing request body:', error)
-      throw new Error('Invalid JSON in request body')
-    })
-
-    console.log('Processed request body:', body)
-
-    // Validate message field
-    if (!body?.message || typeof body.message !== 'string' || !body.message.trim()) {
-      throw new Error('Message field must be a non-empty string')
-    }
-
-    console.log('Processing message:', body.message)
+    const { message } = await req.json()
+    console.log('Received message:', message)
 
     if (!mistralApiKey) {
       throw new Error('MISTRAL_API_KEY is not set')
@@ -70,11 +49,26 @@ Deno.serve(async (req) => {
             4. Important Considerations:
             - Age-specific variations
             - Red flags to watch for
-            - Parent education points`,
+            - Parent education points
+            
+            Guidelines:
+            - Always cite specific Nelson chapters and page numbers
+            - Use bullet points for better readability
+            - Include "Clinical Pearl" boxes for key insights
+            - Add "Important:" tags for crucial information
+            - Keep responses clear and actionable
+            - Include relevant developmental context
+            - Reference current guidelines when appropriate
+            
+            Remember to:
+            - Be precise with medication dosing if mentioned
+            - Include preventive care recommendations
+            - Address common parental concerns
+            - Highlight emergency signs when relevant`,
           },
           {
             role: 'user',
-            content: body.message,
+            content: message,
           },
         ],
         temperature: 0.7,
@@ -95,7 +89,7 @@ Deno.serve(async (req) => {
     try {
       await supabase.from('messages').insert([
         {
-          content: body.message,
+          content: message,
           role: 'user',
         },
         {

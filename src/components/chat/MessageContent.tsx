@@ -1,10 +1,4 @@
 import { cn } from "@/lib/utils";
-import { NumberedSection } from "./message-formatters/NumberedSection";
-import { DifferentialList } from "./message-formatters/DifferentialList";
-import { BulletList } from "./message-formatters/BulletList";
-import { ClinicalAlert } from "./message-formatters/ClinicalAlert";
-import { DataTable } from "./message-formatters/DataTable";
-import { References } from "./message-formatters/References";
 
 interface MessageContentProps {
   content: string;
@@ -12,6 +6,7 @@ interface MessageContentProps {
 }
 
 export const MessageContent = ({ content, isBot }: MessageContentProps) => {
+  // Function to extract citations from text and return cleaned text and citations array
   const extractCitations = (text: string) => {
     const citations: string[] = [];
     const cleanedText = text.replace(/\(Chapter [^)]+\)/g, (match) => {
@@ -21,6 +16,7 @@ export const MessageContent = ({ content, isBot }: MessageContentProps) => {
     return { cleanedText, citations };
   };
 
+  // Function to format different types of content
   const formatContent = (text: string) => {
     const sections = text.split('\n\n');
     const allCitations: string[] = [];
@@ -31,44 +27,65 @@ export const MessageContent = ({ content, isBot }: MessageContentProps) => {
       
       if (cleanedText.match(/^\d+\.\s+[A-Za-z]/)) {
         const [heading, ...content] = cleanedText.split('\n');
-        return <NumberedSection key={index} heading={heading} content={content} />;
+        return (
+          <div key={index} className="mb-4">
+            <h3 className="text-lg font-bold text-nelson-primary mb-2">
+              {heading.replace(/^\d+\.\s+/, '')}
+            </h3>
+            {content.length > 0 && (
+              <div className="pl-4">
+                {formatSection(content.join('\n'))}
+              </div>
+            )}
+          </div>
+        );
       }
       
-      if (cleanedText.includes('Differential Diagnoses:') || cleanedText.includes('Ranked by likelihood:')) {
-        const [title, ...items] = cleanedText.split('\n');
-        return <DifferentialList key={index} title={title} items={items} />;
-      }
-      
-      return formatSection(cleanedText, index);
+      return formatSection(cleanedText);
     });
 
     return (
       <>
         {formattedSections}
-        <References citations={allCitations} />
+        {allCitations.length > 0 && (
+          <div className="mt-4 pt-2 border-t border-gray-200 text-sm text-gray-600">
+            <p className="font-medium">References:</p>
+            <ul className="list-none space-y-1">
+              {[...new Set(allCitations)].map((citation, index) => (
+                <li key={index}>{citation}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </>
     );
   };
 
-  const formatSection = (text: string, index: number) => {
+  // Helper function to format individual sections
+  const formatSection = (text: string) => {
     if (text.trim().match(/^[0-9]+\.|^\-|\*/)) {
       const items = text.split('\n');
-      return <BulletList key={index} items={items} />;
+      return (
+        <ul className="space-y-2 my-2 list-disc list-inside">
+          {items.map((item, index) => (
+            <li key={index} className="text-left">
+              {item.replace(/^[0-9]+\.|\-|\*/, '').trim()}
+            </li>
+          ))}
+        </ul>
+      );
     }
 
-    if (text.toLowerCase().includes('clinical pearl') || 
-        text.toLowerCase().includes('important:') ||
-        text.toLowerCase().includes('red flag')) {
-      return <ClinicalAlert key={index} content={text} />;
-    }
-
-    if (text.includes('|') || text.includes('\t')) {
-      const rows = text.split('\n').map(row => row.split(/\||\t/));
-      return <DataTable key={index} rows={rows} />;
+    if (text.toLowerCase().includes('clinical pearl') || text.toLowerCase().includes('important:')) {
+      return (
+        <div className="bg-blue-50 border-l-4 border-nelson-accent p-4 my-4 text-left">
+          {text}
+        </div>
+      );
     }
 
     return (
-      <p key={index} className="text-left my-2 leading-relaxed">
+      <p className="text-left my-2 leading-relaxed">
         {text}
       </p>
     );
