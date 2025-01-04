@@ -218,6 +218,39 @@ export type Database = {
         }
         Relationships: []
       }
+      clinical_conditions: {
+        Row: {
+          age_groups: string[]
+          chapter_reference: string | null
+          common_symptoms: string[]
+          condition_name: string
+          created_at: string | null
+          description: string
+          id: string
+          typical_history: string | null
+        }
+        Insert: {
+          age_groups: string[]
+          chapter_reference?: string | null
+          common_symptoms: string[]
+          condition_name: string
+          created_at?: string | null
+          description: string
+          id?: string
+          typical_history?: string | null
+        }
+        Update: {
+          age_groups?: string[]
+          chapter_reference?: string | null
+          common_symptoms?: string[]
+          condition_name?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          typical_history?: string | null
+        }
+        Relationships: []
+      }
       content_enhancements: {
         Row: {
           category: string | null
