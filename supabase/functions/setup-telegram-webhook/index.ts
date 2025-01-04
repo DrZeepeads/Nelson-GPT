@@ -10,15 +10,13 @@ serve(async (req) => {
   }
 
   try {
-    const { origin, path } = await req.json()
+    const { url } = await req.json()
     
-    if (!origin) {
-      throw new Error('Origin is required')
+    if (!url) {
+      throw new Error('URL is required')
     }
 
-    // Construct webhook URL properly
-    const webhookUrl = `${origin}${path || ''}`
-    console.log('Setting webhook URL:', webhookUrl)
+    console.log('Setting webhook URL:', url)
 
     // Set the webhook
     const telegramResponse = await fetch(
@@ -29,7 +27,7 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url: webhookUrl,
+          url: url,
           allowed_updates: ['message', 'callback_query'],
         }),
       }

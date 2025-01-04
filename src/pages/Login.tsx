@@ -21,8 +21,11 @@ const Login = () => {
 
   // Update session persistence when rememberMe changes
   useEffect(() => {
-    supabase.auth.setSession({
-      persistSession: rememberMe
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        localStorage.setItem('supabase.auth.token', JSON.stringify(session));
+        localStorage.setItem('persistSession', rememberMe.toString());
+      }
     });
   }, [rememberMe]);
 
