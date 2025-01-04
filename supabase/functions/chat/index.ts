@@ -7,22 +7,22 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
   try {
-    const { message } = await req.json();
-    const mistralApiKey = Deno.env.get('MISTRAL_API_KEY');
-
-    if (!mistralApiKey) {
-      console.error('MISTRAL_API_KEY is not set');
-      throw new Error('MISTRAL_API_KEY is not set');
+    // Handle CORS preflight requests
+    if (req.method === 'OPTIONS') {
+      return new Response(null, { headers: corsHeaders });
     }
 
-    console.log('Sending request to Mistral API with message:', message);
+    const { message } = await req.json();
+    console.log('Received request with message:', message);
 
+    const mistralApiKey = Deno.env.get('MISTRAL_API_KEY');
+    if (!mistralApiKey) {
+      console.error('MISTRAL_API_KEY is not set');
+      throw new Error('MISTRAL_API_KEY environment variable is not set');
+    }
+
+    console.log('Initiating request to Mistral API...');
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -47,29 +47,48 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    console.log('Received response from Mistral API:', data);
-    
+    console.log('Received response from Mistral API:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries()),
+      data: data
+    });
+
     if (!response.ok) {
       console.error('Mistral API error:', data);
-      throw new Error(data.error?.message || 'Failed to get response from Mistral AI');
+      throw new Error(data.error?.message || `Failed to get response from Mistral AI: ${response.statusText}`);
+    }
+
+    if (!data.choices?.[0]?.message?.content) {
+      console.error('Invalid response structure:', data);
+      throw new Error('Invalid response structure from Mistral AI');
     }
 
     const aiResponse = data.choices[0].message.content;
-    console.log('Extracted AI response:', aiResponse);
+    console.log('Successfully extracted AI response');
 
     return new Response(
       JSON.stringify({ response: aiResponse }),
       { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+        },
       },
     );
   } catch (error) {
     console.error('Error in chat function:', error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack
+      }),
       { 
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: { 
+          ...corsHeaders, 
+          'Content-Type': 'application/json',
+        },
       },
     );
   }
