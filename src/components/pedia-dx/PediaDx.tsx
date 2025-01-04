@@ -23,18 +23,23 @@ export const PediaDx = () => {
   const session = useSession();
 
   const findMatchingConditions = async (symptoms: string[], age: string) => {
-    const { data, error } = await supabase
-      .from('clinical_conditions')
-      .select('*')
-      .contains('common_symptoms', symptoms)
-      .contains('age_groups', [age]);
+    try {
+      const { data, error } = await supabase
+        .from('clinical_conditions')
+        .select('*')
+        .contains('common_symptoms', symptoms)
+        .contains('age_groups', [age]);
 
-    if (error) {
-      console.error("Error fetching matching conditions:", error);
+      if (error) {
+        console.error("Error fetching matching conditions:", error);
+        return [];
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error("Error in findMatchingConditions:", error);
       return [];
     }
-
-    return data;
   };
 
   const handleSubmit = async (data: {
