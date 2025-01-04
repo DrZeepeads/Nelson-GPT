@@ -1,10 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from '@supabase/supabase-js'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.47.10'
+import { corsHeaders } from '../_shared/cors.ts'
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -28,7 +24,6 @@ serve(async (req) => {
     if (searchError) throw searchError
 
     // Process the content and generate diagnoses
-    // This is a simplified example - you'd want to enhance this with more sophisticated matching
     const diagnoses = matchingContent.slice(0, 3).map(content => ({
       condition: content.topic,
       keyFeatures: ['Based on Nelson Textbook content'],
