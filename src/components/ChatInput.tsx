@@ -23,10 +23,8 @@ export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
     if (!session) {
       toast({
         title: "Authentication Required",
-        description: "Please sign in to use the chat feature.",
+        description: "Please sign in to use this feature",
         variant: "destructive",
-        className: "bg-red-500 text-white border-none rounded-none w-full top-0 fixed",
-        duration: 3000,
       });
       navigate("/login");
       return;
