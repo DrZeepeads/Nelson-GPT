@@ -2,6 +2,9 @@ import { Send, Brain } from "lucide-react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { useToast } from "@/components/ui/use-toast";
+import { useSession } from "@supabase/auth-helpers-react";
+import { useNavigate } from "react-router-dom";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
@@ -9,10 +12,24 @@ interface ChatInputProps {
 
 export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   const [message, setMessage] = useState("");
+  const { toast } = useToast();
+  const session = useSession();
+  const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
+
+    if (!session) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to use this feature",
+        variant: "destructive",
+      });
+      navigate("/login");
+      return;
+    }
+
     onSendMessage(message.trim());
     setMessage("");
   };
