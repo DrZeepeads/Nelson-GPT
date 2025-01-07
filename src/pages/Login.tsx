@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,41 +13,53 @@ const Login = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate("/");
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Session check error:", error);
+        toast({
+          title: "Error",
+          description: "Failed to check authentication status",
+          variant: "destructive",
+        });
       }
-    });
+    };
 
-    // Listen for auth state changes
+    checkSession();
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        // Set session persistence based on rememberMe
-        supabase.auth.setSession({
-          access_token: session.access_token,
-          refresh_token: session.refresh_token,
-        });
-        navigate("/");
-      }
-
-      if (event === 'TOKEN_REFRESHED') {
-        console.log('Token refreshed successfully');
+        try {
+          await supabase.auth.setSession({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+          });
+          navigate("/", { replace: true });
+        } catch (error) {
+          console.error("Session setup error:", error);
+          toast({
+            title: "Error",
+            description: "Failed to setup session",
+            variant: "destructive",
+          });
+        }
       }
 
       if (event === 'SIGNED_OUT') {
-        // Clear any stored tokens
         localStorage.removeItem('supabase.auth.token');
       }
     });
 
-    // Cleanup subscription
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center p-4">
@@ -71,6 +83,7 @@ const Login = () => {
               }
             }}
             providers={[]}
+            redirectTo={window.location.origin}
           />
           <div className="flex items-center space-x-2">
             <Checkbox 
