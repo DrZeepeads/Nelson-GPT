@@ -67,16 +67,7 @@ const Navigation = () => {
           </SheetTrigger>
           <SheetContent side="left" className="p-0">
             <SheetHeader className="p-6 border-b">
-              <div className="flex justify-between items-center">
-                <SheetTitle>Menu</SheetTitle>
-                <Button 
-                  variant="ghost" 
-                  size="icon"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
+              <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
             <div className="flex flex-col h-full">
               <div className="flex-1 py-4">
