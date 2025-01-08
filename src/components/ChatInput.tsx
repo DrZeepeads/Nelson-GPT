@@ -1,42 +1,31 @@
+import { useState, FormEvent, KeyboardEvent } from "react";
 import { Send } from "lucide-react";
-import { useState } from "react";
 import { Button } from "./ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { useSession } from "@supabase/auth-helpers-react";
-import { useNavigate } from "react-router-dom";
+import { useSettings } from "@/stores/useSettings";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
 }
 
-export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
+const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   const [message, setMessage] = useState("");
-  const { toast } = useToast();
-  const session = useSession();
-  const navigate = useNavigate();
+  const { sendOnEnter } = useSettings();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!message.trim()) return;
-
-    if (!session) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to use this feature",
-        variant: "destructive",
-      });
-      navigate("/login");
-      return;
+    if (message.trim()) {
+      onSendMessage(message.trim());
+      setMessage("");
     }
-
-    onSendMessage(message.trim());
-    setMessage("");
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey && sendOnEnter) {
       e.preventDefault();
-      handleSubmit(e as any);
+      if (message.trim()) {
+        onSendMessage(message.trim());
+        setMessage("");
+      }
     }
   };
 
@@ -49,19 +38,14 @@ export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
           onChange={(e) => setMessage(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="Type your message..."
-          className="flex-1 p-3 rounded-full border-2 border-primary-100 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 transition-all duration-200"
-          aria-label="Chat input"
+          className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
         />
-        <Button
-          type="submit"
-          size="icon"
-          className="rounded-full bg-primary-500 hover:bg-primary-600 transition-all duration-200"
-          disabled={!message.trim()}
-          aria-label="Send message"
-        >
-          <Send className="w-5 h-5" />
+        <Button type="submit" size="icon" className="bg-primary-500 hover:bg-primary-600">
+          <Send className="h-4 w-4" />
         </Button>
       </div>
     </form>
   );
 };
+
+export default ChatInput;
