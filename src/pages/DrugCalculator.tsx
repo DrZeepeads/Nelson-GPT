@@ -51,7 +51,6 @@ const DrugCalculator = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b z-10">
         <div className="container mx-auto px-4 h-14 flex items-center">
           <button
@@ -64,7 +63,6 @@ const DrugCalculator = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="container mx-auto px-4 pt-20 pb-16">
         <div className="max-w-2xl mx-auto space-y-8">
           <div>
