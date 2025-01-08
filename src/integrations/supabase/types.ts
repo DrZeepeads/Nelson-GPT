@@ -309,7 +309,7 @@ export type Database = {
         Row: {
           category: string
           created_at: string
-          dose_per_kg: number
+          dose_per_kg: number | null
           frequency: string | null
           id: string
           max_dose: number | null
@@ -320,7 +320,7 @@ export type Database = {
         Insert: {
           category?: string
           created_at?: string
-          dose_per_kg: number
+          dose_per_kg?: number | null
           frequency?: string | null
           id?: string
           max_dose?: number | null
@@ -331,7 +331,7 @@ export type Database = {
         Update: {
           category?: string
           created_at?: string
-          dose_per_kg?: number
+          dose_per_kg?: number | null
           frequency?: string | null
           id?: string
           max_dose?: number | null
