@@ -8,6 +8,7 @@ import { Drug } from "@/data/drugData";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import type { DrugCategory } from "@/components/drug-calculator/CategorySelector";
+import { PatientInfoForm } from "@/components/drug-calculator/PatientInfoForm";
 
 const DrugCalculator = () => {
   const navigate = useNavigate();
@@ -33,7 +34,6 @@ const DrugCalculator = () => {
         }
         
         setDrugs(data || []);
-        // Reset selected drug when category changes
         setSelectedDrug("");
       } catch (error) {
         console.error('Error fetching drugs:', error);
@@ -69,39 +69,20 @@ const DrugCalculator = () => {
         <div className="max-w-2xl mx-auto space-y-8">
           <div>
             <h2 className="text-2xl font-bold mb-4">Category</h2>
-            <CategorySelector value={category} onValueChange={setCategory} />
+            <CategorySelector 
+              category={category} 
+              onCategoryChange={setCategory} 
+            />
           </div>
 
           <div>
             <h2 className="text-2xl font-bold mb-4">Patient Information</h2>
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="weight" className="block text-sm font-medium text-gray-700 mb-1">
-                  Weight (kg)
-                </label>
-                <input
-                  id="weight"
-                  type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  className="w-full p-4 border rounded-lg bg-white"
-                  placeholder="Enter weight in kg"
-                />
-              </div>
-              <div>
-                <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">
-                  Age (years)
-                </label>
-                <input
-                  id="age"
-                  type="number"
-                  value={age}
-                  onChange={(e) => setAge(e.target.value)}
-                  className="w-full p-4 border rounded-lg bg-white"
-                  placeholder="Enter age in years"
-                />
-              </div>
-            </div>
+            <PatientInfoForm
+              weight={weight}
+              age={age}
+              onWeightChange={setWeight}
+              onAgeChange={setAge}
+            />
           </div>
 
           <div>

@@ -25,13 +25,13 @@ export type DrugCategory =
   | "cardiovascular";
 
 interface CategorySelectorProps {
-  value: DrugCategory;
-  onValueChange: (value: DrugCategory) => void;
+  category: DrugCategory;
+  onCategoryChange: (category: DrugCategory) => void;
 }
 
-export const CategorySelector = ({ value, onValueChange }: CategorySelectorProps) => {
+export const CategorySelector = ({ category, onCategoryChange }: CategorySelectorProps) => {
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={category} onValueChange={onCategoryChange}>
       <SelectTrigger className="w-full text-base bg-white border rounded-lg p-4">
         <SelectValue placeholder="Select category" />
       </SelectTrigger>
