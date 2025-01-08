@@ -102,8 +102,8 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)] w-full max-w-4xl mx-auto overflow-hidden">
-      <ScrollArea className="flex-1 px-4 pt-4">
+    <div className="flex flex-col h-[calc(100vh-4rem)] w-full max-w-4xl mx-auto">
+      <ScrollArea className="flex-1 px-4">
         {messages.length === 0 ? (
           <WelcomeScreen onQuestionClick={handleSendMessage} />
         ) : (
@@ -113,7 +113,9 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
           </>
         )}
       </ScrollArea>
-      <ChatInput onSendMessage={handleSendMessage} />
+      <div className="sticky bottom-0 w-full bg-background/80 backdrop-blur-sm">
+        <ChatInput onSendMessage={handleSendMessage} />
+      </div>
     </div>
   );
 };

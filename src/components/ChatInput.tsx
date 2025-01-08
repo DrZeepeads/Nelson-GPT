@@ -41,8 +41,8 @@ export const ChatInput = ({ onSendMessage }: ChatInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="sticky bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t p-4">
-      <div className="max-w-4xl mx-auto flex items-center space-x-2">
+    <form onSubmit={handleSubmit} className="p-4 w-full max-w-4xl mx-auto">
+      <div className="flex items-center space-x-2">
         <input
           type="text"
           value={message}
