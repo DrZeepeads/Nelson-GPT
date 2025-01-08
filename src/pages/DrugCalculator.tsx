@@ -13,10 +13,12 @@ const DrugCalculator = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDrug, setSelectedDrug] = useState("");
+  const [weight, setWeight] = useState("");
+  const [age, setAge] = useState("");
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="fixed top-0 left-0 right-0 z-50 bg-primary-500">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-nelson-primary">
         <div className="flex items-center h-14 px-4">
           <button 
             onClick={() => navigate('/')}
@@ -40,7 +42,12 @@ const DrugCalculator = () => {
         />
         {selectedDrug && (
           <>
-            <PatientInfoForm />
+            <PatientInfoForm 
+              weight={weight}
+              age={age}
+              onWeightChange={setWeight}
+              onAgeChange={setAge}
+            />
             <DrugInformation drugId={selectedDrug} />
             <ClinicalNotes drugId={selectedDrug} />
             <ToxicityAlert drugId={selectedDrug} />

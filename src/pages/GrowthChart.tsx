@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { GrowthChartHeader } from "@/components/growth-chart/Header";
 import { MeasurementForm } from "@/components/growth-chart/MeasurementForm";
 import { ChartToggle } from "@/components/growth-chart/ChartToggle";
@@ -29,6 +31,7 @@ const initialData: GrowthData[] = [
 ];
 
 const GrowthChart = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<GrowthData[]>(initialData);
   const [activeChart, setActiveChart] = useState<'height' | 'weight' | 'head'>('height');
 
@@ -45,7 +48,17 @@ const GrowthChart = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <GrowthChartHeader />
+      <div className="fixed top-0 left-0 right-0 z-50 bg-nelson-primary">
+        <div className="flex items-center h-14 px-4">
+          <button 
+            onClick={() => navigate('/')}
+            className="p-2 hover:bg-primary-600 rounded-full transition-colors text-white"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-lg font-semibold ml-2 text-white">Growth Chart</h1>
+        </div>
+      </div>
       <div className="pt-16 pb-20 px-4 space-y-6 max-w-4xl mx-auto">
         <div className="grid md:grid-cols-[350px,1fr] gap-6">
           <div className="space-y-6">
