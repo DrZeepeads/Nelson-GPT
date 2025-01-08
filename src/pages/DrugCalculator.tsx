@@ -18,7 +18,6 @@ const DrugCalculator = () => {
   const [age, setAge] = useState("");
   const [category, setCategory] = useState<DrugCategory>("nutrition");
   const [drugs, setDrugs] = useState<Drug[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDrugs = async () => {
@@ -37,8 +36,6 @@ const DrugCalculator = () => {
           title: "Error",
           description: "Failed to load medications. Please try again.",
         });
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -46,48 +43,57 @@ const DrugCalculator = () => {
   }, [category, toast]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="fixed top-0 left-0 right-0 z-50 bg-primary-500">
+    <div className="min-h-screen bg-white">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b">
         <div className="flex items-center h-14 px-4">
           <button 
             onClick={() => navigate('/')}
-            className="p-2 hover:bg-primary-600 rounded-full transition-colors text-white"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-lg font-semibold ml-2 text-white">Drug Calculator</h1>
+          <h1 className="text-2xl font-semibold ml-2 text-emerald-500">Pediatric Drug Calculator</h1>
         </div>
       </div>
 
-      <div className="pt-16 pb-20 px-4 max-w-4xl mx-auto space-y-6">
-        <CategorySelector 
-          category={category}
-          onCategoryChange={setCategory}
-        />
+      <div className="pt-20 pb-20 px-4 max-w-xl mx-auto space-y-8">
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Category</h2>
+            <CategorySelector 
+              category={category}
+              onCategoryChange={setCategory}
+            />
+          </div>
 
-        <DrugSelector
-          selectedDrug={selectedDrug}
-          onDrugChange={setSelectedDrug}
-          drugs={drugs}
-        />
-
-        {selectedDrug && (
-          <>
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Weight (kg)</h2>
             <PatientInfoForm
               weight={weight}
               age={age}
               onWeightChange={setWeight}
               onAgeChange={setAge}
             />
-            
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Select Medication</h2>
+            <DrugSelector
+              selectedDrug={selectedDrug}
+              onDrugChange={setSelectedDrug}
+              drugs={drugs}
+            />
+          </div>
+
+          {selectedDrug && weight && age && (
             <DrugInformation
               selectedDrug={selectedDrug}
               weight={weight}
               age={age}
               drugs={drugs}
             />
-          </>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

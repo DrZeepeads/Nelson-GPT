@@ -6,7 +6,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 
 interface DrugSelectorProps {
   selectedDrug: string;
@@ -20,24 +19,21 @@ export const DrugSelector = ({
   drugs,
 }: DrugSelectorProps) => {
   return (
-    <div className="space-y-2">
-      <Label htmlFor="drug">Select Medication</Label>
-      <Select onValueChange={onDrugChange} value={selectedDrug}>
-        <SelectTrigger className="text-base md:text-sm">
-          <SelectValue placeholder="Select a medication" />
-        </SelectTrigger>
-        <SelectContent>
-          {drugs?.map((drug) => (
-            <SelectItem
-              key={drug.id}
-              value={drug.name}
-              className="text-base md:text-sm"
-            >
-              {drug.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <Select onValueChange={onDrugChange} value={selectedDrug}>
+      <SelectTrigger className="w-full text-base bg-white border rounded-lg p-4">
+        <SelectValue placeholder="Select medication" />
+      </SelectTrigger>
+      <SelectContent>
+        {drugs?.map((drug) => (
+          <SelectItem
+            key={drug.id}
+            value={drug.name}
+            className="text-base"
+          >
+            {drug.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 };

@@ -1,7 +1,12 @@
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select } from "@/components/ui/select";
 import { useState, useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface PatientInfoFormProps {
   weight: string;
@@ -17,9 +22,8 @@ export const PatientInfoForm = ({
   onAgeChange,
 }: PatientInfoFormProps) => {
   const [ageValue, setAgeValue] = useState("");
-  const [ageUnit, setAgeUnit] = useState<"months" | "years">("months");
+  const [ageUnit, setAgeUnit] = useState<"months" | "years">("years");
 
-  // Convert age to months when unit changes or age value changes
   useEffect(() => {
     const numericAge = parseFloat(ageValue) || 0;
     const ageInMonths = ageUnit === "years" ? (numericAge * 12).toString() : ageValue;
@@ -27,40 +31,33 @@ export const PatientInfoForm = ({
   }, [ageValue, ageUnit, onAgeChange]);
 
   return (
-    <>
-      <div className="space-y-2">
-        <Label htmlFor="weight">Weight (kg)</Label>
-        <Input
-          id="weight"
-          type="number"
-          value={weight}
-          onChange={(e) => onWeightChange(e.target.value)}
-          placeholder="Enter weight in kg"
-          className="text-base md:text-sm"
-        />
-      </div>
+    <div className="space-y-6">
+      <Input
+        type="number"
+        value={weight}
+        onChange={(e) => onWeightChange(e.target.value)}
+        placeholder="Enter weight"
+        className="w-full text-base bg-white border rounded-lg p-4"
+      />
 
-      <div className="space-y-2">
-        <Label htmlFor="age">Age</Label>
-        <div className="flex gap-2">
-          <Input
-            id="age"
-            type="number"
-            value={ageValue}
-            onChange={(e) => setAgeValue(e.target.value)}
-            placeholder={`Enter age in ${ageUnit}`}
-            className="text-base md:text-sm"
-          />
-          <select
-            value={ageUnit}
-            onChange={(e) => setAgeUnit(e.target.value as "months" | "years")}
-            className="px-3 py-2 bg-background border border-input rounded-md text-sm"
-          >
-            <option value="months">Months</option>
-            <option value="years">Years</option>
-          </select>
-        </div>
+      <div className="flex gap-4">
+        <Input
+          type="number"
+          value={ageValue}
+          onChange={(e) => setAgeValue(e.target.value)}
+          placeholder="Enter age"
+          className="flex-1 text-base bg-white border rounded-lg p-4"
+        />
+        <Select value={ageUnit} onValueChange={(value: "months" | "years") => setAgeUnit(value)}>
+          <SelectTrigger className="w-32 text-base bg-white border rounded-lg">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="years">Years</SelectItem>
+            <SelectItem value="months">Months</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
-    </>
+    </div>
   );
 };
