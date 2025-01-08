@@ -54,6 +54,15 @@ const Login = () => {
       if (event === 'SIGNED_OUT') {
         localStorage.removeItem('supabase.auth.token');
       }
+
+      // Handle auth errors
+      if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+        toast({
+          title: "Session Ended",
+          description: "Please sign in again",
+          variant: "destructive",
+        });
+      }
     });
 
     return () => {
@@ -84,14 +93,6 @@ const Login = () => {
             }}
             providers={[]}
             redirectTo={`${window.location.origin}/`}
-            onError={(error) => {
-              console.error("Auth error:", error);
-              toast({
-                title: "Authentication Error",
-                description: error.message,
-                variant: "destructive",
-              });
-            }}
           />
           <div className="flex items-center space-x-2">
             <Checkbox 
