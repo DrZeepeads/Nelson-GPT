@@ -7,7 +7,10 @@ import {
   Settings, 
   LogOut,
   Menu as MenuIcon,
-  X
+  Baby,
+  Scale,
+  Stethoscope,
+  Home
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
@@ -35,6 +38,11 @@ const Navigation = () => {
 
   const menuItems = [
     {
+      label: "Home",
+      icon: Home,
+      onClick: () => navigate('/')
+    },
+    {
       label: "Drug Calculator",
       icon: Calculator,
       onClick: () => navigate('/drug-calculator')
@@ -43,6 +51,21 @@ const Navigation = () => {
       label: "Growth Charts",
       icon: LineChart,
       onClick: () => navigate('/growth-chart')
+    },
+    {
+      label: "APGAR Score",
+      icon: Baby,
+      onClick: () => navigate('/apgar-calculator')
+    },
+    {
+      label: "BMI Calculator",
+      icon: Scale,
+      onClick: () => navigate('/bmi-calculator')
+    },
+    {
+      label: "PediaDx Assistant",
+      icon: Stethoscope,
+      onClick: () => navigate('/pedia-dx')
     },
     {
       label: "Chat History",
