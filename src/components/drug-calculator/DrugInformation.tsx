@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { calculateDrugDose } from "@/utils/drugCalculations";
 import { Drug } from "@/data/drugData";
 import { useState } from "react";
 import { ToxicityAlert } from "./ToxicityAlert";

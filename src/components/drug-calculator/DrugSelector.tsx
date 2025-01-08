@@ -17,10 +17,8 @@ interface DrugSelectorProps {
 export const DrugSelector = ({
   selectedDrug,
   onDrugChange,
-  drugs = [], // Provide default empty array
+  drugs,
 }: DrugSelectorProps) => {
-  console.log('DrugSelector received drugs:', drugs);
-  
   return (
     <div className="space-y-2">
       <Label htmlFor="drug">Select Medication</Label>
