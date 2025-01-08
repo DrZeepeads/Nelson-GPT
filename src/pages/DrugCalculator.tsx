@@ -1,20 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { CategorySelector } from "@/components/drug-calculator/CategorySelector";
 import { DrugSelector } from "@/components/drug-calculator/DrugSelector";
 import { PatientInfoForm } from "@/components/drug-calculator/PatientInfoForm";
 import { DrugInformation } from "@/components/drug-calculator/DrugInformation";
-import { ClinicalNotes } from "@/components/drug-calculator/ClinicalNotes";
-import { ToxicityAlert } from "@/components/drug-calculator/ToxicityAlert";
-import { WarningsDisplay } from "@/components/drug-calculator/WarningsDisplay";
+import { Drug } from "@/data/drugData";
 
 const DrugCalculator = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDrug, setSelectedDrug] = useState("");
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
+  const [drugs, setDrugs] = useState<Drug[]>([]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -31,14 +28,10 @@ const DrugCalculator = () => {
       </div>
 
       <div className="pt-16 pb-20 px-4 max-w-4xl mx-auto space-y-6">
-        <CategorySelector 
-          selectedCategory={selectedCategory} 
-          onSelectCategory={setSelectedCategory} 
-        />
         <DrugSelector 
-          category={selectedCategory} 
           selectedDrug={selectedDrug} 
-          onSelectDrug={setSelectedDrug} 
+          onDrugChange={setSelectedDrug}
+          drugs={drugs}
         />
         {selectedDrug && (
           <>
@@ -48,10 +41,12 @@ const DrugCalculator = () => {
               onWeightChange={setWeight}
               onAgeChange={setAge}
             />
-            <DrugInformation drugId={selectedDrug} />
-            <ClinicalNotes drugId={selectedDrug} />
-            <ToxicityAlert drugId={selectedDrug} />
-            <WarningsDisplay drugId={selectedDrug} />
+            <DrugInformation 
+              selectedDrug={selectedDrug}
+              weight={weight}
+              age={age}
+              drugs={drugs}
+            />
           </>
         )}
       </div>

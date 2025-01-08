@@ -17,7 +17,7 @@ interface DrugSelectorProps {
 export const DrugSelector = ({
   selectedDrug,
   onDrugChange,
-  drugs,
+  drugs = [], // Provide default empty array
 }: DrugSelectorProps) => {
   console.log('DrugSelector received drugs:', drugs);
   
@@ -29,7 +29,7 @@ export const DrugSelector = ({
           <SelectValue placeholder="Select a medication" />
         </SelectTrigger>
         <SelectContent>
-          {drugs.map((drug) => (
+          {drugs?.map((drug) => (
             <SelectItem
               key={drug.id}
               value={drug.name}
