@@ -1,14 +1,14 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
-import Index from "./pages/Index"
-import DrugCalculator from "./pages/DrugCalculator"
-import GrowthChart from "./pages/GrowthChart"
-import Settings from "./pages/Settings"
-import BmiCalculator from "./pages/BmiCalculator"
-import ApgarCalculator from "./pages/ApgarCalculator"
-import Login from "./pages/Login"
-import { useEffect, useState } from "react"
-import { supabase } from "./integrations/supabase/client"
-import { Session } from "@supabase/supabase-js"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Index from "./pages/Index";
+import DrugCalculator from "./pages/DrugCalculator";
+import GrowthChart from "./pages/GrowthChart";
+import Settings from "./pages/Settings";
+import BmiCalculator from "./pages/BmiCalculator";
+import ApgarCalculator from "./pages/ApgarCalculator";
+import Login from "./pages/Login";
+import { useEffect, useState } from "react";
+import { supabase } from "./integrations/supabase/client";
+import { Session } from "@supabase/supabase-js";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);

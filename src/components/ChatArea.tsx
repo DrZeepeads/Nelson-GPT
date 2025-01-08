@@ -6,7 +6,6 @@ import { ScrollArea } from "./ui/scroll-area";
 import { getChatResponse } from "@/utils/mistralApi";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useTelegramNotification } from "@/hooks/useTelegramNotification";
 import { useSession } from "@supabase/auth-helpers-react";
 
 interface Message {
@@ -28,7 +27,6 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
   const [isThinking, setIsThinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-  const { sendTelegramNotification } = useTelegramNotification();
   const session = useSession();
 
   const scrollToBottom = () => {
@@ -87,7 +85,6 @@ export const ChatArea = ({ onThinkingChange }: ChatAreaProps) => {
       };
       
       setMessages((prev) => [...prev, botResponse]);
-      await sendTelegramNotification(message, response);
     } catch (error) {
       console.error('Chat error:', error);
       toast({
