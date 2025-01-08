@@ -29,7 +29,10 @@ export const DrugInformation = ({ selectedDrug, weight, age, drugs }: DrugInform
     }
 
     const drug = drugs.find((d) => d.name === selectedDrug);
-    if (!drug) return;
+    if (!drug) {
+      console.log("Drug not found:", selectedDrug);
+      return;
+    }
 
     const calculatedDose = (parseFloat(weight) * drug.dose_per_kg).toFixed(2);
     const standardDose = `${drug.dose_per_kg} mg/kg ${drug.frequency || ''}`;

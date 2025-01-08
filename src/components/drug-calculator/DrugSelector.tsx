@@ -19,12 +19,15 @@ export const DrugSelector = ({
   drugs,
 }: DrugSelectorProps) => {
   return (
-    <Select onValueChange={onDrugChange} value={selectedDrug}>
+    <Select 
+      value={selectedDrug} 
+      onValueChange={onDrugChange}
+    >
       <SelectTrigger className="w-full text-base bg-white border rounded-lg p-4">
         <SelectValue placeholder="Select medication" />
       </SelectTrigger>
       <SelectContent>
-        {drugs?.map((drug) => (
+        {drugs && drugs.map((drug) => (
           <SelectItem
             key={drug.id}
             value={drug.name}

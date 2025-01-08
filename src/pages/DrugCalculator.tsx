@@ -7,7 +7,7 @@ import { DrugInformation } from "@/components/drug-calculator/DrugInformation";
 import { CategorySelector } from "@/components/drug-calculator/CategorySelector";
 import { Drug } from "@/data/drugData";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import type { DrugCategory } from "@/components/drug-calculator/CategorySelector";
 
 const DrugCalculator = () => {
@@ -18,17 +18,24 @@ const DrugCalculator = () => {
   const [age, setAge] = useState("");
   const [category, setCategory] = useState<DrugCategory>("nutrition");
   const [drugs, setDrugs] = useState<Drug[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchDrugs = async () => {
+      setIsLoading(true);
       try {
         const { data, error } = await supabase
           .from('drugs')
           .select('*')
           .eq('category', category);
         
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
+        
         setDrugs(data || []);
+        // Reset selected drug when category changes
+        setSelectedDrug("");
       } catch (error) {
         console.error('Error fetching drugs:', error);
         toast({
@@ -36,6 +43,8 @@ const DrugCalculator = () => {
           title: "Error",
           description: "Failed to load medications. Please try again.",
         });
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -78,11 +87,15 @@ const DrugCalculator = () => {
 
           <div>
             <h2 className="text-2xl font-bold mb-4">Select Medication</h2>
-            <DrugSelector
-              selectedDrug={selectedDrug}
-              onDrugChange={setSelectedDrug}
-              drugs={drugs}
-            />
+            {isLoading ? (
+              <div className="text-center text-gray-500">Loading medications...</div>
+            ) : (
+              <DrugSelector
+                selectedDrug={selectedDrug}
+                onDrugChange={setSelectedDrug}
+                drugs={drugs}
+              />
+            )}
           </div>
 
           {selectedDrug && weight && age && (
