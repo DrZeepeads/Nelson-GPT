@@ -9,7 +9,6 @@ import {
   Menu as MenuIcon,
   Baby,
   Scale,
-  Stethoscope,
   Home
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
@@ -61,11 +60,6 @@ const Navigation = () => {
       label: "BMI Calculator",
       icon: Scale,
       onClick: () => navigate('/bmi-calculator')
-    },
-    {
-      label: "PediaDx Assistant",
-      icon: Stethoscope,
-      onClick: () => navigate('/pedia-dx')
     },
     {
       label: "Chat History",
