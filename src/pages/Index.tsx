@@ -10,14 +10,6 @@ const Index = () => {
   const [isThinking, setIsThinking] = useState(false);
   const isMobile = useIsMobile();
 
-  if (!isMobile) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-4">
-        <HomeScreenGuide />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       <Header isThinking={isThinking} />

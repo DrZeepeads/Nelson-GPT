@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { AuthError } from "@supabase/supabase-js";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -55,8 +56,8 @@ const Login = () => {
         localStorage.removeItem('supabase.auth.token');
       }
 
-      // Handle auth errors
-      if (event === 'USER_DELETED' || event === 'SIGNED_OUT') {
+      // Handle auth errors - removed USER_DELETED check as it's not a valid AuthChangeEvent
+      if (event === 'SIGNED_OUT') {
         toast({
           title: "Session Ended",
           description: "Please sign in again",
