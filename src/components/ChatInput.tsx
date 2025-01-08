@@ -7,7 +7,7 @@ interface ChatInputProps {
   onSendMessage: (message: string) => void;
 }
 
-const ChatInput = ({ onSendMessage }: ChatInputProps) => {
+export default function ChatInput({ onSendMessage }: ChatInputProps) {
   const [message, setMessage] = useState("");
   const { sendOnEnter } = useSettings();
 
@@ -46,6 +46,4 @@ const ChatInput = ({ onSendMessage }: ChatInputProps) => {
       </div>
     </form>
   );
-};
-
-export default ChatInput;
+}

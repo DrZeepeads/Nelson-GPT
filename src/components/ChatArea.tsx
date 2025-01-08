@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { ChatInput } from "./ChatInput";
+import ChatInput from "./ChatInput";
 import { WelcomeScreen } from "./chat/WelcomeScreen";
 import { ChatMessageList } from "./chat/ChatMessageList";
 import { ScrollArea } from "./ui/scroll-area";

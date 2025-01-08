@@ -2,24 +2,25 @@ import { cn } from "@/lib/utils";
 import { useSettings } from "@/stores/useSettings";
 
 interface ChatMessageProps {
-  content: string;
-  role: string;
+  message: string;
+  isBot: boolean;
+  timestamp: string;
+  confidence?: number;
+  keywords?: string[];
 }
 
-const ChatMessage = ({ content, role }: ChatMessageProps) => {
+export default function ChatMessage({ message, isBot, timestamp, confidence, keywords }: ChatMessageProps) {
   const { chatBubbleStyle } = useSettings();
   
   return (
     <div
       className={cn(
         "py-2 px-4 mb-4",
-        role === "assistant" ? "bg-primary-50" : "bg-gray-50",
+        isBot ? "bg-primary-50" : "bg-gray-50",
         chatBubbleStyle === "rounded" ? "rounded-2xl" : "rounded-md"
       )}
     >
-      <p className="text-gray-800">{content}</p>
+      <p className="text-gray-800">{message}</p>
     </div>
   );
-};
-
-export default ChatMessage;
+}
