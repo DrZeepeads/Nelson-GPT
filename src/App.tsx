@@ -1,24 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import Index from "./pages/Index"
-import Tools from "./pages/Tools"
 import DrugCalculator from "./pages/DrugCalculator"
 import GrowthChart from "./pages/GrowthChart"
 import Settings from "./pages/Settings"
 import BmiCalculator from "./pages/BmiCalculator"
 import ApgarCalculator from "./pages/ApgarCalculator"
-</lov-replace>
-
-<lov-search>
-        <Route
-          path="/pedia-dx"
-          element={
-            <ProtectedRoute>
-              <PediaDx />
-            </ProtectedRoute>
-          }
-        />
-</lov-search>
-<lov-replace>
 import Login from "./pages/Login"
 import { useEffect, useState } from "react"
 import { supabase } from "./integrations/supabase/client"
@@ -68,14 +54,6 @@ export default function App() {
           }
         />
         <Route
-          path="/tools"
-          element={
-            <ProtectedRoute>
-              <Tools />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path="/drug-calculator"
           element={
             <ProtectedRoute>
@@ -112,14 +90,6 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ApgarCalculator />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/pedia-dx"
-          element={
-            <ProtectedRoute>
-              <PediaDx />
             </ProtectedRoute>
           }
         />
