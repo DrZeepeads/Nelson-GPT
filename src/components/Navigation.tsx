@@ -74,50 +74,48 @@ const Navigation = () => {
   ];
 
   return (
-    <>
-      <div className="fixed top-0 left-0 right-0 h-14 bg-primary-500 z-50 flex items-center px-4">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-white hover:bg-primary-600">
-              <MenuIcon className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="p-0">
-            <SheetHeader className="p-6 border-b">
-              <SheetTitle>Menu</SheetTitle>
-            </SheetHeader>
-            <div className="flex flex-col h-full">
-              <div className="flex-1 py-4">
-                {menuItems.map((item) => (
-                  <Button
-                    key={item.label}
-                    variant="ghost"
-                    className="w-full justify-start px-6 py-4 h-auto text-lg font-normal"
-                    onClick={() => {
-                      item.onClick();
-                      setIsOpen(false);
-                    }}
-                  >
-                    <item.icon className="mr-4 h-5 w-5" />
-                    {item.label}
-                  </Button>
-                ))}
-              </div>
-              <div className="border-t p-4">
+    <div className="fixed top-0 left-0 right-0 h-14 bg-primary-500 z-50 flex items-center px-4">
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" className="text-white hover:bg-primary-600">
+            <MenuIcon className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="p-0">
+          <SheetHeader className="p-6 border-b">
+            <SheetTitle>Menu</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-col h-full">
+            <div className="flex-1 py-4">
+              {menuItems.map((item) => (
                 <Button
+                  key={item.label}
                   variant="ghost"
-                  className="w-full justify-start px-6 py-4 h-auto text-lg font-normal text-red-500 hover:text-red-600 hover:bg-red-50"
-                  onClick={handleSignOut}
+                  className="w-full justify-start px-6 py-4 h-auto text-lg font-normal"
+                  onClick={() => {
+                    item.onClick();
+                    setIsOpen(false);
+                  }}
                 >
-                  <LogOut className="mr-4 h-5 w-5" />
-                  Sign Out
+                  <item.icon className="mr-4 h-5 w-5" />
+                  {item.label}
                 </Button>
-              </div>
+              ))}
             </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-    </>
+            <div className="border-t p-4">
+              <Button
+                variant="ghost"
+                className="w-full justify-start px-6 py-4 h-auto text-lg font-normal text-red-500 hover:text-red-600 hover:bg-red-50"
+                onClick={handleSignOut}
+              >
+                <LogOut className="mr-4 h-5 w-5" />
+                Sign Out
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 };
 

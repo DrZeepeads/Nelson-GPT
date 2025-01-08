@@ -15,7 +15,6 @@ const DrugCalculator = () => {
   const [weight, setWeight] = useState("");
   const [age, setAge] = useState("");
   const [drugs, setDrugs] = useState<Drug[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchDrugs = async () => {
@@ -25,10 +24,7 @@ const DrugCalculator = () => {
           .select('*')
           .order('name');
 
-        if (error) {
-          throw error;
-        }
-
+        if (error) throw error;
         setDrugs(data || []);
       } catch (error) {
         console.error('Error fetching drugs:', error);
@@ -37,8 +33,6 @@ const DrugCalculator = () => {
           title: "Error",
           description: "Failed to load medications. Please try again.",
         });
-      } finally {
-        setIsLoading(false);
       }
     };
 
