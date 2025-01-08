@@ -1,127 +1,52 @@
-import { useState, useEffect } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CategorySelector, type DrugCategory } from "@/components/drug-calculator/CategorySelector";
-import { PatientInfoForm } from "@/components/drug-calculator/PatientInfoForm";
+import { ArrowLeft } from "lucide-react";
+import { CategorySelector } from "@/components/drug-calculator/CategorySelector";
 import { DrugSelector } from "@/components/drug-calculator/DrugSelector";
+import { PatientInfoForm } from "@/components/drug-calculator/PatientInfoForm";
 import { DrugInformation } from "@/components/drug-calculator/DrugInformation";
-import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
-import { Drug } from "@/data/drugData";
-import { useToast } from "@/hooks/use-toast";
-
-const fetchDrugs = async (category: DrugCategory) => {
-  console.log('Fetching drugs for category:', category);
-  try {
-    const { data, error } = await supabase
-      .from('drugs')
-      .select('*')
-      .eq('category', category);
-    
-    if (error) {
-      console.error('Supabase error:', error);
-      throw error;
-    }
-    
-    if (!data) {
-      console.log('No data returned from Supabase');
-      return [];
-    }
-    
-    console.log('Fetched drugs:', data);
-    return data as Drug[];
-  } catch (error) {
-    console.error('Error in fetchDrugs:', error);
-    throw error;
-  }
-};
+import { ClinicalNotes } from "@/components/drug-calculator/ClinicalNotes";
+import { ToxicityAlert } from "@/components/drug-calculator/ToxicityAlert";
+import { WarningsDisplay } from "@/components/drug-calculator/WarningsDisplay";
 
 const DrugCalculator = () => {
   const navigate = useNavigate();
-  const [weight, setWeight] = useState("");
-  const [age, setAge] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedDrug, setSelectedDrug] = useState("");
-  const [category, setCategory] = useState<DrugCategory>("nutrition");
-  const { toast } = useToast();
-
-  const { data: drugs = [], isLoading, error } = useQuery({
-    queryKey: ['drugs', category],
-    queryFn: () => fetchDrugs(category),
-    meta: {
-      onError: () => {
-        toast({
-          title: "Error loading drugs",
-          description: "There was a problem loading the drug list. Please try again.",
-          variant: "destructive",
-        });
-      },
-    },
-  });
-
-  // Reset selected drug when category changes
-  useEffect(() => {
-    setSelectedDrug("");
-  }, [category]);
-
-  if (error) {
-    console.error('Error in drug calculator:', error);
-    return (
-      <div className="min-h-screen bg-gray-50 p-4">
-        <div className="max-w-md mx-auto bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-red-600 font-semibold">Error loading drugs data</h2>
-          <p className="text-gray-600">Please try refreshing the page</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-4 py-2 bg-white shadow-sm flex items-center fixed top-0 w-full z-10">
-        <button
-          onClick={() => navigate("/tools")}
-          className="p-2 hover:bg-gray-100 rounded-full"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-        <h1 className="text-lg font-semibold ml-2">Pediatric Drug Calculator</h1>
+      <div className="fixed top-0 left-0 right-0 z-50 bg-primary-500">
+        <div className="flex items-center h-14 px-4">
+          <button 
+            onClick={() => navigate('/')}
+            className="p-2 hover:bg-primary-600 rounded-full transition-colors text-white"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-lg font-semibold ml-2 text-white">Drug Calculator</h1>
+        </div>
       </div>
 
-      <div className="pt-16 p-4 max-w-md mx-auto space-y-6">
-        <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-          <CategorySelector 
-            category={category} 
-            onCategoryChange={(value) => {
-              console.log('Category changed to:', value);
-              setCategory(value);
-              setSelectedDrug("");
-            }} 
-          />
-
-          <PatientInfoForm
-            weight={weight}
-            age={age}
-            onWeightChange={setWeight}
-            onAgeChange={setAge}
-          />
-
-          {isLoading ? (
-            <div className="text-center py-4">Loading drugs...</div>
-          ) : (
-            <DrugSelector
-              selectedDrug={selectedDrug}
-              onDrugChange={setSelectedDrug}
-              drugs={drugs}
-            />
-          )}
-
-          <DrugInformation
-            selectedDrug={selectedDrug}
-            weight={weight}
-            age={age}
-            drugs={drugs}
-          />
-        </div>
+      <div className="pt-16 pb-20 px-4 max-w-4xl mx-auto space-y-6">
+        <CategorySelector 
+          selectedCategory={selectedCategory} 
+          onSelectCategory={setSelectedCategory} 
+        />
+        <DrugSelector 
+          category={selectedCategory} 
+          selectedDrug={selectedDrug} 
+          onSelectDrug={setSelectedDrug} 
+        />
+        {selectedDrug && (
+          <>
+            <PatientInfoForm />
+            <DrugInformation drugId={selectedDrug} />
+            <ClinicalNotes drugId={selectedDrug} />
+            <ToxicityAlert drugId={selectedDrug} />
+            <WarningsDisplay drugId={selectedDrug} />
+          </>
+        )}
       </div>
     </div>
   );
