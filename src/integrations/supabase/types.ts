@@ -532,6 +532,45 @@ export type Database = {
         }
         Relationships: []
       }
+      processed_documents: {
+        Row: {
+          created_at: string | null
+          file_name: string
+          id: string
+          key_points: Json | null
+          metadata: Json | null
+          original_url: string
+          processed_by: string
+          raw_content: string | null
+          summary: string | null
+          tags: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          file_name: string
+          id?: string
+          key_points?: Json | null
+          metadata?: Json | null
+          original_url: string
+          processed_by: string
+          raw_content?: string | null
+          summary?: string | null
+          tags?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          file_name?: string
+          id?: string
+          key_points?: Json | null
+          metadata?: Json | null
+          original_url?: string
+          processed_by?: string
+          raw_content?: string | null
+          summary?: string | null
+          tags?: string[] | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
