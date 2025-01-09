@@ -9,7 +9,8 @@ import {
   Menu as MenuIcon,
   Baby,
   Scale,
-  Home
+  Home,
+  Brain
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Button } from "./ui/button";
@@ -31,6 +32,28 @@ const Navigation = () => {
         title: "Error signing out",
         description: "Please try again",
         variant: "destructive",
+      });
+    }
+  };
+
+  const triggerKnowledgeExtraction = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('extract-knowledge');
+      
+      if (error) throw error;
+
+      toast({
+        title: "Knowledge extraction started",
+        description: `Processing ${data.processed} items`,
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Error triggering knowledge extraction:', error);
+      toast({
+        title: "Error starting knowledge extraction",
+        description: error.message,
+        variant: "destructive",
+        duration: 3000,
       });
     }
   };
@@ -65,6 +88,11 @@ const Navigation = () => {
       label: "Chat History",
       icon: MessageSquare,
       onClick: () => navigate('/chat-history')
+    },
+    {
+      label: "Extract Knowledge",
+      icon: Brain,
+      onClick: triggerKnowledgeExtraction
     },
     {
       label: "Settings",
