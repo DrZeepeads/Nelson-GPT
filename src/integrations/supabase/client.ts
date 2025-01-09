@@ -11,5 +11,10 @@ export const supabase = createClient(cleanUrl, supabaseAnonKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      'x-my-custom-header': 'my-app-name'
+    }
   }
 });
